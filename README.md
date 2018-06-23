@@ -3,7 +3,7 @@ The New SpartaHack API
 
 Steps to run a local copy of SpartaHackAPI
 
-1. Install virtualenv and virtualenvwrapper to the global python installation  
+1. Install virtualenv and virtualenvwrapper to the global python installation (source [Virtualenv and Virtualenvwrapper](http://docs.python-guide.org/en/latest/dev/virtualenvs/))  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`pip install virtualenv`  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`pip install virtualenvwrapper`  
    And add the following three lines to your shell startup file (.bashrc, .profile, etc.)  
