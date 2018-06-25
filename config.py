@@ -1,6 +1,7 @@
-from dotenv import load_dotenv
 import os
-load_dotenv()
+def load_env_variables():
+    from dotenv import load_dotenv
+    load_dotenv()
 
 class BaseConfig:
     DEBUG=False
@@ -15,6 +16,5 @@ class DevelopmentConfig(BaseConfig):
 
 class ProdConfig(BaseConfig):
     DEBUG = False
-    TESTING = True
-DATABASE_URL=os.getenv("PROD_DATABASE_URL")
+    DATABASE_URL=os.getenv("PROD_DATABASE_URL")
 
