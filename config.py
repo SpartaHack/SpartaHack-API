@@ -14,10 +14,10 @@ class BaseConfig:
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
     TESTING = True
-    DATABASE_URL=os.getenv("DEV_DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI=os.getenv("DEV_DATABASE_URL")
 
 
 class ProdConfig(BaseConfig):
     DEBUG = False
-    DATABASE_URL=os.getenv("PROD_DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI=os.getenv("PROD_DATABASE_URL")
 
