@@ -9,6 +9,7 @@ class BaseConfig:
     DEBUG=False
     TESTING=False
     SECRET_KEY=os.getenv("SECRET_KEY")
+    CELERY_BROKER_URL=os.getenv("CELERY_BROKER_URL")
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
