@@ -1,11 +1,11 @@
 from flask import Flask
 from flask_restful import Api
-from SpartaHack_API_2019 import config # pylint: disable=invalid-syntax
-load_env_variables()
+from SpartaHack_API_2019.config import load_env_variables, DevelopmentConfig, ProdConfig
+load_env_variables() #loading enviornment variables
 
 
 app = Flask(__name__)
-app.config.from_object(config.DevelopmentConfig)#loading config data into flask app from config.py
+app.config.from_object(DevelopmentConfig)#loading config data into flask app from config.py
 
 api = Api(app)
 
