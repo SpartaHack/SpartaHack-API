@@ -1,9 +1,11 @@
 import os
-def load_env_variables():
+
+def load_env_variables(): #To load the config varibles before creating the flask object
     from dotenv import load_dotenv
     load_dotenv()
-
-class BaseConfig:
+    
+#To load cofig variables from object.
+class BaseConfig: 
     DEBUG=False
     TESTING=False
     SECRET_KEY=os.getenv("SECRET_KEY")
