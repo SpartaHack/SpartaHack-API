@@ -23,16 +23,16 @@ Steps to run a local copy of SpartaHackAPI
 6. Install RabbitMQ server using `sudo apt install rabbitmq-server`  
 7. With RabbitMQ server running (it will after first install otherwise run it using `sudo rabbitmq-server`)  
     ```
-    sudo rabbitmqctl add_user dev mypassword
+      sudo rabbitmqctl add_user dev mypassword
     ```  
     ```
-    sudo rabbitmqctl add_vhost db_tasks
+      sudo rabbitmqctl add_vhost db_tasks
     ```  
     ```
-    sudo rabbitmqctl set_user_tags dev database_tasks
+      sudo rabbitmqctl set_user_tags dev database_tasks
     ```  
     ```
-    sudo rabbitmqctl set_permissions -p db_tasks dev ".*" ".*" ".*"
+      sudo rabbitmqctl set_permissions -p db_tasks dev ".*" ".*" ".*"
     ```  
    Substitute `mypassword` with a good password and update the password in `CELERY_BROKER_URL` variable in .env file acquired in the next step
 6. Get the enviorment file from Yash or Nate for accessing the important environment variables.
