@@ -10,6 +10,7 @@ class BaseConfig:
     TESTING=False
     SECRET_KEY=os.getenv("SECRET_KEY")
     CELERY_BROKER_URL=os.getenv("CELERY_BROKER_URL")
+    SQLALCHEMY_TRACK_MODIFICATIONS=False
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
