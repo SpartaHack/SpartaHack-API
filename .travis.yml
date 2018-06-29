@@ -13,4 +13,4 @@ install:
 
 script:
   - export FLASK_ENV=development
-  - python app.py
+  - python app.py &
