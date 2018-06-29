@@ -14,3 +14,6 @@ install:
 script:
   - export FLASK_ENV=development
   - python app.py &
+  - APP_PID=$!
+  - newman run SpartaHack_API_2019.postman_collection.json/tests -e local\ env.postman_environment.json/tests
+  - kill $APP_PID
