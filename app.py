@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from celery import Celery
 from flask_sqlalchemy import SQLAlchemy
-from SpartaHack_API_2019.config import load_env_variables, DevelopmentConfig, ProdConfig
+from .config import load_env_variables, DevelopmentConfig, ProdConfig
 load_env_variables() #loading enviornment variables
 
 from SpartaHack_API_2019.resources.faqs import Faqs_RUD
