@@ -16,5 +16,5 @@ script:
   - export FLASK_ENV=development
   - python app.py &
   - APP_PID=$!
-  - newman run SpartaHack_API_2019.postman_collection.json/tests -e local_env.postman_environment.json/tests
+  - node_modules/.bin/newman run SpartaHack_API_2019.postman_collection.json/tests -e local_env.postman_environment.json/tests
   - kill $APP_PID
