@@ -5,8 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from config import load_env_variables, DevelopmentConfig, ProdConfig
 load_env_variables() #loading enviornment variables
 
-from .resources.faqs import Faqs_RUD
-from .resources.faqs import Faqs_CR
+from resources.faqs import Faqs_RUD
+from resources.faqs import Faqs_CR
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)#loading config data into flask app from config.py
