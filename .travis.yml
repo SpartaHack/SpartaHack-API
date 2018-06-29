@@ -2,9 +2,12 @@ language: python
 os: linux
 sudo: false
 
+python:
+  - "3.5"
+
 install:
   - pip install -r requirments.txt
 
 script:
   - export FLASK_ENV=development
-  - flask run
+  - python app.py
