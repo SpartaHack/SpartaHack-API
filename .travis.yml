@@ -1,0 +1,10 @@
+language: python
+os: linux
+sudo: false
+
+install:
+  - pip install -r requirments.txt
+
+script:
+  - export FLASK_ENV=development
+  - flask run
