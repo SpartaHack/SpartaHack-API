@@ -16,9 +16,8 @@ api = Api(app)
 
 db = SQLAlchemy(app)
 
-@app.before_first_request
-def initialize_app():
-    db.reflect(app=app)#to reflect on the already defined database
+#TODO: Check why reflect takes so much time (1-2 min) to setup. low-priority
+db.Model.metadata.reflect(db.engine)#This takes upto a min to reflect the database. Not a big problem now but might want to take a look later.
 
 task_queue=Celery("SpartaHack_API_2019",broker=app.config["CELERY_BROKER_URL"])
 
