@@ -1,16 +1,20 @@
 from flask_restful import Resource
 from flask import request
+from faqs import faqs
 
-def abort_if_faq_doesnt_exist(faq_id):
+def check_if_faq_exists(faq_id):
     pass
 
+
+def user_has_permissions():
+    pass
 class Faqs_RUD(Resource):
     """
     For GET PUT and DELETE for specific faq
     get http headers using request.headers.get("header_name")
     """
     def get(self,faq_id):
-        abort_if_faq_doesnt_exist(faq_id)
+        check_if_faq_exists(faq_id)
         return {"question":"This is amazzzing!"}
 
     def put(self,faq_id):
