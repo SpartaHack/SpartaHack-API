@@ -3,9 +3,6 @@ from flask_restful import Api
 from celery import Celery
 from flask_sqlalchemy import SQLAlchemy
 from config import load_env_variables, DevelopmentConfig, ProdConfig
-#loading resources
-from resources.faqs import Faqs_RUD
-from resources.faqs import Faqs_CR
 
 load_env_variables() #loading enviornment variables
 
@@ -15,9 +12,13 @@ app.config.from_object(DevelopmentConfig)#loading config data into flask app fro
 api = Api(app)
 
 db = SQLAlchemy(app)
-
 #TODO: Check why reflect takes so much time (1-2 min) to setup. low-priority
 db.Model.metadata.reflect(db.engine)#This takes upto a min to reflect the database. Not a big problem now but might want to take a look later.
+
+#loading resources
+from resources.faqs import Faqs_RUD
+from resources.faqs import Faqs_CR
+
 
 task_queue=Celery("SpartaHack_API_2019",broker=app.config["CELERY_BROKER_URL"])
 
