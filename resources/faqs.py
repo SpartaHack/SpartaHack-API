@@ -1,13 +1,15 @@
 from flask_restful import Resource
 from flask import request
-from faqs import faqs
+from models.faqs import Faqs
+from models.users import Users
 
 def check_if_faq_exists(faq_id):
     pass
 
 
 def user_has_permissions():
-    pass
+    user_token=request.headers.get("X-WWW-USER-TOKEN")
+    return user_token
 class Faqs_RUD(Resource):
     """
     For GET PUT and DELETE for specific faq

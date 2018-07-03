@@ -1,7 +1,7 @@
 from app import db
 
-class Faqs(db.Model):
-    __table__ = db.Model.metadata.tables['faqs']
+class Users(db.Model):
+    __table__ = db.Model.metadata.tables['users']
 
     def __str__(self):
         return self.__table__.name
