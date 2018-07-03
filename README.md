@@ -11,7 +11,7 @@ Steps to run a local copy of SpartaHackAPI
     pip3 install virtualenvwrapper
     ```  
    And add the following three lines to your shell startup file (.zshrc, .bashrc, .profile, etc.)  
-   Python location might change depending on what OS you are using(on MacOS it was stored in `/usr/local/bin/python3`, for Ubuntu 16.04:  
+   Python location might change depending on what OS you are using(on MacOS it was stored in `/usr/local/bin/python3`), for Ubuntu 16.04:  
     ```
     export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
     export WORKON_HOME=~/.virtualenvs
