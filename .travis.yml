@@ -10,7 +10,8 @@ install:
 - npm install newman
 script:
 - export FLASK_ENV=development
-- python app.py &
+- xport FLASK_APP=app.py
+- flask run &
 - APP_PID=$!
 - curl --request GET --url '127.0.0.1:5000/faqs/33'
 - node_modules/.bin/newman run tests/SpartaHack_API_2019_tests.postman_collection.json -e tests/SpartaHack-API-2019_dev.postman_environment.json
