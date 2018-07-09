@@ -12,8 +12,6 @@ api = Api(app)
 
 db = SQLAlchemy(app)
 
-error={"status":404,"error":"Not Found"}
-
 #TODO: Check why reflect takes so much time (1-2 min) to setup. low-priority
 db.Model.metadata.reflect(db.engine)#This takes upto a min to reflect the database. Not a big problem now but might want to take a look later.
 
