@@ -5,12 +5,15 @@ python:
 - '3.5'
 before_install:
 - export PYTHONPATH=$PYTHONPATH:$(pwd)
+#- sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+#- sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+
 install:
 - pip install -r requirements.txt
 - npm install newman
 script:
 - export FLASK_ENV=development
-- xport FLASK_APP=app.py
+- export FLASK_APP=app.py
 - flask run &
 - APP_PID=$!
 - curl --request GET --url '127.0.0.1:5000/faqs/33'
