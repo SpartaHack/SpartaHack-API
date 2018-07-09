@@ -1,14 +1,16 @@
 from flask import Flask, jsonify, make_response
 from flask_restful import Api
 from celery import Celery
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy import create_engine
+
 from config import load_env_variables, DevelopmentConfig, ProdConfig
 load_env_variables() #loading enviornment variables
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)#loading config data into flask app from config object.
-
 api = Api(app)
+
 
 db = SQLAlchemy(app)
 
