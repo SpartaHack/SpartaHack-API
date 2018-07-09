@@ -1,20 +1,25 @@
 language: python
 os: linux
 sudo: false
-
 python:
-  - "3.5"
-
+- '3.5'
 before_install:
-  - export PYTHONPATH=$PYTHONPATH:$(pwd)
+- export PYTHONPATH=$PYTHONPATH:$(pwd)
+#- sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+#- sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
 
 install:
-  - pip install -r requirements.txt
-  - npm install newman
-
+- pip install -r requirements.txt
+- npm install newman
 script:
-  - export FLASK_ENV=development
-  - python app.py &
-  - APP_PID=$!
-  - node_modules/.bin/newman run tests/SpartaHack_API_2019.postman_collection.json -e tests/local_env.postman_environment.json
-  - kill $APP_PID
+- export FLASK_ENV=development
+- export FLASK_APP=app.py
+- flask run &
+- APP_PID=$!
+- node_modules/.bin/newman run tests/SpartaHack_API_2019_tests.postman_collection.json -e tests/SpartaHack-API-2019_dev.postman_environment.json
+- kill $APP_PID
+env:
+  global:
+  - secure: SvXKiUcRo9NadJtgsc4qe6xNtuI2UL+LOveVol/d+fCOUv9Culo3viX2GMSZw3ddZzbDaU3CUyZ96LaJnLtSoixlOE/4+3xmKxqWt56FR04A0HLMn3mi+FqjWhLbKOx9yD5hTikG9ctB6Gr1FQNKrZYTLriSq4/dpAR50yJAKX7o2EfXOdhBKMxTE4CeFs9meErefYvdi94CmFlLLmc7M0yWa5jZe22uAQBsSlP+fb5+SD2+i5QOj2IgdQvc+Rq522/vZm9+XeVnClt39yXOLpH0OueQeR7qpOhjcw6AULSLckAnO7IxFrJhn+mPWvN49Vl/AtsNFSEdK8XEyg9n8kWNQF0Ce0A6FqAX2wY9R4HuwsKok5YluEcI/22zvtjYpQlZFHavmZfneGjohZJ6DTO/Ae23pBj7KFvqEuJ3L4ll0M+2BO8PK8SYLDdrYxgZDZTw4naZWclE1GEwGzYYMUOfkOyK3qcNLp8H4+chHYuUxlZgXKq0yvsoX8hMVg+t/rbbuoMe3Xj4+G1fWwEqIYP4mGxLtgpREKRGCpDtGGb3x6Re1oYOaTuEqL2nYir4OYnlKSnUleQj9G6MOZ0PuyhW5Uwp4P+SvuqEVtXB9ehlA0FQQGaMvbXQq1kf4BhY3uU+359ZF0MOEViWr4q+HuwtBlYrCi64dpZB5J3vz7s=
+  - secure: jN6su1FPaRnzvpj7HTiWL2BKw5BoC5oJYQGAyV9pSjkyPbBltPqDko9y30uCT5j24T7TAedUb40IhEefo1WCn7PQyoRtE+ZzmZFduWHxMBZWRDNNK0jBMxsfQeZgJ1usXW7OJc95aTn2CZHdFu4kFpUEa6Df3J/7YtgmLdD877ZW6AngFoxjip8Y25/eTLn0jFko/TA2BTjLuscC2Kk6EVpimLnxmxF7WMzZD9mJ4zUdaDxYEqSNDKC0Lu6tsEj8xT37xhR7v0o7zS0f/k+i9letPfGwug8uI4fo6f4WU8ANFNGxTs5H8j/DDRZUWo+UfhmT+2hx89CqQk9DJoriWD4TJpx/AbOAwS0JklhhtFxVv3/kgaQWA1rbdJny6wyWVQubWU5omd6zwTaE1d2Y+CtG7Mxoe1E0YqNsJtTRm2E0FKHL4TVEALpnb28QZZOor2o68fT1VGfNTWt95lmpGW7YEeGruBmsDHoALzZJphUE9Wo+Jz/6MEwJ728s0IigchTNJZnmik7POFiex6yPVfWLx8C5E0CmrYuHL1v1ZbT0UIwd1Uo8bO44hsToqZXuKPDzHyKrwZypa6Zlu8TkPzFVRG3+kTfkNjTc+tQ5Uc2oAoS1wChVNoC/+vePKoViu9oY8TQwZTlfU+NPXdLgXc068klkB8c0o6bJ75O+SCc=
+  - secure: XaE26vb2sbqu4E0ULaOU1qF/vUXknxP8luuCLnDtRlInW01FmQ21vZysw53t1RUarIulyXT6Q5uSn0Hy3b6JaCry64lJaQ1j/2T6Rhfb7QR39Ii5SlHq4Jp0nUv/DXsVekSo2uGsixfsVr0qpzu0NSc9LX6iGdW6TSvbsCLmyNWhNg5JBsbV+eGIv+0G8pmfnzQp25oUpxpvAdDMigN1Vr6jrcAUfMKCz3ysssO8xKCZuRYeHiOf4fyOtWcvKXORRmQvYIoLIzppzrz8xY50xpEVuJnIGIhBDPUS/eWV/0seRuNacPEI316nPWczRuqY4hdvx7jw61Q3qED4UW58I6dr0Q9+HtmWHWZi6NLPYJvled0qK9ieHFoUAhjDcko5M7bQlOgK/dI6t3ukxb1BHoygIan/cKwhehwBwzL+098irtKbUF/DoKdSbNLMpHNSyOdjM5xdh1u3e6FYvt/w+03w9nu6iml5qvGicrYcba6GHXdnTWnFcfVwMDGQlh2Van+elhk3RdnXLKyemtokYFMe6HO2MkDTcF5rGKHHdnSRjTpWwMVxoJ6ONdYGAg0Gti4zMeYQ5aMxOFLnGHJHFE+cwlPBJ89gBY7sCq/KJ4c3Xx90meQyeH6xbhbBtL1rNLyX/7kPObUgfchdYlvT7QlU0iHQwOP8PKFkE01zo3o=

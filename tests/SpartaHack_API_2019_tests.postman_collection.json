@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "d41cc12a-3f20-49f1-9e64-25d9fc437e85",
+		"name": "SpartaHack_API_2019_tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "read (specific faq_id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "49988486-c678-48e1-832c-be91e7200924",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"faq_id\", jsonData.id);",
+							"",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-WWW-USER-TOKEN",
+						"value": "{{user_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{email}}\",\n}"
+				},
+				"url": {
+					"raw": "{{url}}/faqs/33",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"faqs",
+						"33"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read (all faqs)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e70e14d-b0f9-4794-9483-9953176714c6",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"faq_id\", jsonData.id);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-WWW-USER-TOKEN",
+						"value": "{{user_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{email}}\",\n}"
+				},
+				"url": {
+					"raw": "{{url}}/faqs/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"faqs",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read (wrong faq_id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0085dfd0-4735-4fdc-886c-b1cddce7eb01",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"faq_id\", jsonData.id);",
+							"",
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-WWW-USER-TOKEN",
+						"value": "{{user_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{email}}\",\n}"
+				},
+				"url": {
+					"raw": "{{url}}/faqs/58457",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"faqs",
+						"58457"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
