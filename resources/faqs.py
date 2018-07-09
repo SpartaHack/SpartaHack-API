@@ -1,6 +1,7 @@
 from flask_restful import Resource
-from flask import request,jsonify
-from  sqlalchemy.orm.exc import NoResultFound
+from flask import request,jsonify,Response
+from sqlalchemy.orm.exc import NoResultFound
+from app import error
 from models.faqs import Faqs
 from models.users import Users
 
@@ -38,10 +39,10 @@ class Faqs_RUD(Resource):
                     "placement":faq_object.placement,
                     "user":faq_object.user_id
                 }
-            return jsonify(ret)
+            return (ret,200,{"X-XSS-Protection":"1"})
 
         except NoResultFound:
-            return jsonify({"status":404,"error":"Not Found"})
+            return (error,404,{"X-XSS-Protection":"1"})
 
 
     def put(self,faq_id):
@@ -70,4 +71,4 @@ class Faqs_CR(Resource):
         pass
 
     def get(self):
-        return "FAQS_CR"
+        return ({"F":"gd"},200,{"X-XSS-Protection":"1"})
