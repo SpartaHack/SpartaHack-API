@@ -4,10 +4,10 @@ bad_request = {"status":400,"error":"Bad Request"}
 unauthorised = {"status":401,"error":"Unauthorised"}
 forbidden = {"status":403,"error":"Forbidden"}
 not_found = {"status":404,"error":"Not Found"}
-
+internal_server_error = {"status":500,"error":"Internal Server Error"}
 
 headers = {
-            "X-XSS-Protection" : "1",
+            "X-XSS-Protection" : "1; mode=block",
             "X-Frame-Options" : "DENY",
             "Connection" : "keep-alive",
             "X-Content-Type-Options" : "nosniff"

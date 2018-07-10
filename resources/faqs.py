@@ -1,8 +1,9 @@
 from flask_restful import Resource
+from werkzeug.exceptions import BadRequest
 from flask import request,jsonify,g
 from sqlalchemy.orm.exc import NoResultFound
 from common.utils import headers,is_logged_in,has_admin_privileges
-from common.utils import bad_request,unauthorised,forbidden,not_found
+from common.utils import bad_request,unauthorised,forbidden,not_found,internal_server_error
 
 class Faqs_RUD(Resource):
     """
@@ -28,6 +29,11 @@ class Faqs_RUD(Resource):
 
 
     def put(self,faq_id):
+        try:
+            data=request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
         user_status = has_admin_privileges()
         if user_status == "no_header_found":
             return (bad_request,400,headers)
@@ -57,4 +63,21 @@ class Faqs_CR(Resource):
         pass
 
     def get(self):
-        return ({"F":"gd"},200,{"X-XSS-Protection":"1"})
+        try:
+            all_faqs=g.session.query(g.Base.classes.faqs).all()
+            ret=[]
+            for faq in all_faqs:
+                ret.append(
+                            {
+                            "id":faq.id,
+                            "priority":faq.priority,
+                            "display":faq.display,
+                            "question":faq.question,
+                            "answer":faq.answer,
+                            "placement":faq.placement,
+                            "user":faq.user_id
+                            }
+                          )
+            return (ret,200,headers)
+        except:
+            return (internal_server_error,500,headers)
