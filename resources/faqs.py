@@ -25,7 +25,7 @@ class Faqs_RUD(Resource):
             return (ret,200,headers)
 
         except NoResultFound:
-            return (not_found_error,404,headers)
+            return (not_found,404,headers)
 
 
     def put(self,faq_id):
