@@ -1,8 +1,8 @@
 from flask_restful import Resource
-from flask import request,jsonify,Response
+from flask import request,jsonify,g
 from sqlalchemy.orm.exc import NoResultFound
-from common.utils import error,headers,is_logged_in,has_admin_privileges
-from models.faqs import Faqs
+from common.utils import headers,is_logged_in,has_admin_privileges
+from common.utils import bad_request,unauthorised,forbidden,not_found
 
 class Faqs_RUD(Resource):
     """
@@ -11,7 +11,7 @@ class Faqs_RUD(Resource):
     """
     def get(self,faq_id):
         try:
-            faq_object = Faqs.query.filter(Faqs.__table__.c.id == faq_id).one()
+            faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
             ret={
                     "id":faq_object.id,
                     "priority":faq_object.priority,
@@ -24,22 +24,26 @@ class Faqs_RUD(Resource):
             return (ret,200,headers)
 
         except NoResultFound:
-            return (error,404,headers)
+            return (not_found_error,404,headers)
 
 
     def put(self,faq_id):
-        user_statu = has_admin_privileges()
-        if user_status == "Not logged in":
-            if user_status == True:
-                try:
-                    faq_object = Faqs.query.get(faq_id)
-                    return faq_object.id
-                except:
-                    return "Something failed"
-            else:
-                return "Not authenticated"
+        user_status = has_admin_privileges()
+        if user_status == "no_header_found":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorised,401,headers)
+
+        if user_status == True:
+            try:
+                faq_object = Faqs.query.get(faq_id)
+                return faq_object.id
+            except:
+                return "Something failed"
         else:
-            return "Not logged in"
+            return (unauthorised,401,headers)
+
 
 
     def delete(self,faq_id):
