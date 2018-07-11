@@ -4,6 +4,7 @@ from celery import Celery
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from common.utils import unauthorised,headers
 
 from config import load_env_variables, DevelopmentConfig, ProdConfig
 
@@ -23,11 +24,18 @@ print("Classes reflected...")
 
 @app.before_request
 def create_session():
+    if request.method !="GET":
+        try:
+            authorisation_token=request.headers.get("Authorization")
+        except KeyError:
+            return (unauthorised,401,headers)
+
     g.session = Session(engine)
     g.Base = Base
 
 @app.after_request
 def commit_and_close_session(resp):
+    g.session.commit()
     g.session.close()
     return resp
 
