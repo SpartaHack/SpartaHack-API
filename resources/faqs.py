@@ -16,15 +16,7 @@ class Faqs_RUD(Resource):
     def get(self,faq_id):
         try:#using try and except  instead of get to avoid double db hits in case there really is a faq
             faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
-            ret={
-                    "id":faq_object.id,
-                    "priority":faq_object.priority,
-                    "display":faq_object.display,
-                    "question":faq_object.question,
-                    "answer":faq_object.answer,
-                    "placement":faq_object.placement,
-                    "user":faq_object.user_id
-                }
+            ret = Faq_Schema().dump(faq_object).data
             return (ret,200,headers)
 
         except NoResultFound:
@@ -60,15 +52,7 @@ class Faqs_RUD(Resource):
                 faq_object.placement = data["placement"]
                 faq_object.user_id = user.id
                 faq_object.updated_at = datetime.now()
-                ret={
-                        "id":faq_object.id,
-                        "priority":faq_object.priority,
-                        "display":faq_object.display,
-                        "question":faq_object.question,
-                        "answer":faq_object.answer,
-                        "placement":faq_object.placement,
-                        "user":faq_object.user_id
-                    }
+                ret = Faq_Schema().dump(faq_object).data
                 return (ret,200,headers)
             except NoResultFound:
                 return (not_found,404,headers)
@@ -118,24 +102,26 @@ class Faqs_CR(Resource):
 
         if user_status == True:
             try:
-                faqs=Base.classes.faqs
-                g.session.add(faqs())
+                new_faq=Base.classes.faqs(
+                                            question = data["question"],
+                                            answer = data["answer"],
+                                            user_id = user.id,
+                                            created_at = datetime.now(),
+                                            updated_at = datetime.now(),
+                                            display = data["display"],
+                                            priority = data["priority"],
+                                            placement = data["placement"]
+                                         )
+                g.session.add(new_faq)
+                return (Faq_Schema().dump(new_faq).data,201,headers)
+            except:
+                return (internal_server_error,500,headers)
     def get(self):
         try:
             all_faqs=g.session.query(g.Base.classes.faqs).all()
             ret=[]
             for faq in all_faqs:
-                ret.append(
-                            {
-                            "id":faq.id,
-                            "priority":faq.priority,
-                            "display":faq.display,
-                            "question":faq.question,
-                            "answer":faq.answer,
-                            "placement":faq.placement,
-                            "user":faq.user_id
-                            }
-                          )
+                ret.append(Faq_Schema().dump(faq).data)
             return (ret,200,headers)
         except:
             return (internal_server_error,500,headers)

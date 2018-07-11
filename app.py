@@ -24,11 +24,10 @@ print("Classes reflected...")
 
 @app.before_request
 def create_session():
-    if request.method !="GET":
-        try:
-            authorisation_token=request.headers.get("Authorization")
-        except KeyError:
-            return (unauthorised,401,headers)
+    try:
+        authorisation_token=request.headers["Authorization"]
+    except KeyError:
+        return (unauthorised,401,headers)
 
     g.session = Session(engine)
     g.Base = Base
