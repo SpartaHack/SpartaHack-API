@@ -17,7 +17,8 @@ class Faqs_RUD(Resource):
         try:#using try and except  instead of get to avoid double db hits in case there really is a faq
             faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
             ret = Faq_Schema().dump(faq_object).data
-            return (ret,200,headers)
+            print(type(ret))
+            return (Faq_Schema().dump(faq_object).data,200,headers)
 
         except NoResultFound:
             return (not_found,404,headers)
@@ -72,10 +73,13 @@ class Faqs_RUD(Resource):
 
         if user_status == True:
             try:
+                g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
                 g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).delete()
-                return ({},204,headers)
+                return ("",204,headers)
             except NoResultFound:
                 return (not_found,404,headers)
+        else:
+            return (forbidden,403,headers)
 
 class Faqs_CR(Resource):
     """
@@ -102,20 +106,26 @@ class Faqs_CR(Resource):
 
         if user_status == True:
             try:
-                new_faq=Base.classes.faqs(
-                                            question = data["question"],
-                                            answer = data["answer"],
-                                            user_id = user.id,
-                                            created_at = datetime.now(),
-                                            updated_at = datetime.now(),
-                                            display = data["display"],
-                                            priority = data["priority"],
-                                            placement = data["placement"]
-                                         )
+                Faqs = g.Base.classes.faqs
+                new_faq = Faqs(
+                                question = data["question"],
+                                answer = data["answer"],
+                                user_id = user.id,
+                                created_at = datetime.now(),
+                                updated_at = datetime.now(),
+                                display = data["display"],
+                                priority = data["priority"],
+                                placement = data["placement"]
+                              )
                 g.session.add(new_faq)
+                g.session.commit()
+                new_faq = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.question == data["question"]).one()
                 return (Faq_Schema().dump(new_faq).data,201,headers)
             except:
                 return (internal_server_error,500,headers)
+        else:
+            return(forbidden,403,headers)
+
     def get(self):
         try:
             all_faqs=g.session.query(g.Base.classes.faqs).all()

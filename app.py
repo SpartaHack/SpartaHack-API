@@ -24,11 +24,6 @@ print("Classes reflected...")
 
 @app.before_request
 def create_session():
-    try:
-        authorisation_token=request.headers["Authorization"]
-    except KeyError:
-        return (unauthorised,401,headers)
-
     g.session = Session(engine)
     g.Base = Base
 
@@ -44,7 +39,10 @@ from resources.faqs import Faqs_CR
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
-    resp = make_response(jsonify(data), code)
+    if code == 204:
+        resp = make_response('', code)
+    else:
+        resp = make_response(jsonify(data), code)
     resp.headers.extend(headers)
     return resp
 

@@ -30,7 +30,7 @@ def is_logged_in():
 def has_admin_privileges():
     user = is_logged_in()
     if user == "no_auth_token":
-        return "no_auth_token"
+        return "no_auth_token",user
     if user:
         if user.role < 9:
             return True,user
