@@ -1,27 +1,10 @@
 from flask_restful import Resource
-from flask import request,jsonify,Response
+from werkzeug.exceptions import BadRequest
+from flask import request,jsonify,g
 from sqlalchemy.orm.exc import NoResultFound
-from app import error
-from models.faqs import Faqs
-from models.users import Users
+from common.utils import headers,is_logged_in,has_admin_privileges
+from common.utils import bad_request,unauthorised,forbidden,not_found,internal_server_error
 
-def is_logged_in():
-    user_token=request.headers.get("X-WWW-USER-TOKEN")
-    try:
-        user=Users.query.filter(Users.__table__.c.auth_token==user_token).one()
-        return user
-    except:
-        return False
-
-def has_admin_privileges():
-    user=is_logged_in()
-    if user:
-        if user.role<9:
-            return True
-        else:
-            return False
-    else:
-        return "Not logged in"
 class Faqs_RUD(Resource):
     """
     For GET PUT and DELETE for specific faq
@@ -29,7 +12,7 @@ class Faqs_RUD(Resource):
     """
     def get(self,faq_id):
         try:
-            faq_object=Faqs.query.filter(Faqs.__table__.c.id == faq_id).one()
+            faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
             ret={
                     "id":faq_object.id,
                     "priority":faq_object.priority,
@@ -39,25 +22,34 @@ class Faqs_RUD(Resource):
                     "placement":faq_object.placement,
                     "user":faq_object.user_id
                 }
-            return (ret,200,{"X-XSS-Protection":"1"})
+            return (ret,200,headers)
 
         except NoResultFound:
-            return (error,404,{"X-XSS-Protection":"1"})
+            return (not_found,404,headers)
 
 
     def put(self,faq_id):
-        user_status=has_admin_privileges()
-        if user_status=="Not logged in":
-            if user_status==True:
-                try:
-                    faq_object=Faqs.query.get(faq_id)
-                    return faq_object.id
-                except:
-                    return "Something failed"
-            else:
-                return "Not authenticated"
+        try:
+            data=request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        user_status = has_admin_privileges()
+        if user_status == "no_header_found":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorised,401,headers)
+
+        if user_status == True:
+            try:
+                faq_object = Faqs.query.get(faq_id)
+                return faq_object.id
+            except:
+                return "Something failed"
         else:
-            return "Not logged in"
+            return (unauthorised,401,headers)
+
 
 
     def delete(self,faq_id):
@@ -71,4 +63,21 @@ class Faqs_CR(Resource):
         pass
 
     def get(self):
-        return ({"F":"gd"},200,{"X-XSS-Protection":"1"})
+        try:
+            all_faqs=g.session.query(g.Base.classes.faqs).all()
+            ret=[]
+            for faq in all_faqs:
+                ret.append(
+                            {
+                            "id":faq.id,
+                            "priority":faq.priority,
+                            "display":faq.display,
+                            "question":faq.question,
+                            "answer":faq.answer,
+                            "placement":faq.placement,
+                            "user":faq.user_id
+                            }
+                          )
+            return (ret,200,headers)
+        except:
+            return (internal_server_error,500,headers)
