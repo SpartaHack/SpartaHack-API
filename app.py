@@ -4,6 +4,7 @@ from celery import Celery
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from common.utils import unauthorised,headers
 
 from config import load_env_variables, DevelopmentConfig, ProdConfig
 
@@ -28,6 +29,7 @@ def create_session():
 
 @app.after_request
 def commit_and_close_session(resp):
+    g.session.commit()
     g.session.close()
     return resp
 
@@ -37,7 +39,10 @@ from resources.faqs import Faqs_CR
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
-    resp = make_response(jsonify(data), code)
+    if code == 204:
+        resp = make_response('', code)
+    else:
+        resp = make_response(jsonify(data), code)
     resp.headers.extend(headers)
     return resp
 

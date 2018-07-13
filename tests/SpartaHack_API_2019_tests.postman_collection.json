@@ -6,154 +6,529 @@
 	},
 	"item": [
 		{
-			"name": "read (specific faq_id)",
-			"event": [
+			"name": "faq",
+			"description": "",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"id": "49988486-c678-48e1-832c-be91e7200924",
-						"type": "text/javascript",
-						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"faq_id\", jsonData.id);",
-							"",
-							"",
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"",
-							""
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "X-WWW-USER-TOKEN",
-						"value": "{{user_token}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"email\": \"{{email}}\",\n}"
-				},
-				"url": {
-					"raw": "{{url}}/faqs/33",
-					"host": [
-						"{{url}}"
+					"name": "create (correct create)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a97ca05c-c9b5-4c13-aae9-3d3a490be5f1",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"faq_id\", jsonData.id);",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+									"});"
+								]
+							}
+						}
 					],
-					"path": [
-						"faqs",
-						"33"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "read (all faqs)",
-			"event": [
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question\": \"{{$guid}}\",\n    \"answer\": \"What are exact nufgddmbers?\",\n    \"priority\": \"3\",\n    \"display\": true,\n    \"placement\": \"live\"\n  \n}"
+						},
+						"url": {
+							"raw": "{{url}}/faqs/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
 				{
-					"listen": "test",
-					"script": {
-						"id": "8e70e14d-b0f9-4794-9483-9953176714c6",
-						"type": "text/javascript",
-						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"faq_id\", jsonData.id);",
-							"",
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "X-WWW-USER-TOKEN",
-						"value": "{{user_token}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"email\": \"{{email}}\",\n}"
-				},
-				"url": {
-					"raw": "{{url}}/faqs/",
-					"host": [
-						"{{url}}"
+					"name": "read (all faqs)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c7e5fa54-8f8f-4678-ab6f-684158d99672",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
 					],
-					"path": [
-						"faqs",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "read (wrong faq_id)",
-			"event": [
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/faqs/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
 				{
-					"listen": "test",
-					"script": {
-						"id": "0085dfd0-4735-4fdc-886c-b1cddce7eb01",
-						"type": "text/javascript",
-						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"faq_id\", jsonData.id);",
-							"",
-							"pm.test(\"Status code is 404\", function () {",
-							"    pm.response.to.have.status(404);",
-							"});",
-							"",
-							""
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "X-WWW-USER-TOKEN",
-						"value": "{{user_token}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"email\": \"{{email}}\",\n}"
-				},
-				"url": {
-					"raw": "{{url}}/faqs/58457",
-					"host": [
-						"{{url}}"
+					"name": "read (specific faq_id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c2a9a2e7-122c-4440-af64-21f1890407e0",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									""
+								]
+							}
+						}
 					],
-					"path": [
-						"faqs",
-						"58457"
-					]
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/faqs/{{faq_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								"{{faq_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (wrong faq_id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "15418976-0f32-42a5-9443-548d6863f7f2",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/faqs/58457",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								"58457"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update (field missing)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e115e42f-f856-4b52-b948-ed4b95ec8fc4",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"priority\":3,\n  \"display\":true,\n  \"question\":\"Updated question\",\n  \"answer\":\"Updated answer\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/faqs/33",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								"33"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update (auth_token missing)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fb6cc421-330b-4dba-b40e-8d9338e61a3e",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"priority\":3,\n  \"display\":true,\n  \"question\":\"Updated question\",\n  \"answer\":\"Updated answer\",\n  \"placement\":\"live\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/faqs/{{faq_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								"{{faq_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (correct delete)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c8bd6a36-5259-4904-9708-eb36e9107006",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/faqs/{{faq_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								"{{faq_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (wrong faq_id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1a7c3204-2fe5-4114-befa-f8ca81c3cc19",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/faqs/{{faq_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								"{{faq_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (user with no permission)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "78eb6653-8083-4b5c-80c6-98346af69492",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "cfgasggfwegrrg"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/faqs/{{faq_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								"{{faq_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (missing field)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "644281ed-8f3e-4bd6-9d83-0a1137396e2a",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question\": \"What is the exact number of people?\",\n    \"answer\": \"What are exact nufgddmbers?\",\n    \"priority\": \"3\",\n    \"placement\": \"live\"\n  \n}"
+						},
+						"url": {
+							"raw": "{{url}}/faqs/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (user wit no permission)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e7f4280c-2a15-4b24-9fc4-36e2a812e8fa",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "fkskjkhgjcnsnjf"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"answer\": \"What are exact nufffgkjkddmbers?\",\n    \"display\": true,\n    \"placement\": \"live\",\n    \"priority\": 3,\n    \"question\": \"What is the exact numgsssber dffof people?\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/faqs/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"faqs",
+								""
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }
