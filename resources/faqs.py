@@ -1,74 +1,137 @@
 from flask_restful import Resource
-from flask import request,jsonify,Response
+from werkzeug.exceptions import BadRequest
+from flask import request,jsonify,g
 from sqlalchemy.orm.exc import NoResultFound
-from app import error
-from models.faqs import Faqs
-from models.users import Users
+from common.json_schema import Faq_Schema
+from marshmallow.exceptions import ValidationError
+from datetime import datetime
+from common.utils import headers,is_logged_in,has_admin_privileges
+from common.utils import bad_request,unauthorised,forbidden,not_found,internal_server_error,unprocessable_entity
 
-def is_logged_in():
-    user_token=request.headers.get("X-WWW-USER-TOKEN")
-    try:
-        user=Users.query.filter(Users.__table__.c.auth_token==user_token).one()
-        return user
-    except:
-        return False
-
-def has_admin_privileges():
-    user=is_logged_in()
-    if user:
-        if user.role<9:
-            return True
-        else:
-            return False
-    else:
-        return "Not logged in"
 class Faqs_RUD(Resource):
     """
     For GET PUT and DELETE for specific faq
     get http headers using request.headers.get("header_name")
     """
     def get(self,faq_id):
-        try:
-            faq_object=Faqs.query.filter(Faqs.__table__.c.id == faq_id).one()
-            ret={
-                    "id":faq_object.id,
-                    "priority":faq_object.priority,
-                    "display":faq_object.display,
-                    "question":faq_object.question,
-                    "answer":faq_object.answer,
-                    "placement":faq_object.placement,
-                    "user":faq_object.user_id
-                }
-            return (ret,200,{"X-XSS-Protection":"1"})
+        try:#using try and except  instead of get to avoid double db hits in case there really is a faq
+            faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
+            ret = Faq_Schema().dump(faq_object).data
+            print(type(ret))
+            return (Faq_Schema().dump(faq_object).data,200,headers)
 
         except NoResultFound:
-            return (error,404,{"X-XSS-Protection":"1"})
+            return (not_found,404,headers)
 
 
     def put(self,faq_id):
-        user_status=has_admin_privileges()
-        if user_status=="Not logged in":
-            if user_status==True:
-                try:
-                    faq_object=Faqs.query.get(faq_id)
-                    return faq_object.id
-                except:
-                    return "Something failed"
-            else:
-                return "Not authenticated"
+        #check if data from request is serializable
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        #data validation
+        if Faq_Schema().validate(data):
+            return (unprocessable_entity,422,headers)
+
+        #check if user has admin privileges
+        user_status,user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorised,401,headers)
+
+        if user_status == True:
+            try:
+                faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
+                faq_object.question = data["question"]
+                faq_object.answer = data["answer"]
+                faq_object.display = data["display"]
+                faq_object.priority = data["priority"]
+                faq_object.placement = data["placement"]
+                faq_object.user_id = user.id
+                faq_object.updated_at = datetime.now()
+                ret = Faq_Schema().dump(faq_object).data
+                return (ret,200,headers)
+            except NoResultFound:
+                return (not_found,404,headers)
         else:
-            return "Not logged in"
+            return (forbidden,403,headers)
+
 
 
     def delete(self,faq_id):
-        pass
+        #check if user has admin privileges
+        user_status,user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorised,401,headers)
+
+        if user_status == True:
+            try:
+                g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
+                g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).delete()
+                return ("",204,headers)
+            except NoResultFound:
+                return (not_found,404,headers)
+        else:
+            return (forbidden,403,headers)
 
 class Faqs_CR(Resource):
     """
     For adding a new faq through POST and getting all the FAQS
     """
     def post(self):
-        pass
+        #request validation
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        #data validation
+        if Faq_Schema().validate(data):
+            return (unprocessable_entity,422,headers)
+
+        #check if user has admin privileges
+        user_status,user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorised,401,headers)
+
+        if user_status == True:
+            try:
+                Faqs = g.Base.classes.faqs
+                new_faq = Faqs(
+                                question = data["question"],
+                                answer = data["answer"],
+                                user_id = user.id,
+                                created_at = datetime.now(),
+                                updated_at = datetime.now(),
+                                display = data["display"],
+                                priority = data["priority"],
+                                placement = data["placement"]
+                              )
+                g.session.add(new_faq)
+                g.session.commit()
+                new_faq = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.question == data["question"]).one()
+                return (Faq_Schema().dump(new_faq).data,201,headers)
+            except:
+                return (internal_server_error,500,headers)
+        else:
+            return(forbidden,403,headers)
 
     def get(self):
-        return ({"F":"gd"},200,{"X-XSS-Protection":"1"})
+        try:
+            all_faqs=g.session.query(g.Base.classes.faqs).all()
+            ret=[]
+            for faq in all_faqs:
+                ret.append(Faq_Schema().dump(faq).data)
+            return (ret,200,headers)
+        except:
+            return (internal_server_error,500,headers)
