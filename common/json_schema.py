@@ -12,3 +12,11 @@ class Faq_Schema(Schema):
     priority = fields.Integer(required=True)
     placement = fields.String(required=True)
     user_id = fields.Integer()
+
+class Announcement_Schema(Schema):
+    id = fields.Integer()
+    title = fields.String(required=True)
+    description = fields.String(required=True)
+    pinned = fields.Boolean(required=True)
+    created_at = fields.DateTime(dump_only=True)
+    updated_at = fields.DateTime(dump_only=True)

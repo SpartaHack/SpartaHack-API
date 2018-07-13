@@ -17,8 +17,7 @@ class Faqs_RUD(Resource):
         try:#using try and except  instead of get to avoid double db hits in case there really is a faq
             faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
             ret = Faq_Schema().dump(faq_object).data
-            print(type(ret))
-            return (Faq_Schema().dump(faq_object).data,200,headers)
+            return (ret,200,headers)
 
         except NoResultFound:
             return (not_found,404,headers)
