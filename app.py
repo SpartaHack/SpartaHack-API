@@ -4,7 +4,7 @@ from celery import Celery
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from common.utils import unauthorised,headers
+from common.utils import unauthorised,headers,not_found
 
 from config import load_env_variables, DevelopmentConfig, ProdConfig
 
@@ -24,7 +24,7 @@ print("Classes reflected...")
 
 @app.errorhandler(404)
 def not_found(error):
-    resp = make_response(jsonify({"status":404,"error":"Not Found"}), 404)
+    resp = make_response(jsonify(not_found), 404)
     resp.headers.extend(headers)
     return resp
 
@@ -57,9 +57,9 @@ def ret_json(data, code, headers=None):
 task_queue=Celery("SpartaHack_API_2019",broker=app.config["CELERY_BROKER_URL"])
 
 api.add_resource(Faqs_RUD,"/faqs/<int:faq_id>")
-api.add_resource(Faqs_CR,"/faqs/")
+api.add_resource(Faqs_CR,"/faqs")
 api.add_resource(Announcements_RUD,"/announcements/<int:announcement_id>")
-api.add_resource(Announcements_CR,"/announcements/")
+api.add_resource(Announcements_CR,"/announcements")
 
 @app.route("/")#for flask app test and general info about the product
 def helloworld():
