@@ -126,6 +126,5 @@ class Announcements_CR(Resource):
                 return (ret,201 ,headers)
             except Exception as err:
                 print(type(err))
-                print(err.args)
                 print(err)
                 return (internal_server_error,500,headers)
