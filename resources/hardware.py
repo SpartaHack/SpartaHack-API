@@ -69,7 +69,6 @@ class Hardware_RUD(Resource):
 
         if user_status == True:
             try:
-                g.session.query(g.Base.classes.hardware).filter(g.Base.classes.hardware.id == hardware_id).one()
                 g.session.query(g.Base.classes.hardware).filter(g.Base.classes.hardware.id == hardware_id).delete()
                 return ("",204,headers)
             except NoResultFound:

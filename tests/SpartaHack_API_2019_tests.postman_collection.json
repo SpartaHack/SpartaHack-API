@@ -42,7 +42,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"question\": \"{{$guid}}\",\n    \"answer\": \"What are exact nufgddmbers?\",\n    \"priority\": \"3\",\n    \"display\": true,\n    \"placement\": \"live\"\n  \n}"
+							"raw": "{\n    \"question\": \"{{$guid}}\",\n    \"answer\": \"What are exfdsact nufgddmbers?\",\n    \"priority\": \"3\",\n    \"display\": true,\n    \"placement\":\"live\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/faqs",
@@ -1101,7 +1101,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"item\": \"{{guid}}\", \n    \"lender\": \"Eagles\", \n    \"quantity\": \"5\"\n}"
+							"raw": "{\n    \"item\": \"{{$guid}}\", \n    \"lender\": \"Eagles\", \n    \"quantity\": \"5\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/hardware",
