@@ -38,11 +38,6 @@
 							{
 								"key": "X-WWW-USER-TOKEN",
 								"value": "{{user_token}}"
-							},
-							{
-								"key": "",
-								"value": "",
-								"disabled": true
 							}
 						],
 						"body": {
@@ -563,7 +558,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "some_token"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
@@ -611,7 +606,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "some_token"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
@@ -659,7 +654,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "some_token"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
@@ -707,7 +702,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "some_token"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
@@ -751,7 +746,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Token token={{token}}"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
@@ -799,7 +794,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Token token={{token}}"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
@@ -844,7 +839,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Token token={{token}}"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
@@ -893,7 +888,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "some_token"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
@@ -943,7 +938,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "some_token"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
@@ -992,7 +987,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "some_token"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
@@ -1041,7 +1036,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "some_token"
+								"value": "{{authorisation_token}}"
 							}
 						],
 						"body": {
