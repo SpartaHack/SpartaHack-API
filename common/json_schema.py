@@ -20,3 +20,11 @@ class Announcement_Schema(Schema):
     pinned = fields.Boolean(required=True)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
+
+class Hardware_Schema(Schema):
+    id = fields.Integer(dump_only=True)
+    item = fields.String(required=True)
+    lender = fields.String(required=True)
+    quantity = fields.String(required=True)
+    created_at = fields.DateTime()
+    updated_at = fields.DateTime()
