@@ -563,7 +563,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"description\": \"pinfssfdned test 2\",\n\t\"title\": \"true\",\n\t\"pinned\": true\n}"
+							"raw": "{\n\t\"description\": \"{{guid}}\",\n\t\"title\": \"true\",\n\t\"pinned\": true\n}"
 						},
 						"url": {
 							"raw": "{{url}}/announcements",
@@ -1101,7 +1101,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"item\": \"Bag of Frogs\", \n    \"lender\": \"Eagles\", \n    \"quantity\": \"5\"\n}"
+							"raw": "{\n    \"item\": \"{{guid}}\", \n    \"lender\": \"Eagles\", \n    \"quantity\": \"5\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/hardware",
