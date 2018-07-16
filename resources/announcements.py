@@ -73,6 +73,8 @@ class Announcements_RUD(Resource):
             except NoResultFound:
                 return (not_found,404,headers)
             except:
+                print(type(err))
+                print(err)
                 return (internal_server_error, 500, headers)
         else:
             return (forbidden,403,headers)
