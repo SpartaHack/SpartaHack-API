@@ -30,7 +30,16 @@ class Hardware_CR(Resource):
     To create new hardware using POST and read all hardware items
     """
     def get(self):
-        pass
+        """
+        GET all the annoucements at a time.
+        """
+        try:
+            all_hardware = g.session.query(g.Base.classes.hardware).all()
+            ret = Hardware_Schema(many = True).dump(all_hardware).data
+            return (ret,200,headers)
+        except:
+            return (internal_server_error,500,headers)
 
     def post(self):
+        
         pass
