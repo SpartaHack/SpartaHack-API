@@ -22,14 +22,6 @@ engine = create_engine(app.config["SQLALCHEMY_DATABASE_URI"],pool_size=20,max_ov
 Base.prepare(engine, reflect=True)
 print("Classes reflected...")
 
-@app.errorhandler(404)
-def not_found(error):
-    """
-    Custom response object for endpoints that have not been defined yet.
-    """
-    resp = make_response(jsonify(not_found), 404)
-    resp.headers.extend(headers)
-    return resp
 
 @app.before_request
 def create_session():
