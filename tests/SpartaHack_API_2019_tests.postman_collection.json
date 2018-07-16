@@ -1242,8 +1242,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}",
-								"disabled": true
+								"value": "sndgnlainfm"
 							},
 							{
 								"key": "Authorization",
