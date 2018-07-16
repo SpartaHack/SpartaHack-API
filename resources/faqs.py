@@ -24,6 +24,10 @@ class Faqs_RUD(Resource):
 
 
     def put(self,faq_id):
+        """
+        For updating the faq based on specific faq_id.
+        Required data: question, answer, display, priority, placement
+        """
         #check if data from request is serializable
         try:
             data = request.get_json(force=True)
@@ -62,6 +66,9 @@ class Faqs_RUD(Resource):
 
 
     def delete(self,faq_id):
+        """
+        To delete the FAQ based on specific faq_id
+        """
         #check if user has admin privileges
         user_status,user = has_admin_privileges()
         if user_status == "no_auth_token":
@@ -128,6 +135,9 @@ class Faqs_CR(Resource):
             return(forbidden,403,headers)
 
     def get(self):
+        """
+        For returning all the faqs.
+        """
         try:
             all_faqs=g.session.query(g.Base.classes.faqs).all()
             ret=[]
