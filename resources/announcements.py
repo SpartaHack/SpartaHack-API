@@ -67,10 +67,13 @@ class Announcements_RUD(Resource):
 
         if user_status == True:
             try:
+                g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.id == faq_id).one()
                 g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.id == announcement_id).delete()
                 return ("",204,headers)
             except NoResultFound:
                 return (not_found,404,headers)
+            except:
+                return (internal_server_error, 500, headers)
         else:
             return (forbidden,403,headers)
 class Announcements_CR(Resource):

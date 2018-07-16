@@ -24,7 +24,7 @@ class Announcement_Schema(Schema):
     updated_at = fields.DateTime(dump_only=True)
 
 class Hardware_Schema(Schema):
-    id = fields.Integer(load_only=True)
+    id = fields.Integer()
     item = fields.String(required=True)
     lender = fields.String(required=True)
     quantity = fields.String(required=True)
