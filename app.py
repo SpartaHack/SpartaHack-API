@@ -44,6 +44,8 @@ from resources.faqs import Faqs_RUD
 from resources.faqs import Faqs_CR
 from resources.announcements import Announcements_RUD
 from resources.announcements import Announcements_CR
+from resources.hardware import Hardware_RUD
+from resources.hardware import Hardware_CR
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
@@ -60,6 +62,8 @@ api.add_resource(Faqs_RUD,"/faqs/<int:faq_id>")
 api.add_resource(Faqs_CR,"/faqs")
 api.add_resource(Announcements_RUD,"/announcements/<int:announcement_id>")
 api.add_resource(Announcements_CR,"/announcements")
+api.add_resource(Hardware_RUD,"/hardware/<int:hardware_id>")
+api.add_resource(Hardware_CR,"/hardware")
 
 @app.route("/")#for flask app test and general info about the product
 def helloworld():

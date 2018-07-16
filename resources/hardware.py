@@ -12,7 +12,12 @@ class Hardware_RUD(Resource):
     For GET UPDATE and DELETE for specific hardware id
     """
     def get(self,hardware_id):
-        pass
+        hardware_item = g.session.query(g.Base.classes.hardware).get(hardware_id)
+        if hardware_item:
+            ret = Hardware_Schema().dump(hardware_item).data
+            return (ret,200,headers)
+        else:
+            return (not_found,404,headers)
 
     def put(self,hardware_id):
         pass
