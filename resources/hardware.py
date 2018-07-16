@@ -86,5 +86,41 @@ class Hardware_CR(Resource):
             return (internal_server_error,500,headers)
 
     def post(self):
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
 
-        pass
+        #data validation
+        if Hardware_Schema().validate(data):
+            return (unprocessable_entity,422,headers)
+
+        #check if user has admin privileges
+        user_status,user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorised,401,headers)
+
+        if user_status == True:
+            Hardware = g.Base.classes.hardware
+            try:
+                new_hardware = Hardware(
+                                            item = data["item"],
+                                            lender = data["lender"],
+                                            quantity = data["quantity"],
+                                            updated_at = datetime.now(),
+                                            created_at = datetime.now()
+                                        )
+                g.session.add(new_hardware)
+                g.session.commit()
+                ret = g.session.query(g.Base.classes.hardware).filter(g.Base.classes.hardware.item == data["item"]).one()
+                ret = Hardware_Schema().dump(ret).data
+                return (ret,201 ,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
+        else:
+            return(forbidden,403,headers)
