@@ -46,7 +46,7 @@ class Faqs_RUD(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             try:
                 faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
                 faq_object.question = data["question"]
@@ -77,7 +77,7 @@ class Faqs_RUD(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             try:
                 #this makes sure that at least one faq matches faq_id
                 g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
@@ -111,7 +111,7 @@ class Faqs_CR(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             try:
                 Faqs = g.Base.classes.faqs
                 new_faq = Faqs(

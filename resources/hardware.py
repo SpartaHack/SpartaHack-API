@@ -44,7 +44,7 @@ class Hardware_RUD(Resource):
         if user_status == "not_logged_in":
             return (z,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             hardware_item = g.session.query(g.Base.classes.hardware).get(hardware_id)
             if hardware_item:
                 hardware_item.item = data["item"]
@@ -55,6 +55,8 @@ class Hardware_RUD(Resource):
                 return (ret,200,headers)
             else:
                 return (not_found,404,headers)
+        else:
+            return (forbidden,403,headers)
 
     def delete(self,hardware_id):
         """
@@ -67,7 +69,7 @@ class Hardware_RUD(Resource):
         if user_status == "not_logged_in":
             return (z,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             try:
                 #this makes sure that at least one hardware matches hardware id
                 g.session.query(g.Base.classes.hardware).filter(g.Base.classes.hardware.id == hardware_id).first()
@@ -116,7 +118,7 @@ class Hardware_CR(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             Hardware = g.Base.classes.hardware
             try:
                 new_hardware = Hardware(

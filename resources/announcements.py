@@ -42,7 +42,7 @@ class Announcements_RUD(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             announcement = g.session.query(g.Base.classes.announcements).get(announcement_id)
             if announcement:
                 announcement.title = data["title"]
@@ -53,6 +53,8 @@ class Announcements_RUD(Resource):
                 return (ret,200,headers)
             else:
                 return (not_found,404,headers)
+        else:
+            return (forbidden,403,headers)
 
     def delete(self,announcement_id):
         """
@@ -65,7 +67,7 @@ class Announcements_RUD(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             try:
                 #this makes sure that at least one announcement matches announcement_id
                 g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.id == announcement_id).one()
@@ -115,7 +117,7 @@ class Announcements_CR(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             Announcements = g.Base.classes.announcements
             try:
                 new_announcement = Announcements(
