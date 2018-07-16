@@ -12,6 +12,9 @@ class Hardware_RUD(Resource):
     For GET UPDATE and DELETE for specific hardware id
     """
     def get(self,hardware_id):
+        """
+        GET the hardware details based on specific hardware_id
+        """
         hardware_item = g.session.query(g.Base.classes.hardware).get(hardware_id)
         if hardware_item:
             ret = Hardware_Schema().dump(hardware_item).data
@@ -20,6 +23,9 @@ class Hardware_RUD(Resource):
             return (not_found,404,headers)
 
     def put(self,hardware_id):
+        """
+        update the hardware. Required data: item, lender, quantity
+        """
         #check if data from request is serializable
         try:
             data = request.get_json(force=True)
@@ -51,6 +57,9 @@ class Hardware_RUD(Resource):
                 return (not_found,404,headers)
 
     def delete(self,hardware_id):
+        """
+        DELETE request to delete hardware based on specific hardware_id. This is new from the old api.
+        """
         user_status,user = has_admin_privileges()
         if user_status == "no_auth_token":
             return (bad_request,400,headers)
@@ -86,6 +95,9 @@ class Hardware_CR(Resource):
             return (internal_server_error,500,headers)
 
     def post(self):
+        """
+        Create new hardware. Required data: item,lender, quantity
+        """
         try:
             data = request.get_json(force=True)
         except BadRequest:
