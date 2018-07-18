@@ -6,7 +6,7 @@ from common.json_schema import Faq_Schema
 from marshmallow.exceptions import ValidationError
 from datetime import datetime
 from common.utils import headers,is_logged_in,has_admin_privileges
-from common.utils import bad_request,unauthorised,forbidden,not_found,internal_server_error,unprocessable_entity
+from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity
 
 class Faqs_RUD(Resource):
     """
@@ -44,7 +44,7 @@ class Faqs_RUD(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status == True:
             try:
@@ -75,7 +75,7 @@ class Faqs_RUD(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status == True:
             try:
@@ -108,7 +108,7 @@ class Faqs_CR(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status == True:
             try:

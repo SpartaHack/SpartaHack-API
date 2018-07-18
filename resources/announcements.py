@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy.orm.exc import NoResultFound
 from common.json_schema import Announcement_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges
-from common.utils import bad_request,unauthorised,forbidden,not_found,internal_server_error,unprocessable_entity
+from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity
 
 class Announcements_RUD(Resource):
     """
@@ -40,7 +40,7 @@ class Announcements_RUD(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status == True:
             announcement = g.session.query(g.Base.classes.announcements).get(announcement_id)
@@ -63,7 +63,7 @@ class Announcements_RUD(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status == True:
             try:
@@ -112,7 +112,7 @@ class Announcements_CR(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status == True:
             Announcements = g.Base.classes.announcements

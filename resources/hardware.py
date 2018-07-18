@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy.orm.exc import NoResultFound
 from common.json_schema import Hardware_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges
-from common.utils import bad_request,unauthorised,forbidden,not_found,internal_server_error,unprocessable_entity
+from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity
 
 class Hardware_RUD(Resource):
     """
@@ -42,7 +42,7 @@ class Hardware_RUD(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (z,401,headers)
 
         if user_status == True:
             hardware_item = g.session.query(g.Base.classes.hardware).get(hardware_id)
@@ -65,7 +65,7 @@ class Hardware_RUD(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (z,401,headers)
 
         if user_status == True:
             try:
@@ -84,7 +84,7 @@ class Hardware_CR(Resource):
     """
     def get(self):
         """
-        GET all the annoucements at a time.
+        GET all the announcements at a time.
         """
         try:
             all_hardware = g.session.query(g.Base.classes.hardware).all()
@@ -112,7 +112,7 @@ class Hardware_CR(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (z,401,headers)
 
         if user_status == True:
             Hardware = g.Base.classes.hardware

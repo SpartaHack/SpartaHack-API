@@ -4,11 +4,11 @@ from celery import Celery
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from common.utils import unauthorised,headers,not_found
+from common.utils import unauthorized,headers,not_found
 
 from config import load_env_variables, DevelopmentConfig, ProdConfig
 
-#loading enviornment variables
+#loading environment variables
 load_env_variables()
 
 app = Flask(__name__)
@@ -65,7 +65,7 @@ def ret_json(data, code, headers=None):
 #might only need this for email sending so that email sending does not clog up the resources
 task_queue=Celery("SpartaHack_API_2019",broker=app.config["CELERY_BROKER_URL"])
 
-#adding resources. Just flask thingss :)
+#adding resources. Just flask things :)
 api.add_resource(Faqs_RUD,"/faqs/<int:faq_id>")
 api.add_resource(Faqs_CR,"/faqs")
 api.add_resource(Announcements_RUD,"/announcements/<int:announcement_id>")
@@ -79,7 +79,7 @@ def helloworld():
     For flask app test and general info about the API.
     Will also be used to check if the api is live or not on the slack hook
     """
-    return jsonify({"Organisation":"SpartaHack",
+    return jsonify({"Organization":"SpartaHack",
                     "Backend Developers":"Yash, Jarek",
                     "Frontend Developers":"Harrison, Jessica, Jarek",
                     "Contact":"hello@spartahack.com",
