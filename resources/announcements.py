@@ -67,7 +67,6 @@ class Announcements_RUD(Resource):
 
         if user_status == True:
             try:
-                #this makes sure that there are only one announcement of this type. WIll be deprecated in future releases
                 g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.id == announcement_id).one()
                 g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.id == announcement_id).delete()
                 return ("",204,headers)
