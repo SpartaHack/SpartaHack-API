@@ -67,6 +67,7 @@ class Announcements_RUD(Resource):
 
         if user_status == True:
             try:
+                #this makes sure that at least one announcement matches announcement_id
                 g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.id == announcement_id).one()
                 g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.id == announcement_id).delete()
                 return ("",204,headers)

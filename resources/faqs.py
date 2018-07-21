@@ -79,6 +79,8 @@ class Faqs_RUD(Resource):
 
         if user_status == True:
             try:
+                #this makes sure that at least one faq matches faq_id
+                g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
                 g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).delete()
                 return ("",204,headers)
             except NoResultFound:
