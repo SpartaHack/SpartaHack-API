@@ -1,10 +1,15 @@
 from marshmallow import Schema,fields
 
+"""
+    schema.dump = used for converting the automap.faqs object to a dictionary good for returning ie cleaning unnecessary fields
+    schema.validate(request.get_json(force=True)) = used to validate if all the data required for updating and creating the faq is present.4
+    dump_only = Fields that we need to display when returning the item
+    load_only = Fields that we need only while dumping from python objects. We use it to stop marshmallow from dumping it while using dump()
+"""
+
+
 class Faq_Schema(Schema):
-    """
-    schema.dump = used for converting the automap.faqs object to a dictionary good for returning ie cleaning unncessary fields
-    schema.validate(request.get_json(force=True)) = used to validate if all the data required for updating and creating the faq is present.
-    """
+
     id = fields.Integer()
     question = fields.String(required=True)
     answer = fields.String(required=True)
@@ -20,3 +25,11 @@ class Announcement_Schema(Schema):
     pinned = fields.Boolean(required=True)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
+
+class Hardware_Schema(Schema):
+    id = fields.Integer()
+    item = fields.String(required=True)
+    lender = fields.String(required=True)
+    quantity = fields.String(required=True)
+    created_at = fields.DateTime(load_only=True)
+    updated_at = fields.DateTime(load_only=True)

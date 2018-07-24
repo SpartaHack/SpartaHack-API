@@ -1,7 +1,7 @@
 from flask import request,g
 
 bad_request = {"status":400,"error":"Bad Request"}
-unauthorised = {"status":401,"error":"Unauthorised"}
+unauthorized = {"status":401,"error":"Unauthorized"}
 forbidden = {"status":403,"error":"Forbidden"}
 not_found = {"status":404,"error":"Not Found"}
 unprocessable_entity = {"status":422,"error":"Unprocessable Entity"}

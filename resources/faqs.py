@@ -6,7 +6,7 @@ from common.json_schema import Faq_Schema
 from marshmallow.exceptions import ValidationError
 from datetime import datetime
 from common.utils import headers,is_logged_in,has_admin_privileges
-from common.utils import bad_request,unauthorised,forbidden,not_found,internal_server_error,unprocessable_entity
+from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity
 
 class Faqs_RUD(Resource):
     """
@@ -24,6 +24,10 @@ class Faqs_RUD(Resource):
 
 
     def put(self,faq_id):
+        """
+        For updating the faq based on specific faq_id.
+        Required data: question, answer, display, priority, placement
+        """
         #check if data from request is serializable
         try:
             data = request.get_json(force=True)
@@ -40,7 +44,7 @@ class Faqs_RUD(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status == True:
             try:
@@ -62,16 +66,20 @@ class Faqs_RUD(Resource):
 
 
     def delete(self,faq_id):
+        """
+        To delete the FAQ based on specific faq_id
+        """
         #check if user has admin privileges
         user_status,user = has_admin_privileges()
         if user_status == "no_auth_token":
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status == True:
             try:
+                #this makes sure that at least one faq matches faq_id
                 g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
                 g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).delete()
                 return ("",204,headers)
@@ -101,7 +109,7 @@ class Faqs_CR(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (unauthorised,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status == True:
             try:
@@ -128,6 +136,9 @@ class Faqs_CR(Resource):
             return(forbidden,403,headers)
 
     def get(self):
+        """
+        For returning all the faqs.
+        """
         try:
             all_faqs=g.session.query(g.Base.classes.faqs).all()
             ret=[]
