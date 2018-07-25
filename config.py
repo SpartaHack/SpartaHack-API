@@ -1,6 +1,6 @@
 import os
 
-def load_env_variables(): #To load the config varibles before creating the flask object
+def load_env_variables(): #To load the config variables before creating the flask object
     from dotenv import load_dotenv
     load_dotenv()
 

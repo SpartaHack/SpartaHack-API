@@ -38,25 +38,19 @@
 							{
 								"key": "X-WWW-USER-TOKEN",
 								"value": "{{user_token}}"
-							},
-							{
-								"key": "",
-								"value": "",
-								"disabled": true
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"question\": \"{{$guid}}\",\n    \"answer\": \"What are exact nufgddmbers?\",\n    \"priority\": \"3\",\n    \"display\": true,\n    \"placement\": \"live\"\n  \n}"
+							"raw": "{\n    \"question\": \"{{$guid}}\",\n    \"answer\": \"What are exfdsact nufgddmbers?\",\n    \"priority\": \"3\",\n    \"display\": true,\n    \"placement\":\"live\"\n}"
 						},
 						"url": {
-							"raw": "{{url}}/faqs/",
+							"raw": "{{url}}/faqs",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"faqs",
-								""
+								"faqs"
 							]
 						}
 					},
@@ -95,13 +89,12 @@
 							"raw": "{\n  \"email\": \"{{email}}\",\n}"
 						},
 						"url": {
-							"raw": "{{url}}/faqs/",
+							"raw": "{{url}}/faqs",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"faqs",
-								""
+								"faqs"
 							]
 						}
 					},
@@ -381,13 +374,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/faqs/{{faq_id}}",
+							"raw": "{{url}}/faqs/645154",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"faqs",
-								"{{faq_id}}"
+								"645154"
 							]
 						}
 					},
@@ -471,13 +464,12 @@
 							"raw": "{\n    \"question\": \"What is the exact number of people?\",\n    \"answer\": \"What are exact nufgddmbers?\",\n    \"priority\": \"3\",\n    \"placement\": \"live\"\n  \n}"
 						},
 						"url": {
-							"raw": "{{url}}/faqs/",
+							"raw": "{{url}}/faqs",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"faqs",
-								""
+								"faqs"
 							]
 						}
 					},
@@ -516,13 +508,986 @@
 							"raw": "{\n    \"answer\": \"What are exact nufffgkjkddmbers?\",\n    \"display\": true,\n    \"placement\": \"live\",\n    \"priority\": 3,\n    \"question\": \"What is the exact numgsssber dffof people?\"\n}"
 						},
 						"url": {
-							"raw": "{{url}}/faqs/",
+							"raw": "{{url}}/faqs",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"faqs",
-								""
+								"faqs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "announcements",
+			"description": "",
+			"item": [
+				{
+					"name": "create (correct create)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c7d3796c-71ba-4c13-b00f-2eb00b534720",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"announcement_id\", jsonData.id);",
+									"",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"description\": \"{{$guid}}\",\n\t\"title\": \"New title {{$guid}}\",\n\t\"pinned\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/announcements",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (missing field)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "28077265-755e-49aa-961c-0c9fb5da5d9d",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"description\": \"pinned test 2\",\n\t\"title\": \"true\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/announcements",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (invalid JSON)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e76cb0e8-017a-4d7a-913e-1f45ed3569d8",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"description\": \"pinned test 2\",\n\t\"title\": \"true\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/announcements",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (invalid auth_token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8e7c9655-5273-4513-99ff-0dba9c6dbb5e",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "gjkjgjklks"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"pinned test 2\",\n    \"title\": \"true\",\n    \"pinned\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/announcements",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (all announcements)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "81b868a7-32e9-4cf2-b52b-91fb12ec628e",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"announcement\": {\n    \"description\": \"pinned\",\n    \"title\": \"true\",\n    \"pinned\": true\n  }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/announcements",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (specific announcement_id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aedb550f-a505-4181-a2fb-bda285c36ea5",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"announcement_id\", jsonData.id);",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"announcement\": {\n    \"description\": \"pinned\",\n    \"title\": \"true\",\n    \"pinned\": true\n  }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/announcements/{{announcement_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements",
+								"{{announcement_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (wrong announcement_id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "035a10ce-f221-464e-af51-f6027db8ea62",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"announcement\": {\n    \"description\": \"pinned\",\n    \"title\": \"true\",\n    \"pinned\": true\n  }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/announcements/58465",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements",
+								"58465"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update (correct update)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "75d7ab95-dc56-46fc-be7e-d6af466f2945",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n      \"title\": \"tokddden\",\n      \"description\": \"angsdrdrodssdid\",\n      \"pinned\": 1\n}"
+						},
+						"url": {
+							"raw": "{{url}}/announcements/{{announcement_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements",
+								"{{announcement_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update (no auth token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "619a4772-ee02-49e3-896d-f11a65ed1b7b",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n      \"title\": \"tokddden\",\n      \"description\": \"androdssdid\",\n      \"pinned\": 1\n}"
+						},
+						"url": {
+							"raw": "{{url}}/announcements/{{announcement_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements",
+								"{{announcement_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (correct delete)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b6307f63-8a0b-4971-9288-b617f0423759",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/announcements/{{announcement_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements",
+								"{{announcement_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (wrong authentication)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cf6ad7bc-2f61-4d3f-82d9-8dec28115906",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "dsjkjs"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/announcements/{{announcement_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"announcements",
+								"{{announcement_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "hardware",
+			"description": null,
+			"item": [
+				{
+					"name": "create (correct create)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1a4e0808-f16f-444f-8e39-21241a474614",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"hardware_id\", jsonData.id);",
+									"",
+									"",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"item\": \"{{$guid}}\", \n    \"lender\": \"Eagles\", \n    \"quantity\": \"5\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/hardware",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hardware"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "631cd1d1-5c0d-499a-8376-2c8222cea6db",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"item\": \"{{guid}}\",\n  \"lender\": \"SpartaHack\",\n  \"quantity\": \"4\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/hardware/{{hardware_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hardware",
+								"{{hardware_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update (missing field)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "96ba878f-e247-4724-bdac-7ab17d1847c8",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"item\": \"{{guid}}\",\n  \"lender\": \"SpartaHack\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/hardware/{{hardware_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hardware",
+								"{{hardware_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (incorrect auth_token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0a3edb5b-1bf6-4410-b05e-f99fde11e94a",
+								"type": "text/javascript",
+								"exec": [
+									"",
+									"pm.test(\"Status code is 401,403\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([401,403]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "sndgnlainfm"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"item\": \"Bag of Frogs\", \n    \"lender\": \"Eagles\", \n    \"quantity\": \"5\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/hardware",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hardware"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (missing field)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "53dfed2c-a2f0-4f31-953a-3064ac6eac6e",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"item\": \"Bag of Frogs\", \n    \"lender\": \"Eagles\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/hardware",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hardware"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (all hardware items)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a8d85788-bec4-4bca-94c8-ba63dbcbbc7a",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/hardware",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hardware"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (specific hardware_id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f605f01e-9248-4434-8104-ad18fef6a41f",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"announcement_id\", jsonData.id);",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"announcement\": {\n    \"description\": \"Let's have a swell time at SpartaHack\",\n    \"title\": \"Wow such hack\",\n    \"pinned\": false\n  }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/hardware/{{hardware_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hardware",
+								"{{hardware_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "54a53caf-1b27-4955-b3e2-d0afd52769a7",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/hardware/{{hardware_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hardware",
+								"{{hardware_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (wrong id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "71937a5a-3529-4753-b0e0-74622e0e1a59",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"announcement\": {\n    \"description\": \"Let's have a swell time at SpartaHack\",\n    \"title\": \"Wow such hack\",\n    \"pinned\": false\n  }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/hardware/{{hardware_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hardware",
+								"{{hardware_id}}"
 							]
 						}
 					},
