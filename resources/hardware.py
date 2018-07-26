@@ -2,6 +2,7 @@ from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 from flask import request,jsonify,g
 from datetime import datetime
+from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
 from common.json_schema import Hardware_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges

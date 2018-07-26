@@ -2,7 +2,7 @@ from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 from flask import request,jsonify,g
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from sqlalchemy import exists
+from sqlalchemy import exists,and_
 from common.json_schema import Faq_Schema
 from marshmallow.exceptions import ValidationError
 from datetime import datetime
