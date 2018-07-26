@@ -1,7 +1,8 @@
 from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 from flask import request,jsonify,g
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from sqlalchemy import exists
 from common.json_schema import Faq_Schema
 from marshmallow.exceptions import ValidationError
 from datetime import datetime
@@ -14,13 +15,13 @@ class Faqs_RUD(Resource):
     get http headers using request.headers.get("header_name")
     """
     def get(self,faq_id):
-        try:#using try and except  instead of get to avoid double db hits in case there really is a faq
-            #changed from one() to first in case there are multiple entries. There should never be multiple entries.
-            faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).first()
+        #using get instead of query and it is marginally faster than filter
+        #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
+        faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
+        if faq_object:
             ret = Faq_Schema().dump(faq_object).data
             return (ret,200,headers)
-
-        except NoResultFound:
+        else:
             return (not_found,404,headers)
 
 
@@ -48,9 +49,8 @@ class Faqs_RUD(Resource):
             return (unauthorized,401,headers)
 
         if user_status in ["director","organizer"]:
-            try:
-                #changed from one() to first in case there are multiple entries. There should never be multiple entries.
-                faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).first()
+            faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
+            if faq_object:
                 faq_object.question = data["question"]
                 faq_object.answer = data["answer"]
                 faq_object.display = data["display"]
@@ -60,7 +60,7 @@ class Faqs_RUD(Resource):
                 faq_object.updated_at = datetime.now()
                 ret = Faq_Schema().dump(faq_object).data
                 return (ret,200,headers)
-            except NoResultFound:
+            else:
                 return (not_found,404,headers)
         else:
             return (forbidden,403,headers)
@@ -80,13 +80,12 @@ class Faqs_RUD(Resource):
             return (unauthorized,401,headers)
 
         if user_status in ["director","organizer"]:
-            try:
+            faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
+            if faq_object:
                 #this makes sure that at least one faq matches faq_id
-                #changed from one() to first in case there are multiple entries. There should never be multiple entries.
-                g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).first()
                 g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).delete()
                 return ("",204,headers)
-            except NoResultFound:
+            else:
                 return (not_found,404,headers)
         else:
             return (forbidden,403,headers)
@@ -115,10 +114,8 @@ class Faqs_CR(Resource):
             return (unauthorized,401,headers)
 
         #checking if faq with same questions and answer already exists. To manage duplicate entries
-        try:
-            g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.question == data["question"]).one()
-            g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.answer == data["answer"]).one()
-        except:
+        ret = g.session.query(exists().where(and_(g.Base.classes.faqs.question == data["question"],g.Base.classes.faqs.answer == data["answer"]).scalar()
+        if ret:
             return (conflict,409,headers)
 
         if user_status in ["director","organizer"]:
@@ -136,6 +133,7 @@ class Faqs_CR(Resource):
                               )
                 g.session.add(new_faq)
                 g.session.commit()
+                #first() or one() shouldn't matter because we already checked if an faq without same question and answer exits
                 new_faq = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.question == data["question"]).one()
                 return (Faq_Schema().dump(new_faq).data,201,headers)
             except:
