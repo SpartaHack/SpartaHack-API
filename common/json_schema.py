@@ -33,3 +33,15 @@ class Hardware_Schema(Schema):
     quantity = fields.String(required=True)
     created_at = fields.DateTime(load_only=True)
     updated_at = fields.DateTime(load_only=True)
+
+class Sponsor_Schema(Schema):
+    id = fields.Integer()
+    name = fields.String(required=True)
+    level = fields.String(required=True)
+    url = fields.URL(required=True)
+    logo_svg_light = fields.String(required=True)
+    logo_svg_dark = fields.String()
+    logo_png_light = fields.String(required=True)
+    logo_png_dark = fields.String()
+    created_at = fields.DateTime()
+    updated_at = fields.DateTime()
