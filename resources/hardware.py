@@ -17,7 +17,13 @@ class Hardware_RUD(Resource):
         """
         #using get instead of query and it is marginally faster than filter
         #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
-        hardware_item = g.session.query(g.Base.classes.hardware).get(hardware_id)
+        try:
+            hardware_item = g.session.query(g.Base.classes.hardware).get(hardware_id)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
         if hardware_item:
             ret = Hardware_Schema().dump(hardware_item).data
             return (ret,200,headers)
@@ -47,16 +53,21 @@ class Hardware_RUD(Resource):
             return (z,401,headers)
 
         if user_status in ["director","organizer"]:
-            hardware_item = g.session.query(g.Base.classes.hardware).get(hardware_id)
-            if hardware_item:
-                hardware_item.item = data["item"]
-                hardware_item.lender = data["lender"]
-                hardware_item.quantity = data["quantity"]
-                hardware_item.updated_at = datetime.now()
-                ret = Hardware_Schema().dump(hardware_item).data
-                return (ret,200,headers)
-            else:
-                return (not_found,404,headers)
+            try:
+                hardware_item = g.session.query(g.Base.classes.hardware).get(hardware_id)
+                if hardware_item:
+                    hardware_item.item = data["item"]
+                    hardware_item.lender = data["lender"]
+                    hardware_item.quantity = data["quantity"]
+                    hardware_item.updated_at = datetime.now()
+                    ret = Hardware_Schema().dump(hardware_item).data
+                    return (ret,200,headers)
+                else:
+                    return (not_found,404,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
         else:
             return (forbidden,403,headers)
 
@@ -80,7 +91,9 @@ class Hardware_RUD(Resource):
                     return ("",204,headers)
                 else:
                     return (not_found,404,headers)
-            except:
+            except Exception as err:
+                print(type(err))
+                print(err)
                 return (internal_server_error,500,headers)
         else:
             return (forbidden,403,headers)
@@ -109,10 +122,14 @@ class Hardware_CR(Resource):
 
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
-
-        exist_check = g.session.query(exists().where(and_(g.Base.classes.hardware.item == data["item"],g.Base.classes.hardware.lender == data["lender"])).scalar()
-        if exist_check:
-            return (conflict,409,headers)
+        try:
+            exist_check = g.session.query(exists().where(and_(g.Base.classes.hardware.item == data["item"],g.Base.classes.hardware.lender == data["lender"])).scalar()
+            if exist_check:
+                return (conflict,409,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
 
         if user_status in ["director","organizer"]:
             Hardware = g.Base.classes.hardware
@@ -143,5 +160,7 @@ class Hardware_CR(Resource):
             all_hardware = g.session.query(g.Base.classes.hardware).all()
             ret = Hardware_Schema(many = True).dump(all_hardware).data
             return (ret,200,headers)
-        except:
+        except Exception as err:
+            print(type(err))
+            print(err)
             return (internal_server_error,500,headers)

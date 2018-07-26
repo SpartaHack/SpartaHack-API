@@ -19,7 +19,7 @@ class Faqs_RUD(Resource):
         #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
         try:
             faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
-        except:
+        except Exception as err:
             print(type(err))
             print(err)
             return (internal_server_error,500,headers)
@@ -69,7 +69,7 @@ class Faqs_RUD(Resource):
                     return (ret,200,headers)
                 else:
                     return (not_found,404,headers)
-            except:
+            except Exception as err:
                 print(type(err))
                 print(err)
                 return (internal_server_error,500,headers)
@@ -99,7 +99,7 @@ class Faqs_RUD(Resource):
                     return ("",204,headers)
                 else:
                     return (not_found,404,headers)
-            except:
+            except Exception as err:
                 print(type(err))
                 print(err)
                 return (internal_server_error,500,headers)
@@ -134,7 +134,7 @@ class Faqs_CR(Resource):
             exist_check = g.session.query(exists().where(and_(g.Base.classes.faqs.question == data["question"],g.Base.classes.faqs.answer == data["answer"]))).scalar()
             if exist_check:
                 return (conflict,409,headers)
-        except:
+        except Exception as err:
             print(type(err))
             print(err)
             return (internal_server_error,500,headers)
@@ -157,7 +157,7 @@ class Faqs_CR(Resource):
                 #first() or one() shouldn't matter because we already checked if an faq without same question and answer exits
                 new_faq = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.question == data["question"]).one()
                 return (Faq_Schema().dump(new_faq).data,201,headers)
-            except:
+            except Exception as err:
                 print(type(err))
                 print(err)
                 return (internal_server_error,500,headers)
@@ -174,7 +174,7 @@ class Faqs_CR(Resource):
             for faq in all_faqs:
                 ret.append(Faq_Schema().dump(faq).data)
             return (ret,200,headers)
-        except:
+        except Exception as err:
             print(type(err))
             print(err)
             return (internal_server_error,500,headers)
