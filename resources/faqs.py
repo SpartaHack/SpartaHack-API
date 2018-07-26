@@ -114,7 +114,7 @@ class Faqs_CR(Resource):
             return (unauthorized,401,headers)
 
         #checking if faq with same questions and answer already exists. To manage duplicate entries
-        ret = g.session.query(exists().where(and_(g.Base.classes.faqs.question == data["question"],g.Base.classes.faqs.answer == data["answer"]).scalar()
+        ret = g.session.query(exists().where(and_(g.Base.classes.faqs.question == data["question"],g.Base.classes.faqs.answer == data["answer"])).scalar()
         if ret:
             return (conflict,409,headers)
 

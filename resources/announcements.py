@@ -12,7 +12,8 @@ class Announcements_RUD(Resource):
     For GET PUT and DELETE for specific announcement
     """
     def get(self,announcement_id):
-        #get announcement by announcement id. Trying get() this time rather than filter to see which one runs better
+        #using get instead of query and it is marginally faster than filter
+        #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
         announcement = g.session.query(g.Base.classes.announcements).get(announcement_id)
         if announcement:
             ret = Announcement_Schema().dump(announcement).data
@@ -86,19 +87,6 @@ class Announcements_CR(Resource):
     """
     For GET PUT and DELETE for specific announcement
     """
-    def get(self):
-        """
-        Getting all the announcements by hitting /announcements endpoint without any specific id
-        """
-        try:
-            all_announcements = g.session.query(g.Base.classes.announcements).all()
-            ret = Announcement_Schema(many = True).dump(all_announcements).data
-            return (ret,200,headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
-            return (internal_server_error,500,headers)
-
     def post(self):
         """
         For POST request. Checks for bad JSON from request, checks if data types in request JSON are correct, Checks user auth status and if he's logged in.
@@ -121,10 +109,8 @@ class Announcements_CR(Resource):
             return (unauthorized,401,headers)
 
         #checking if announcement with same title and description already exists. To manage duplicate entries
-        try:
-            g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.title == data["title"]).one()
-            g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.description == data["description"]).one()
-        except:
+        ret = g.session.query(exists().where(and_(g.Base.classes.announcements.title == data["title"],g.Base.classes.announcements.description == data["description"])).scalar()
+        if ret:
             return (conflict,409,headers)
 
         if user_status in ["director","organizer"]:
@@ -140,11 +126,24 @@ class Announcements_CR(Resource):
                 g.session.add(new_announcement)
                 g.session.commit()
                 ret = g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.description == data["description"]).one()
-                ret = Announcement_Schema().dump(ret).data
-                return (ret,201 ,headers)
+                return (Announcement_Schema().dump(ret).data,201 ,headers)
             except Exception as err:
                 print(type(err))
                 print(err)
                 return (internal_server_error,500,headers)
         else:
             return(forbidden,403,headers)
+
+    def get(self):
+        """
+        Getting all the announcements by hitting /announcements endpoint without any specific id
+        """
+        try:
+            all_announcements = g.session.query(g.Base.classes.announcements).all()
+            ret = Announcement_Schema(many = True).dump(all_announcements).data
+            return (ret,200,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
