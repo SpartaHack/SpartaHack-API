@@ -114,7 +114,7 @@ class Faqs_CR(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        #checking if faq with same questions and answer already exist. To manage duplicate entries
+        #checking if faq with same questions and answer already exists. To manage duplicate entries
         try:
             g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.question == data["question"]).one()
             g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.answer == data["answer"]).one()

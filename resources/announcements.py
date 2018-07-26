@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy.orm.exc import NoResultFound
 from common.json_schema import Announcement_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges
-from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity
+from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
 
 class Announcements_RUD(Resource):
     """
@@ -70,11 +70,12 @@ class Announcements_RUD(Resource):
         if user_status in ["director","organizer"]:
             try:
                 #this makes sure that at least one announcement matches announcement_id
-                g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.id == announcement_id).one()
-                g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.id == announcement_id).delete()
-                return ("",204,headers)
-            except NoResultFound:
-                return (not_found,404,headers)
+                announcement_to_delete = g.session.query(g.Base.classes.announcements).get(announcement_id)
+                if announcement_to_delete:
+                    g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.id == announcement_id).delete()
+                    return ("",204,headers)
+                else:
+                    return (not_found,404,headers)
             except:
                 print(type(err))
                 print(err)
@@ -93,7 +94,9 @@ class Announcements_CR(Resource):
             all_announcements = g.session.query(g.Base.classes.announcements).all()
             ret = Announcement_Schema(many = True).dump(all_announcements).data
             return (ret,200,headers)
-        except:
+        except Exception as err:
+            print(type(err))
+            print(err)
             return (internal_server_error,500,headers)
 
     def post(self):
@@ -116,6 +119,13 @@ class Announcements_CR(Resource):
 
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
+
+        #checking if announcement with same title and description already exists. To manage duplicate entries
+        try:
+            g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.title == data["title"]).one()
+            g.session.query(g.Base.classes.announcements).filter(g.Base.classes.announcements.description == data["description"]).one()
+        except:
+            return (conflict,409,headers)
 
         if user_status in ["director","organizer"]:
             Announcements = g.Base.classes.announcements
