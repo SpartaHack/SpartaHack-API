@@ -6,6 +6,7 @@ forbidden = {"status":403,"error":"Forbidden"}
 not_found = {"status":404,"error":"Not Found"}
 unprocessable_entity = {"status":422,"error":"Unprocessable Entity"}
 internal_server_error = {"status":500,"error":"Internal Server Error"}
+conflict = {"status":409,"error":"Conflict"}
 
 headers = {
             "X-XSS-Protection" : "1; mode=block",
