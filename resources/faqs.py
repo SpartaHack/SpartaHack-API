@@ -17,7 +17,13 @@ class Faqs_RUD(Resource):
     def get(self,faq_id):
         #using get instead of query and it is marginally faster than filter
         #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
-        faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
+        try:
+            faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
+        except:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
         if faq_object:
             ret = Faq_Schema().dump(faq_object).data
             return (ret,200,headers)
@@ -49,19 +55,24 @@ class Faqs_RUD(Resource):
             return (unauthorized,401,headers)
 
         if user_status in ["director","organizer"]:
-            faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
-            if faq_object:
-                faq_object.question = data["question"]
-                faq_object.answer = data["answer"]
-                faq_object.display = data["display"]
-                faq_object.priority = data["priority"]
-                faq_object.placement = data["placement"]
-                faq_object.user_id = user.id
-                faq_object.updated_at = datetime.now()
-                ret = Faq_Schema().dump(faq_object).data
-                return (ret,200,headers)
-            else:
-                return (not_found,404,headers)
+            try:
+                faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
+                if faq_object:
+                    faq_object.question = data["question"]
+                    faq_object.answer = data["answer"]
+                    faq_object.display = data["display"]
+                    faq_object.priority = data["priority"]
+                    faq_object.placement = data["placement"]
+                    faq_object.user_id = user.id
+                    faq_object.updated_at = datetime.now()
+                    ret = Faq_Schema().dump(faq_object).data
+                    return (ret,200,headers)
+                else:
+                    return (not_found,404,headers)
+            except:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
         else:
             return (forbidden,403,headers)
 
@@ -80,13 +91,18 @@ class Faqs_RUD(Resource):
             return (unauthorized,401,headers)
 
         if user_status in ["director","organizer"]:
-            faq_to_delete = g.session.query(g.Base.classes.faqs).get(faq_id)
-            if faq_to_delete:
-                #this makes sure that at least one faq matches faq_id
-                g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).delete()
-                return ("",204,headers)
-            else:
-                return (not_found,404,headers)
+            try:
+                faq_to_delete = g.session.query(g.Base.classes.faqs).get(faq_id)
+                if faq_to_delete:
+                    #this makes sure that at least one faq matches faq_id
+                    g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).delete()
+                    return ("",204,headers)
+                else:
+                    return (not_found,404,headers)
+            except:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
         else:
             return (forbidden,403,headers)
 
@@ -114,9 +130,14 @@ class Faqs_CR(Resource):
             return (unauthorized,401,headers)
 
         #checking if faq with same questions and answer already exists. To manage duplicate entries. Check out SQLAlchemy documentation to learn how exists work
-        exist_check = g.session.query(exists().where(and_(g.Base.classes.faqs.question == data["question"],g.Base.classes.faqs.answer == data["answer"]))).scalar()
-        if exist_check:
-            return (conflict,409,headers)
+        try:
+            exist_check = g.session.query(exists().where(and_(g.Base.classes.faqs.question == data["question"],g.Base.classes.faqs.answer == data["answer"]))).scalar()
+            if exist_check:
+                return (conflict,409,headers)
+        except:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
 
         if user_status in ["director","organizer"]:
             try:
