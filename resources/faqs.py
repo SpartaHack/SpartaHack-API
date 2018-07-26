@@ -80,8 +80,8 @@ class Faqs_RUD(Resource):
             return (unauthorized,401,headers)
 
         if user_status in ["director","organizer"]:
-            faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
-            if faq_object:
+            faq_to_delete = g.session.query(g.Base.classes.faqs).get(faq_id)
+            if faq_to_delete:
                 #this makes sure that at least one faq matches faq_id
                 g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).delete()
                 return ("",204,headers)
@@ -113,9 +113,9 @@ class Faqs_CR(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        #checking if faq with same questions and answer already exists. To manage duplicate entries
-        ret = g.session.query(exists().where(and_(g.Base.classes.faqs.question == data["question"],g.Base.classes.faqs.answer == data["answer"])).scalar()
-        if ret:
+        #checking if faq with same questions and answer already exists. To manage duplicate entries. Check out SQLAlchemy documentation to learn how exists work
+        exist_check = g.session.query(exists().where(and_(g.Base.classes.faqs.question == data["question"],g.Base.classes.faqs.answer == data["answer"]))).scalar()
+        if exist_check:
             return (conflict,409,headers)
 
         if user_status in ["director","organizer"]:

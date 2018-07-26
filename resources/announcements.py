@@ -109,8 +109,8 @@ class Announcements_CR(Resource):
             return (unauthorized,401,headers)
 
         #checking if announcement with same title and description already exists. To manage duplicate entries
-        ret = g.session.query(exists().where(and_(g.Base.classes.announcements.title == data["title"],g.Base.classes.announcements.description == data["description"])).scalar()
-        if ret:
+        exist_check = g.session.query(exists().where(and_(g.Base.classes.announcements.title == data["title"],g.Base.classes.announcements.description == data["description"]))).scalar()
+        if exist_check:
             return (conflict,409,headers)
 
         if user_status in ["director","organizer"]:
