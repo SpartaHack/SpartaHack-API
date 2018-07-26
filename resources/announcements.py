@@ -14,7 +14,13 @@ class Announcements_RUD(Resource):
     def get(self,announcement_id):
         #using get instead of query and it is marginally faster than filter
         #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
-        announcement = g.session.query(g.Base.classes.announcements).get(announcement_id)
+        try:
+            announcement = g.session.query(g.Base.classes.announcements).get(announcement_id)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
         if announcement:
             ret = Announcement_Schema().dump(announcement).data
             return (ret,200,headers)
@@ -44,16 +50,21 @@ class Announcements_RUD(Resource):
             return (unauthorized,401,headers)
 
         if user_status in ["director","organizer"]:
-            announcement = g.session.query(g.Base.classes.announcements).get(announcement_id)
-            if announcement:
-                announcement.title = data["title"]
-                announcement.description = data["description"]
-                announcement.pinned = data["pinned"]
-                announcement.updated_at = datetime.now()
-                ret = Announcement_Schema().dump(announcement).data
-                return (ret,200,headers)
-            else:
-                return (not_found,404,headers)
+            try:
+                announcement = g.session.query(g.Base.classes.announcements).get(announcement_id)
+                if announcement:
+                    announcement.title = data["title"]
+                    announcement.description = data["description"]
+                    announcement.pinned = data["pinned"]
+                    announcement.updated_at = datetime.now()
+                    ret = Announcement_Schema().dump(announcement).data
+                    return (ret,200,headers)
+                else:
+                    return (not_found,404,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
         else:
             return (forbidden,403,headers)
 
@@ -109,9 +120,14 @@ class Announcements_CR(Resource):
             return (unauthorized,401,headers)
 
         #checking if announcement with same title and description already exists. To manage duplicate entries
-        exist_check = g.session.query(exists().where(and_(g.Base.classes.announcements.title == data["title"],g.Base.classes.announcements.description == data["description"]))).scalar()
-        if exist_check:
-            return (conflict,409,headers)
+        try:
+            exist_check = g.session.query(exists().where(and_(g.Base.classes.announcements.title == data["title"],g.Base.classes.announcements.description == data["description"]))).scalar()
+            if exist_check:
+                return (conflict,409,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
 
         if user_status in ["director","organizer"]:
             Announcements = g.Base.classes.announcements
