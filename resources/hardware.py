@@ -123,7 +123,7 @@ class Hardware_CR(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
         try:
-            exist_check = g.session.query(exists().where(and_(g.Base.classes.hardware.item == data["item"],g.Base.classes.hardware.lender == data["lender"])).scalar()
+            exist_check = g.session.query(exists().where(and_(g.Base.classes.hardware.item == data["item"],g.Base.classes.hardware.lender == data["lender"]))).scalar()
             if exist_check:
                 return (conflict,409,headers)
         except Exception as err:
