@@ -10,7 +10,20 @@ from common.utils import bad_request,unauthorized,forbidden,not_found,internal_s
 
 class Sponsor_RUD(Resource):
     def get(sponsor_id):
-        pass
+        #using get instead of query and it is marginally faster than filter
+        #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
+        try:
+            sponsor = g.session.query(g.Base.classes.sponsors).get(sponsor_id)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        if hardware_item:
+            ret = Sponsor_Schema().dump(sponsor).data
+            return (ret,200,headers)
+        else:
+            return (not_found,404,headers)
 
     def put(sponsor_id):
         pass
