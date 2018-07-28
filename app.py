@@ -70,8 +70,8 @@ api.add_resource(Announcements_RUD,"/announcements/<int:announcement_id>")
 api.add_resource(Announcements_CR,"/announcements")
 api.add_resource(Hardware_RUD,"/hardware/<int:hardware_id>")
 api.add_resource(Hardware_CR,"/hardware")
-api.add_resource(Hardware_RUD,"/sponsors/<int:sponsor_id>")
-api.add_resource(Hardware_RUD,"/sponsors")
+api.add_resource(Sponsor_RUD,"/sponsors/<int:sponsor_id>")
+api.add_resource(Sponsor_CR,"/sponsors")
 
 @app.route("/")
 def helloworld():
