@@ -32,6 +32,9 @@ class Sponsor_RUD(Resource):
             return (not_found,404,headers)
 
     def delete(self,sponsor_id):
+        """
+        For DELETE request for specific sponsor id
+        """
         user_status,user = has_admin_privileges()
         if user_status == "no_auth_token":
             return (bad_request,400,headers)
