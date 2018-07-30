@@ -88,7 +88,7 @@ class Sponsor_CR(Resource):
             return (internal_server_error,500,headers)
 
         if user_status in ["director","organizer"]:
-            Sponsors = g.Base.classes.announcements
+            Sponsors = g.Base.classes.sponsors
             try:
                 new_sponsor = Sponsors(
                                         name = data["name"],
@@ -99,9 +99,9 @@ class Sponsor_CR(Resource):
                                         updated_at = datetime.now(),
                                         created_at = datetime.now()
                                       )
-                if data["logo_svg_dark"]:
+                if data.get("logo_svg_dark"):
                     new_sponsor.logo_svg_dark = data["logo_svg_dark"]
-                if data["logo_png_dark"]:
+                if data.get("logo_png_dark"):
                     new_sponsor.logo_png_dark = data["logo_png_dark"]
 
                 g.session.add(new_sponsor)
