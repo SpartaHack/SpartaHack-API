@@ -1648,13 +1648,11 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "4e927c65-6848-4785-b056-50f2bd8b5ae9",
+								"id": "77ca8a6e-71f1-4e6e-a405-16941d9efc97",
 								"type": "text/javascript",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"postman.setEnvironmentVariable(\"sponsor_id\", jsonData.id);",
-									"",
-									"",
 									"",
 									"pm.test(\"Successful POST request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
@@ -1696,16 +1694,20 @@
 					"response": []
 				},
 				{
-					"name": "read (all sponsors)",
+					"name": "read (all sponsors -both)",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "09ae8ea5-fb8f-4feb-98ba-e73a090a77ef",
+								"id": "d34d5281-b8dc-4904-abfb-eca8df755d12",
 								"type": "text/javascript",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data:image/svg+xml;base64\");",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data:image/png;base64\");",
 									"});"
 								]
 							}
@@ -1725,6 +1727,10 @@
 							{
 								"key": "Authorization",
 								"value": "Token token={{token}}"
+							},
+							{
+								"key": "X-IMAGE-FORMAT",
+								"value": "BOTH"
 							}
 						],
 						"body": {
@@ -1744,15 +1750,21 @@
 					"response": []
 				},
 				{
-					"name": "read (specific sponsor id)",
+					"name": "read (all sponsors - png)",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
+								"id": "ecb17051-2aa1-454c-8a7e-bf5a89c040ec",
 								"type": "text/javascript",
 								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"sponsor_id\", jsonData.id);"
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data:image/png;base64\");",
+									"});",
+									"",
+									"pm.test(\"Body does not match string\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"data:image/svg+xml;base64\");",
+									"});"
 								]
 							}
 						}
@@ -1771,6 +1783,236 @@
 							{
 								"key": "Authorization",
 								"value": "Token token={{token}}"
+							},
+							{
+								"key": "X-IMAGE-FORMAT",
+								"value": "PNG"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/sponsors",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"sponsors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (all sponsors - svg)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "439c7a97-b94b-4021-ba91-310423504bac",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data:image/svg+xml;base64\");",
+									"});",
+									"",
+									"pm.test(\"Body does not match string\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"data:image/png;base64\");",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token token={{token}}"
+							},
+							{
+								"key": "X-IMAGE-FORMAT",
+								"value": "SVG+XML"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/sponsors",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"sponsors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (specific sponsor id - both)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a59d8fb7-847a-4d1c-b0b0-c53d7adf4058",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data:image/svg+xml;base64\");",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data:image/png;base64\");",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token token={{token}}"
+							},
+							{
+								"key": "X-IMAGE-FORMAT",
+								"value": "BOTH"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/sponsors/{{sponsor_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"sponsors",
+								"{{sponsor_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (specific sponsor id - png)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ec8faa0b-0b69-46c7-89e5-d588f04fb4c2",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data:image/png;base64\");",
+									"});",
+									"",
+									"pm.test(\"Body does not match string\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"data:image/svg+xml;base64\");",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token token={{token}}"
+							},
+							{
+								"key": "X-IMAGE-FORMAT",
+								"value": "PNG"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/sponsors/{{sponsor_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"sponsors",
+								"{{sponsor_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (specific sponsor id - svg)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "41b5993c-85b9-41a6-84b4-347ac4b02e60",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"data:image/svg+xml;base64\");",
+									"});",
+									"",
+									"pm.test(\"Body does not match string\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"data:image/png;base64\");",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token token={{token}}"
+							},
+							{
+								"key": "X-IMAGE-FORMAT",
+								"value": "SVG+XML"
 							}
 						],
 						"body": {
