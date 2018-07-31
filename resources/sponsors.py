@@ -58,7 +58,7 @@ class Sponsor_RUD(Resource):
 
             if sponsor:
                 # *this sponsor is not the object we typically get from queries.
-                # *Typically we get an <class 'sqlalchemy.ext.automap.sponsors'> object (with different model name ofcourse) but this is an <class 'sqlalchemy.util._collections.result'> object
+                # *Typically we get an <class 'sqlalchemy.ext.automap.sponsors'> object (with different model name of course) but this is an <class 'sqlalchemy.util._collections.result'> object
                 # !Not sure how this would affect our future code. My guess is it doesn't have the relationship stuff included in it. Need to keep it in mind.
                 ret = Sponsor_Schema().dump(sponsor).data
                 return (ret,200,headers)
@@ -161,11 +161,43 @@ class Sponsor_CR(Resource):
         """
         GET all the announcements at a time.
         """
-        try:
-            all_sponsors = g.session.query(g.Base.classes.sponsors).all()
+        image_format = request.headers.get("X-IMAGE-FORMAT")
+        if image_format:
+            #Sponsor model
+            Sponsors = g.Base.classes.sponsors
+
+            #When the request requests both formats
+            if image_format == "BOTH":
+                try:
+                    all_sponsors = g.session.query(g.Base.classes.sponsors).all()
+                except Exception as err:
+                    print(type(err))
+                    print(err)
+                    return (internal_server_error,500,headers)
+            elif image_format == "SVG+XML":
+                try:
+                    all_sponsors = g.session.query(Sponsors.id,Sponsors.name,Sponsors.url,Sponsors.level,Sponsors.logo_svg_light,Sponsors.logo_svg_dark).all()
+                except Exception as err:
+                    print(type(err))
+                    print(err)
+                    return (internal_server_error,500,headers)
+            elif image_format == "PNG":
+                try:
+                    all_sponsors = g.session.query(Sponsors.id,Sponsors.name,Sponsors.url,Sponsors.level,Sponsors.logo_png_light,Sponsors.logo_png_dark).all()
+                except Exception as err:
+                    print(type(err))
+                    print(err)
+                    return (internal_server_error,500,headers)
+            else:
+                # *Wrong header
+                return (unprocessable_entity,422,headers)
+
+            # *this sponsor list is not made up same objects that we typically get while quering with "all".
+            # *It's still a list but made up of different types of objects
+            # *Typically the list consits of <class 'sqlalchemy.ext.automap.sponsors'> type objects (with different model name of course) but this list is made up of <class 'sqlalchemy.util._collections.result'> objects
+            # !Not sure how this would affect our future code. My guess is it doesn't have the relationship stuff included in it. Need to keep it in mind.
             ret = Sponsor_Schema(many = True).dump(all_sponsors).data
             return (ret,200,headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
-            return (internal_server_error,500,headers)
+        else:
+            # *Missing header
+            return (bad_request,400,headers)
