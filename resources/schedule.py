@@ -108,7 +108,53 @@ class Schedule_CR(Resource):
         """
         Create new hardware. Required data: item,lender, quantity
         """
-        pass
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        #data validation
+        if Schedule_Schema().validate(data):
+            return (unprocessable_entity,422,headers)
+
+        #check if user has admin privileges
+        user_status,user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
+
+        try:
+            exist_check = g.session.query(exists().where(and_(g.Base.classes.schedules.title == data["title"],g.Base.classes.schedules.location == data["location"]))).scalar()
+            if exist_check:
+                return (conflict,409,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        if user_status in ["director","organizer"]:
+            Schedule = g.Base.classes.schedules
+            try:
+                new_schedule_item = Schedule(
+                                            title = data["title"],
+                                            description = data["description"],
+                                            time = data["time"],
+                                            location = data["location"],
+                                            updated_at = datetime.now(),
+                                            created_at = datetime.now()
+                                        )
+                g.session.add(new_schedule_item)
+                g.session.commit()
+                ret = g.session.query(g.Base.classes.schedules).filter(g.Base.classes.schedules.item == data["item"]).one()
+                return (Schedule_Schema().dump(ret).data,201 ,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
+        else:
+            return(forbidden,403,headers)
 
     def get(self):
         """
