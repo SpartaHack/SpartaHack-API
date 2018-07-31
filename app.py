@@ -83,7 +83,7 @@ def helloworld():
                     "Backend Developers":"Yash, Jarek",
                     "Frontend Developers":"Harrison, Jessica, Jarek",
                     "Contact":"hello@spartahack.com",
-                    "Version":"0.4.0"})
+                    "Version":"0.5.0"})
 
 if __name__ == '__main__': #running on local server. This needs to change for prod
     app.run(debug=True)
