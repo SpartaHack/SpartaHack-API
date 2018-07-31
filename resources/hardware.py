@@ -51,7 +51,7 @@ class Hardware_RUD(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (z,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status in ["director","organizer"]:
             try:
@@ -81,7 +81,7 @@ class Hardware_RUD(Resource):
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (z,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status in ["director","organizer"]:
             try:

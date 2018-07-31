@@ -45,3 +45,6 @@ class Sponsor_Schema(Schema):
     logo_png_dark = fields.String()
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
+
+class Schedule_Schema(Schema):
+    pass
