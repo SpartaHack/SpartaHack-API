@@ -16,13 +16,62 @@ class Schedule_RUD(Resource):
         """
         GET the hardware details based on specific hardware_id
         """
-        pass
+        #using get instead of query and it is marginally faster than filter
+        #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
+        try:
+            schedule_item = g.session.query(g.Base.classes.schedules).get(schedule_id)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        if schedule_item:
+            ret = Schedule_Schema().dump(schedule_item).data
+            return (ret,200,headers)
+        else:
+            return (not_found,404,headers)
 
     def put(self,schedule_id):
         """
         update the hardware. Required data: item, lender, quantity
         """
-        pass
+        #check if data from request is serializable
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        #data validation
+        if Schedule_Schema().validate(data):
+            return (unprocessable_entity,422,headers)
+
+        #check if user has admin privileges
+        user_status,user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
+
+        if user_status in ["director","organizer"]:
+            try:
+                schedule_item = g.session.query(g.Base.classes.schedules).get(schedule_id)
+                if schedule_item:
+                    schedule_item.title = data["title"]
+                    schedule_item.description = data["description"]
+                    schedule_item.time = data["time"]
+                    schedule_item.location = data["location"]
+                    schedule_item.updated_at = datetime.now()
+                    ret = Schedule_Schema().dump(schedule_item).data
+                    return (ret,200,headers)
+                else:
+                    return (not_found,404,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
+        else:
+            return (forbidden,403,headers)
 
     def delete(self,schedule_id):
         """
@@ -44,4 +93,11 @@ class Schedule_CR(Resource):
         """
         GET all the announcements at a time.
         """
-        pass
+        try:
+            all_schedule_items = g.session.query(g.Base.classes.schedules).all()
+            ret = Schedule_Schema(many = True).dump(all_schedule_items).data
+            return (ret,200,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
