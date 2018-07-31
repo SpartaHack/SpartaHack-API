@@ -77,7 +77,28 @@ class Schedule_RUD(Resource):
         """
         DELETE request to delete hardware based on specific hardware_id. This is new from the old api.
         """
-        pass
+        user_status,user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
+
+        if user_status in ["director","organizer"]:
+            try:
+                #this makes sure that at least one hardware matches hardware id
+                schedule_item_to_delete = g.session.query(g.Base.classes.schedules).get(schedule_id)
+                if schedule_item_to_delete:
+                    g.session.query(g.Base.classes.schedules).filter(g.Base.classes.schedules.id == schedule_id).delete()
+                    return ("",204,headers)
+                else:
+                    return (not_found,404,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
+        else:
+            return (forbidden,403,headers)
 
 class Schedule_CR(Resource):
     """

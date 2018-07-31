@@ -83,13 +83,14 @@ def helloworld():
     For flask app test and general info about the API.
     Will also be used to check if the api is live or not on the slack hook
     """
-    return ({
-            "Organization":"SpartaHack",
-            "Backend Developers":"Yash, Jarek",
-            "Frontend Developers":"Harrison, Jessica, Jarek",
-            "Contact":"hello@spartahack.com",
-            "Version":"0.5.0"
-            },200,headers)
+    metadata = {
+                "Organization":"SpartaHack",
+                "Backend Developers":"Yash, Jarek",
+                "Frontend Developers":"Harrison, Jessica, Jarek",
+                "Contact":"hello@spartahack.com",
+                "Version":"0.5.0"
+               }
+    return (metadata,200,headers)
 
 
 if __name__ == '__main__': #running on local server. This needs to change for prod
