@@ -16,35 +16,73 @@ class Sponsor_RUD(Resource):
         """
         GET the sponsor details based on specific sponsor_id
         """
-        #using get instead of query and it is marginally faster than filter
-        #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
-        try:
-            sponsor = g.session.query(g.Base.classes.sponsors).get(sponsor_id)
-        except Exception as err:
-            print(type(err))
-            print(err)
-            return (internal_server_error,500,headers)
+        # *using get instead of query and it is marginally faster than filter. Keyword marginally
+        # *check for multiple entries need to be done at POST and not during GET or PUT or DELETE
+        image_format = request.headers.get("X-IMAGE-FORMAT")
+        if image_format:
+            #Sponsor model
+            Sponsors = g.Base.classes.sponsors
 
-        if sponsor:
-            ret = Sponsor_Schema().dump(sponsor).data
-            return (ret,200,headers)
+            #When the request requests both formats
+            if image_format == "BOTH":
+                try:
+                    sponsor = g.session.query(Sponsors).get(sponsor_id)
+                except Exception as err:
+                    print(type(err))
+                    print(err)
+                    return (internal_server_error,500,headers)
+
+            #When the request requests only SVG format
+            elif image_format == "SVG+XML":
+                try:
+                    # *getting only SVG column details based given sponsor_id. first() or one() shouldn't matter!
+                    sponsor = g.session.query(Sponsors.id,Sponsors.name,Sponsors.url,Sponsors.level,Sponsors.logo_svg_light,Sponsors.logo_svg_dark).filter(Sponsors.id == sponsor_id).first()
+                except Exception as err:
+                    print(type(err))
+                    print(err)
+                    return (internal_server_error,500,headers)
+
+            #when the request requests only PNG format
+            elif image_format == "PNG":
+                try:
+                    # *getting only PNG column details based on given sponsor_id. first() or one() shouldn't matter!
+                    sponsor = g.session.query(Sponsors.id,Sponsors.name,Sponsors.url,Sponsors.level,Sponsors.logo_png_light,Sponsors.logo_png_dark).filter(Sponsors.id == sponsor_id).first()
+                except Exception as err:
+                    print(type(err))
+                    print(err)
+                    return (internal_server_error,500,headers)
+
+            else:
+                # *Wrong header
+                return (unprocessable_entity,422,headers)
+
+            if sponsor:
+                # *this sponsor is not the object we typically get from queries.
+                # *Typically we get an <class 'sqlalchemy.ext.automap.sponsors'> object (with different model name ofcourse) but this is an <class 'sqlalchemy.util._collections.result'> object
+                # !Not sure how this would affect our future code. My guess is it doesn't have the relationship stuff included in it. Need to keep it in mind.
+                ret = Sponsor_Schema().dump(sponsor).data
+                return (ret,200,headers)
+            else:
+                return (not_found,404,headers)
         else:
-            return (not_found,404,headers)
+            # *Missing header
+            return (bad_request,400,headers)
 
     def delete(self,sponsor_id):
         """
         For DELETE request for specific sponsor id
         """
+        # *Check for user status
         user_status,user = has_admin_privileges()
         if user_status == "no_auth_token":
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
-            return (z,401,headers)
+            return (unauthorized,401,headers)
 
         if user_status in ["director","organizer"]:
             try:
-                #this makes sure that at least one hardware matches hardware id
+                # *get the sponsor matching sponsor id if not return 404
                 sponsor_to_delete = g.session.query(g.Base.classes.sponsors).get(sponsor_id)
                 if sponsor_to_delete:
                     g.session.query(g.Base.classes.sponsors).filter(g.Base.classes.sponsors.id == sponsor_id).delete()
@@ -56,6 +94,7 @@ class Sponsor_RUD(Resource):
                 print(err)
                 return (internal_server_error,500,headers)
         else:
+            # *sponsor deletion only limited to directors and organizers
             return (forbidden,403,headers)
 
 class Sponsor_CR(Resource):
@@ -80,7 +119,7 @@ class Sponsor_CR(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        #checking if announcement with same title and description already exists. To manage duplicate entries
+        # *checking if hardware with same name and url already exists. To manage duplicate entries
         try:
             exist_check = g.session.query(exists().where(and_(g.Base.classes.sponsors.name == data["name"],g.Base.classes.sponsors.url == data["url"]))).scalar()
             if exist_check:

@@ -89,7 +89,7 @@ class Announcements_RUD(Resource):
                     return ("",204,headers)
                 else:
                     return (not_found,404,headers)
-            except:
+            except Exception as err:
                 print(type(err))
                 print(err)
                 return (internal_server_error, 500, headers)
