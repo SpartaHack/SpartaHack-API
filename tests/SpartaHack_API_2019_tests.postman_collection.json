@@ -1121,10 +1121,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "631cd1d1-5c0d-499a-8376-2c8222cea6db",
+								"id": "ba401690-ab5c-4f8a-b1ad-f8213c081d9a",
 								"type": "text/javascript",
 								"exec": [
-									""
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
 								]
 							}
 						}
@@ -1358,13 +1360,9 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f605f01e-9248-4434-8104-ad18fef6a41f",
+								"id": "26b2118a-e61f-4d86-894c-bc1cd6b7b5bf",
 								"type": "text/javascript",
 								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"announcement_id\", jsonData.id);",
-									"",
-									"",
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});"
@@ -1407,10 +1405,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "54a53caf-1b27-4955-b3e2-d0afd52769a7",
+								"id": "1dd26519-a542-4232-806f-54b0a093d6ca",
 								"type": "text/javascript",
 								"exec": [
-									""
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
 								]
 							}
 						}
@@ -1454,10 +1454,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "54a53caf-1b27-4955-b3e2-d0afd52769a7",
+								"id": "b5d856ce-12e7-494e-b4cf-a4daa4940408",
 								"type": "text/javascript",
 								"exec": [
-									""
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
 								]
 							}
 						}
