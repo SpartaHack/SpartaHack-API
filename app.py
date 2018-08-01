@@ -43,12 +43,10 @@ def commit_and_close_session(resp):
     return resp
 
 #loading resources
-from resources.faqs import Faqs_RUD
-from resources.faqs import Faqs_CR
-from resources.announcements import Announcements_RUD
-from resources.announcements import Announcements_CR
-from resources.hardware import Hardware_RUD
-from resources.hardware import Hardware_CR
+from resources.faqs import Faqs_RUD, Faqs_CR
+from resources.announcements import Announcements_RUD, Announcements_CR
+from resources.hardware import Hardware_RUD, Hardware_CR
+from resources.sponsors import Sponsor_RUD, Sponsor_CR
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
@@ -72,6 +70,8 @@ api.add_resource(Announcements_RUD,"/announcements/<int:announcement_id>")
 api.add_resource(Announcements_CR,"/announcements")
 api.add_resource(Hardware_RUD,"/hardware/<int:hardware_id>")
 api.add_resource(Hardware_CR,"/hardware")
+api.add_resource(Sponsor_RUD,"/sponsors/<int:sponsor_id>")
+api.add_resource(Sponsor_CR,"/sponsors")
 
 @app.route("/")
 def helloworld():
@@ -83,7 +83,7 @@ def helloworld():
                     "Backend Developers":"Yash, Jarek",
                     "Frontend Developers":"Harrison, Jessica, Jarek",
                     "Contact":"hello@spartahack.com",
-                    "Version":"0.3.1"})
+                    "Version":"0.4.0"})
 
 if __name__ == '__main__': #running on local server. This needs to change for prod
     app.run(debug=True)
