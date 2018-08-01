@@ -2082,6 +2082,342 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "schedule",
+			"description": null,
+			"item": [
+				{
+					"name": "create (missing field)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9e216998-5444-497a-8c5d-4e90f0c52e80",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"{{$guid}}\",\n\t\"time\": \"2017-01-20T23:00:00.000Z\", \n\t\"location\": \"Bus Loop Stairwell\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/schedule",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"schedule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (correct create)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "af064a5e-329b-4295-943a-4edfae995d15",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"schedule_id\", jsonData.id);",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"{{$guid}}\", \n\t\"description\": \"\", \n\t\"time\": \"2017-01-20T23:00:00.000Z\", \n\t\"location\": \"Bus Loop Stairwell\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/schedule",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"schedule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (all schedule items)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0b8de0b3-a9a8-45d1-8d19-ca608afe9837",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token token={{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"announcement\": {\n    \"description\": \"Let's have a swell time at SpartaHack\",\n    \"title\": \"Wow such hack\",\n    \"pinned\": false\n  }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/schedule",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"schedule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (specific schedule_id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e75b68c0-52f5-4c52-a700-93b7c9012884",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"schedule_id\", jsonData.id);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token token={{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"announcement\": {\n    \"description\": \"Let's have a swell time at SpartaHack\",\n    \"title\": \"Wow such hack\",\n    \"pinned\": false\n  }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/schedule/{{schedule_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"schedule",
+								"{{schedule_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "19204736-1e87-4416-b66f-f5374461c683",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"schedule_id\", jsonData.id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"{{$guid}}\",\n  \"description\": \"\",\n  \"time\": \"2018-01-19T10:00:00+00:00\",\n  \"location\": \"B115\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/schedule/{{schedule_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"schedule",
+								"{{schedule_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "19204736-1e87-4416-b66f-f5374461c683",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"schedule_id\", jsonData.id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"{{$guid}}\",\n  \"description\": \"\",\n  \"time\": \"2018-01-19T10:00:00+00:00\",\n  \"location\": \"B115\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/schedule/{{schedule_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"schedule",
+								"{{schedule_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "54a53caf-1b27-4955-b3e2-d0afd52769a7",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/schedule/{{schedule_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"schedule",
+								"{{schedule_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
