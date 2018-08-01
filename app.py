@@ -38,7 +38,8 @@ def commit_and_close_session(resp):
     """
     After all the processing is done. Commit the changes and close the session to return the connection object back to the connection pool.
     """
-    g.session.commit()
+    if g.session.dirty or g.session.deleted:
+        g.session.commit()
     g.session.close()
     return resp
 

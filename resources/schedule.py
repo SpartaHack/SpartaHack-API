@@ -138,16 +138,16 @@ class Schedule_CR(Resource):
             Schedule = g.Base.classes.schedules
             try:
                 new_schedule_item = Schedule(
-                                            title = data["title"],
-                                            description = data["description"],
-                                            time = data["time"],
-                                            location = data["location"],
-                                            updated_at = datetime.now(),
-                                            created_at = datetime.now()
-                                        )
+                                                title = data["title"],
+                                                description = data["description"],
+                                                time = data["time"],
+                                                location = data["location"],
+                                                updated_at = datetime.now(),
+                                                created_at = datetime.now()
+                                            )
                 g.session.add(new_schedule_item)
                 g.session.commit()
-                ret = g.session.query(g.Base.classes.schedules).filter(g.Base.classes.schedules.item == data["item"]).one()
+                ret = g.session.query(g.Base.classes.schedules).filter(g.Base.classes.schedules.title == data["title"]).one()
                 return (Schedule_Schema().dump(ret).data,201 ,headers)
             except Exception as err:
                 print(type(err))
