@@ -8,7 +8,7 @@ from common.json_schema import Sponsor_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
 
-class Sponsor_RUD(Resource):
+class Sponsor_RD(Resource):
     """
     For GET UPDATE and DELETE for specific sponsor id
     """

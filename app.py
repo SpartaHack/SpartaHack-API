@@ -46,7 +46,8 @@ def commit_and_close_session(resp):
 from resources.faqs import Faqs_RUD, Faqs_CR
 from resources.announcements import Announcements_RUD, Announcements_CR
 from resources.hardware import Hardware_RUD, Hardware_CR
-from resources.sponsors import Sponsor_RUD, Sponsor_CR
+from resources.sponsors import Sponsor_RD, Sponsor_CR
+from resources.schedule import Schedule_RUD, Schedule_CR
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
@@ -63,15 +64,18 @@ def ret_json(data, code, headers=None):
 #might only need this for email sending so that email sending does not clog up the resources
 task_queue=Celery("SpartaHack_API_2019",broker=app.config["CELERY_BROKER_URL"])
 
-#adding resources. Just flask things :)
+#adding resources. Just flask-restful things :)
 api.add_resource(Faqs_RUD,"/faqs/<int:faq_id>")
 api.add_resource(Faqs_CR,"/faqs")
 api.add_resource(Announcements_RUD,"/announcements/<int:announcement_id>")
 api.add_resource(Announcements_CR,"/announcements")
 api.add_resource(Hardware_RUD,"/hardware/<int:hardware_id>")
 api.add_resource(Hardware_CR,"/hardware")
-api.add_resource(Sponsor_RUD,"/sponsors/<int:sponsor_id>")
+api.add_resource(Sponsor_RD,"/sponsors/<int:sponsor_id>")
 api.add_resource(Sponsor_CR,"/sponsors")
+api.add_resource(Schedule_RUD,"/schedule/<int:schedule_id>")
+api.add_resource(Schedule_CR,"/schedule")
+
 
 @app.route("/")
 def helloworld():
@@ -79,11 +83,15 @@ def helloworld():
     For flask app test and general info about the API.
     Will also be used to check if the api is live or not on the slack hook
     """
-    return jsonify({"Organization":"SpartaHack",
-                    "Backend Developers":"Yash, Jarek",
-                    "Frontend Developers":"Harrison, Jessica, Jarek",
-                    "Contact":"hello@spartahack.com",
-                    "Version":"0.4.0"})
+    metadata = {
+                "Organization":"SpartaHack",
+                "Backend Developers":"Yash, Jarek",
+                "Frontend Developers":"Harrison, Jessica, Jarek",
+                "Contact":"hello@spartahack.com",
+                "Version":"0.5.0"
+               }
+    return (metadata,200,headers)
+
 
 if __name__ == '__main__': #running on local server. This needs to change for prod
     app.run(debug=True)

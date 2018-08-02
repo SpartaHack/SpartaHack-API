@@ -43,5 +43,14 @@ class Sponsor_Schema(Schema):
     logo_svg_dark = fields.String()
     logo_png_light = fields.String(required=True)
     logo_png_dark = fields.String()
-    created_at = fields.DateTime()
-    updated_at = fields.DateTime()
+    created_at = fields.DateTime(load_only=True)
+    updated_at = fields.DateTime(load_only=True)
+
+class Schedule_Schema(Schema):
+    id = fields.Integer()
+    title = fields.String(required=True)
+    description = fields.String(required=True)
+    time = fields.DateTime(required=True)
+    location = fields.String(required=True)
+    created_at = fields.DateTime(load_only=True)
+    updated_at = fields.DateTime(dump_only=True)
