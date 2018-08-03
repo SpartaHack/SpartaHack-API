@@ -12,7 +12,7 @@ from config import load_env_variables, DevelopmentConfig, ProdConfig
 load_env_variables()
 
 app = Flask(__name__)
-app.config.from_object(DevelopmentConfig)#loading config data into flask app from config object.
+app.config.from_object(ProdConfig)#loading config data into flask app from config object.
 api = Api(app)
 
 #reflecting classes
@@ -94,4 +94,4 @@ def helloworld():
 
 
 if __name__ == '__main__': #running on local server. This needs to change for prod
-    app.run(debug=True)
+    app.run()
