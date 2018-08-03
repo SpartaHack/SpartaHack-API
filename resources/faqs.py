@@ -1,12 +1,13 @@
 from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 from flask import request,jsonify,g
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from sqlalchemy import exists,and_
 from common.json_schema import Faq_Schema
 from marshmallow.exceptions import ValidationError
 from datetime import datetime
 from common.utils import headers,is_logged_in,has_admin_privileges
-from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity
+from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
 
 class Faqs_RUD(Resource):
     """
@@ -14,12 +15,19 @@ class Faqs_RUD(Resource):
     get http headers using request.headers.get("header_name")
     """
     def get(self,faq_id):
-        try:#using try and except  instead of get to avoid double db hits in case there really is a faq
-            faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
+        #using get instead of query and it is marginally faster than filter
+        #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
+        try:
+            faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        if faq_object:
             ret = Faq_Schema().dump(faq_object).data
             return (ret,200,headers)
-
-        except NoResultFound:
+        else:
             return (not_found,404,headers)
 
 
@@ -46,20 +54,25 @@ class Faqs_RUD(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             try:
-                faq_object = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
-                faq_object.question = data["question"]
-                faq_object.answer = data["answer"]
-                faq_object.display = data["display"]
-                faq_object.priority = data["priority"]
-                faq_object.placement = data["placement"]
-                faq_object.user_id = user.id
-                faq_object.updated_at = datetime.now()
-                ret = Faq_Schema().dump(faq_object).data
-                return (ret,200,headers)
-            except NoResultFound:
-                return (not_found,404,headers)
+                faq_object = g.session.query(g.Base.classes.faqs).get(faq_id)
+                if faq_object:
+                    faq_object.question = data["question"]
+                    faq_object.answer = data["answer"]
+                    faq_object.display = data["display"]
+                    faq_object.priority = data["priority"]
+                    faq_object.placement = data["placement"]
+                    faq_object.user_id = user.id
+                    faq_object.updated_at = datetime.now()
+                    ret = Faq_Schema().dump(faq_object).data
+                    return (ret,200,headers)
+                else:
+                    return (not_found,404,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
         else:
             return (forbidden,403,headers)
 
@@ -77,14 +90,19 @@ class Faqs_RUD(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        if user_status == True:
+        if user_status in ["director","organizer"]:
             try:
-                #this makes sure that at least one faq matches faq_id
-                g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).one()
-                g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).delete()
-                return ("",204,headers)
-            except NoResultFound:
-                return (not_found,404,headers)
+                faq_to_delete = g.session.query(g.Base.classes.faqs).get(faq_id)
+                if faq_to_delete:
+                    #this makes sure that at least one faq matches faq_id
+                    g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.id == faq_id).delete()
+                    return ("",204,headers)
+                else:
+                    return (not_found,404,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
         else:
             return (forbidden,403,headers)
 
@@ -111,7 +129,17 @@ class Faqs_CR(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        if user_status == True:
+        #checking if faq with same questions and answer already exists. To manage duplicate entries. Check out SQLAlchemy documentation to learn how exists work
+        try:
+            exist_check = g.session.query(exists().where(and_(g.Base.classes.faqs.question == data["question"],g.Base.classes.faqs.answer == data["answer"]))).scalar()
+            if exist_check:
+                return (conflict,409,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        if user_status in ["director","organizer"]:
             try:
                 Faqs = g.Base.classes.faqs
                 new_faq = Faqs(
@@ -126,9 +154,10 @@ class Faqs_CR(Resource):
                               )
                 g.session.add(new_faq)
                 g.session.commit()
+                #first() or one() shouldn't matter because we already checked if an faq without same question and answer exits
                 new_faq = g.session.query(g.Base.classes.faqs).filter(g.Base.classes.faqs.question == data["question"]).one()
                 return (Faq_Schema().dump(new_faq).data,201,headers)
-            except:
+            except Exception as err:
                 print(type(err))
                 print(err)
                 return (internal_server_error,500,headers)
@@ -145,7 +174,7 @@ class Faqs_CR(Resource):
             for faq in all_faqs:
                 ret.append(Faq_Schema().dump(faq).data)
             return (ret,200,headers)
-        except:
+        except Exception as err:
             print(type(err))
             print(err)
             return (internal_server_error,500,headers)
