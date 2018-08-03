@@ -1,4 +1,5 @@
 from marshmallow import Schema,fields
+import ipaddress
 
 """
 schema.dump = used for converting the automap.faqs object to a dictionary good for returning ie cleaning unnecessary fields
@@ -6,7 +7,12 @@ schema.validate(request.get_json(force=True)) = used to validate if all the data
 dump_only = Fields that we need to display when returning the item
 load_only = Fields that we need only while dumping from python objects. We use it to stop marshmallow from dumping it while using dump()
 """
-
+def ip_test(ip):
+        try:
+            ipaddress.ip_address(ip)
+            return True
+        except ValueError:
+            return False
 
 class Faq_Schema(Schema):
     id = fields.Integer()
@@ -82,5 +88,25 @@ class Application_Schema(Schema):
     status = fields.String()
     accepted_date = fields.DateTime()
 
-class Users_Schema(Schema):
-    pass
+class User_Schema(Schema):
+    id = fields.Integer()
+    email = fields.Email(required=True)
+    encrypted_password = fields.String(required=True)
+    reset_password_token = fields.String()
+    reset_password_sent_at = fields.DateTime()
+    remember_created_at = fields.DateTime()
+    sign_in_count = fields.Integer()
+    current_sign_in_at = fields.DateTime()
+    last_sign_in_at = fields.DateTime()
+    current_sign_in_ip = fields.String(validate=ip_test)
+    last_sign_in_ip = fields.String(validate=ip_test)
+    created_at = fields.DateTime(required=True)
+    updated_at = fields.DateTime(required=True)
+    auth_token =fields.String()
+    confirmation_token = fields.String()
+    confirmed_at = fields.DateTime()
+    confirmation_sent_at = fields.DateTime()
+    role = fields.Integer()
+    first_name = fields.String()
+    last_name = fields.String()
+    checked_in = fields.Boolean(required=True)
