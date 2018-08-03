@@ -4,7 +4,7 @@ from flask import request,jsonify,g
 from datetime import datetime
 from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
-from common.json_schema import Schedule_Schema
+from common.json_schema import Application_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
 
@@ -27,7 +27,7 @@ class Applications_RU(Resource):
             return (internal_server_error,500,headers)
 
         if application:
-            ret = Schedule_Schema().dump(application).data
+            ret = Application_Schema().dump(application).data
             return (ret,200,headers)
         else:
             return (not_found,404,headers)
@@ -52,4 +52,11 @@ class Applications_CR(Resource):
         """
         GET all the applications at a time.
         """
-        pass
+        try:
+            all_applications = g.session.query(g.Base.classes.applications).all()
+            ret = Application_Schema(many = True).dump(all_applications).data
+            return (ret,200,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
