@@ -163,4 +163,3 @@ class Announcements_CR(Resource):
             print(type(err))
             print(err)
             return (internal_server_error,500,headers)
-
