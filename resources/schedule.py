@@ -33,7 +33,7 @@ class Schedule_RUD(Resource):
 
     def put(self,schedule_id):
         """
-        update the hardware. Required data: item, lender, quantity
+        Update the hardware. Required data: title, description, time, location
         """
         #check if data from request is serializable
         try:
