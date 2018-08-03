@@ -17,7 +17,20 @@ class Applications_RU(Resource):
         """
         GET the application details based on specific application_id
         """
-        pass
+        #using get instead of filter and it is marginally faster than filter
+        #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
+        try:
+            application = g.session.query(g.Base.classes.applications).get(application_id)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        if application:
+            ret = Schedule_Schema().dump(application).data
+            return (ret,200,headers)
+        else:
+            return (not_found,404,headers)
 
     def put(self,application_id):
         """
