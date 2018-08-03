@@ -21,4 +21,3 @@ class DevelopmentConfig(BaseConfig):
 class ProdConfig(BaseConfig):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI=os.getenv("PROD_DATABASE_URL")
-

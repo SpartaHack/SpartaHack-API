@@ -23,7 +23,9 @@ def is_logged_in():
         try:
             user=g.session.query(g.Base.classes.users).filter(g.Base.classes.users.auth_token == user_token).one()
             return user
-        except:
+        except Exception as err:
+            print(type(err))
+            print(err)
             return False
     else:
         return("no_auth_token")

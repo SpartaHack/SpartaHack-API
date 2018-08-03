@@ -9,7 +9,6 @@ from marshmallow import Schema,fields
 
 
 class Faq_Schema(Schema):
-
     id = fields.Integer()
     question = fields.String(required=True)
     answer = fields.String(required=True)
