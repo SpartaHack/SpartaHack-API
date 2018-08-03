@@ -81,3 +81,6 @@ class Application_Schema(Schema):
     outside_north_america = fields.String()
     status = fields.String()
     accepted_date = fields.DateTime()
+
+class Users_Schema(Schema):
+    pass
