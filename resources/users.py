@@ -34,7 +34,8 @@ class Users_RUD(Resource):
             print(type(err))
             print(err)
             return (internal_server_error,500,headers)
-        # *Only allow directors, organizers and users calling
+
+        # *Only allow directors, organizers and the user making the request to access his own user id to access this resource
         if user_status in ["director","organizer"] or calling_user == user:
             if user:
                 ret = User_Schema().dump(user).data
@@ -67,11 +68,23 @@ class Users_CR(Resource):
         Application_id and rsvp_id is not gonna be returned when GET is called on all the users.
         Because getting the application_id and rsvp_id makes db calls and making calls for application_id and rsvp_id on hundreds of users is costly.
         """
-        try:
-            all_users = g.session.query(g.Base.classes.users).all()
-            ret = User_Schema(many = True).dump(all_users).data
-            return (ret,200,headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
-            return (internal_server_error,500,headers)
+        user_status,calling_user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
+
+        # *Only allow directors, organizers to make GET on all users (I don't really see the need for this tbh!)
+        if user_status in ["director","organizer"]:
+            try:
+                all_users = g.session.query(g.Base.classes.users).all()
+                ret = User_Schema(many = True).dump(all_users).data
+                return (ret,200,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
+        else:
+            return(forbidden,403,headers)
+
