@@ -27,8 +27,7 @@ print("Classes reflected...")
 def create_session():
     """
     Before processing any request. Create a session by checking out a connection from the connection pool.
-    Also set request global variables to be accessed for the life time of the request
-
+    Also set global variables to be accessed for the life time of the request
     """
     g.session = Session(engine)
     g.Base = Base
@@ -49,6 +48,7 @@ from resources.hardware import Hardware_RUD, Hardware_CR
 from resources.sponsors import Sponsor_RD, Sponsor_CR
 from resources.schedule import Schedule_RUD, Schedule_CR
 from resources.applications import Applications_RU, Applications_CR
+from resources.users import Users_RUD, Users_CR
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
@@ -78,6 +78,8 @@ api.add_resource(Schedule_RUD,"/schedule/<int:schedule_id>")
 api.add_resource(Schedule_CR,"/schedule")
 api.add_resource(Applications_RU,"/applications/<int:application_id>")
 api.add_resource(Applications_CR,"/applications")
+api.add_resource(Users_RUD,"/users/<int:user_id>")
+api.add_resource(Users_CR,"/users")
 
 
 @app.route("/")
