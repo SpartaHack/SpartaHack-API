@@ -79,11 +79,11 @@ class Users_RD(Resource):
         if user_status in ["director","organizer"] or calling_user.id == user.id:
             try:
                 if user:
-                    if user.rsvp_id != None:
-                        g.session.query(g.Base.classes.rsvps).get(user.rsvp_id).delete()
-                    if user.application_id != None:
-                        g.session.query(g.Base.classes.applications).get(user.application_id).delete()
-                    g.session.query(g.Base.classes.users).get(user_id).delete()
+                    if len(user.rsvps_collection)>0:
+                        g.session.delete(g.session.query(g.Base.classes.rsvps).get(user.rsvps_collection[0].id))
+                    if len(user.applications_collection)>0:
+                        g.session.delete(g.session.query(g.Base.classes.applications).get(user.applications_collection[0].id))
+                    g.session.delete(g.session.query(g.Base.classes.users).get(user_id))
                     return ("",204,headers)
                 else:
                     return (not_found,404,headers)
