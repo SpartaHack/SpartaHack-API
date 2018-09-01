@@ -1,13 +1,13 @@
 from flask import request,g
 import math
 
-bad_request = {"status":400,"error":"Bad Request"}
-unauthorized = {"status":401,"error":"Unauthorized"}
-forbidden = {"status":403,"error":"Forbidden"}
-not_found = {"status":404,"error":"Not Found"}
-unprocessable_entity = {"status":422,"error":"Unprocessable Entity"}
-internal_server_error = {"status":500,"error":"Internal Server Error"}
-conflict = {"status":409,"error":"Conflict"}
+bad_request = {"status":400,"message":"Bad Request"}
+unauthorized = {"status":401,"message":"Unauthorized"}
+forbidden = {"status":403,"message":"Forbidden"}
+not_found = {"status":404,"message":"Not Found"}
+unprocessable_entity = {"status":422,"message":"Unprocessable Entity","error_list":{}}
+internal_server_error = {"status":500,"message":"Internal Server Error"}
+conflict = {"status":409,"message":"Conflict"}
 
 headers = {
             "X-XSS-Protection" : "1; mode=block",

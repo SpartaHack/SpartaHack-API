@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, make_response,request, g
+from flask import Flask, jsonify, make_response, request, g
 from flask_restful import Api
 from celery import Celery
 from sqlalchemy.ext.automap import automap_base
@@ -48,7 +48,7 @@ from resources.hardware import Hardware_RUD, Hardware_CR
 from resources.sponsors import Sponsor_RD, Sponsor_CR
 from resources.schedule import Schedule_RUD, Schedule_CR
 from resources.applications import Applications_RU, Applications_CR
-from resources.users import Users_RUD, Users_CR
+from resources.users import Users_RD, Users_CRU
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
@@ -78,8 +78,8 @@ api.add_resource(Schedule_RUD,"/schedule/<int:schedule_id>")
 api.add_resource(Schedule_CR,"/schedule")
 api.add_resource(Applications_RU,"/applications/<int:application_id>")
 api.add_resource(Applications_CR,"/applications")
-api.add_resource(Users_RUD,"/users/<int:user_id>")
-api.add_resource(Users_CR,"/users")
+api.add_resource(Users_RD,"/users/<int:user_id>")
+api.add_resource(Users_CRU,"/users")
 
 
 @app.route("/")
@@ -93,9 +93,9 @@ def helloworld():
                 "Backend Developers":"Yash, Jarek",
                 "Frontend Developers":"Harrison, Jessica, Jarek",
                 "Contact":"hello@spartahack.com",
-                "Version":"0.5.0"
+                "Version":"0.6.0"
                }
-    return (metadata,200,headers)
+    return (jsonify(metadata),200,headers)
 
 
 if __name__ == '__main__': #running on local server. This needs to change for prod

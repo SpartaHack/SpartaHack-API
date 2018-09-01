@@ -1,16 +1,22 @@
 from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 from flask import request,jsonify,g
-from datetime import datetime
+from marshmallow import validate,ValidationError
 from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
-from common.json_schema import User_Schema
+from app import app
+from common.json_schema import User_Schema,User_Input_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
+from datetime import datetime,timedelta
+import string
+import random
+import secrets
 
-class Users_RUD(Resource):
+class Users_RD(Resource):
     """
-    For GET UPDATE and DELETE for specific user_id
+    For GET and DELETE for specific user_id
+-    Director, Organizer should be able to get any user details and delete any user but not update
     """
     def get(self,user_id):
         """
@@ -28,6 +34,7 @@ class Users_RUD(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
+        # getting the user. Assuming the user exists. Case of user not existing is checked below
         try:
             user = g.session.query(g.Base.classes.users).get(user_id)
         except Exception as err:
@@ -36,7 +43,8 @@ class Users_RUD(Resource):
             return (internal_server_error,500,headers)
 
         # *Only allow directors, organizers and the user making the request to access his own user id to access this resource
-        if user_status in ["director","organizer"] or calling_user == user:
+        # *Compare user_id rather than complete user objects because it's faster
+        if user_status in ["director","organizer"] or calling_user.id == user.id:
             if user:
                 ret = User_Schema().dump(user).data
                 # *<class_name>_collection is way by which SQLAlchemy stores relationships.
@@ -52,15 +60,137 @@ class Users_RUD(Resource):
         else:
             return(forbidden,403,headers)
 
-    def put(self,user_id):
-        pass
-
     def delete(self,user_id):
-        pass
+        user_status,calling_user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
 
-class Users_CR(Resource):
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
+
+        # getting the user. Assuming the user exists. Case of user not existing is checked below
+        try:
+            user = g.session.query(g.Base.classes.users).get(user_id)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        if user_status in ["director","organizer"] or calling_user.id == user.id:
+            try:
+                if user:
+                    if user.rsvp_id != None:
+                        g.session.query(g.Base.classes.rsvps).get(user.rsvp_id).delete()
+                    if user.application_id != None:
+                        g.session.query(g.Base.classes.applications).get(user.application_id).delete()
+                    g.session.query(g.Base.classes.users).get(user_id).delete()
+                    return ("",204,headers)
+                else:
+                    return (not_found,404,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error, 500, headers)
+        else:
+            return (forbidden,403,headers)
+
+class Users_CRU(Resource):
+    """
+    To create new user using POST and read all users
+    """
+    def put(self):
+        """
+        Update user. Required data: email, first_name, last_name, password, confirmation_password
+        PUT is allowed only by users on their own objects.
+        """
+        user_status,calling_user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
+
+        #check if data from request is serializable
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        # *request data validation. Check for empty fields will be done by frontend
+        validation = User_Input_Schema().validate(data)
+        if validation:
+            unprocessable_entity["error_list"] = validation["_schema"]
+            return (unprocessable_entity,422,headers)
+
+        # *Only allow user making the request to access his own user id to access this resource
+        # *The original email, first_name and last_name to be provided in the request. Just updated value setting will be implemented in PATCH which would be in API 2.0
+        try:
+            calling_user.email = data["email"]
+            calling_user.first_name = data["first_name"]
+            calling_user.last_name = data["last_name"]
+            # *Update password only if password is given
+            if data.get("password"):
+                calling_user.encrypted_password = app.config["CRYPTO_CONTEXT"].hash(data["password"])
+
+            return (User_Schema().dump(calling_user).data,200,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
     def post(self):
-        pass
+        """
+        Create new user. Required data: email,password,confirmation_password,first_name,last_name
+        """
+        Users = g.Base.classes.users
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        # *request data validation. Check for empty fields will be done by frontend
+        validation = User_Input_Schema().validate(data)
+        if validation:
+            unprocessable_entity["error_list"]=validation["_schema"]
+            return (unprocessable_entity,422,headers)
+
+        # check if user already signed up
+        try:
+            exist_check = g.session.query(exists().where(Users.email == data["email"])).scalar()
+            if exist_check:
+                print(exist_check)
+                app.config["CRYPTO_CONTEXT"].dummy_verify()
+                return (conflict,409,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        #* Encrypt password
+        encrypted_pass = app.config["CRYPTO_CONTEXT"].hash(data["password"])
+
+        try:
+            new_user = Users(
+                                email = data["email"],
+                                encrypted_password = encrypted_pass,
+                                sign_in_count = 0,
+                                checked_in = False,
+                                role = 64,
+                                auth_token = secrets.token_urlsafe(25),
+                                first_name = data["first_name"],
+                                last_name = data["last_name"],
+                                confirmation_token = secrets.token_urlsafe(15),
+                                confirmation_sent_at = datetime.now(),
+                                updated_at = datetime.now(),
+                                created_at = datetime.now()
+                            )
+            g.session.add(new_user)
+            g.session.commit()
+            ret = g.session.query(Users).filter(Users.encrypted_password == encrypted_pass).one()
+            return (User_Schema().dump(ret).data,201 ,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
 
     def get(self):
         """
@@ -75,7 +205,7 @@ class Users_CR(Resource):
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
-        # *Only allow directors, organizers to make GET on all users (I don't really see the need for this tbh!)
+        # *Only allow directors, organizers to make GET on all users (I don't really see the need for this tbh!)maybe for accepting applications
         if user_status in ["director","organizer"]:
             try:
                 all_users = g.session.query(g.Base.classes.users).all()
@@ -88,3 +218,10 @@ class Users_CR(Resource):
         else:
             return(forbidden,403,headers)
 
+""" class Users_Change_Role(Resource):
+    if data["role_change_pass"]:
+        if data["role_change_pass"] != app.config["ROLE_CHANGE_PASS"]:
+            pass
+
+    if data["roles"] not in ["director","judge","mentor","sponsor","organizer","volunteer","hacker"]:
+            errors["roles"] = "Not a valid role" """

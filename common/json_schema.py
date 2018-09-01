@@ -1,6 +1,7 @@
-from marshmallow import Schema,fields,ValidationError
+from marshmallow import Schema,fields,ValidationError,validates_schema,validate
 import ipaddress
 import math
+import string
 
 """
 schema.dump = used for converting the automap.faqs object to a dictionary good for returning ie cleaning unnecessary fields
@@ -11,8 +12,13 @@ load_only = Fields that we need only while dumping from python objects. We use i
 def ip_test(obj):
     try:
         ipaddress.ip_address(obj)
+        return True
     except ValueError:
-        raise ValidationError('Invalid IPv4 or IPv6 address.') from None
+        return False
+
+def password_check(obj):
+        if obj.password == obj.password_confirmation:
+            return 
 
 class Faq_Schema(Schema):
     id = fields.Integer()
@@ -95,7 +101,7 @@ class User_Schema(Schema):
 
     id = fields.Integer(dump_only=True)
     email = fields.Email(dump_only=True,required=True)
-    encrypted_password = fields.String(required=True)
+    encrypted_password = fields.String()
     reset_password_token = fields.String(dump_only=True)
     reset_password_sent_at = fields.DateTime()
     remember_created_at = fields.DateTime()
@@ -104,8 +110,8 @@ class User_Schema(Schema):
     last_sign_in_at = fields.DateTime()
     current_sign_in_ip = fields.String(validate=ip_test)
     last_sign_in_ip = fields.String(validate=ip_test)
-    created_at = fields.DateTime(dump_only=True,required=True)
-    updated_at = fields.DateTime(required=True)
+    created_at = fields.DateTime(dump_only=True)
+    updated_at = fields.DateTime(dump_only=True)
     auth_token =fields.String(dump_only=True)
     confirmation_token = fields.String()
     confirmed_at = fields.DateTime()
@@ -114,3 +120,37 @@ class User_Schema(Schema):
     first_name = fields.String(dump_only=True)
     last_name = fields.String(dump_only=True)
     checked_in = fields.Boolean(dump_only=True)
+
+class User_Input_Schema(Schema):
+    email = fields.String()
+    password = fields.String()
+    confirm_password = fields.String()
+    first_name = fields.String()
+    last_name = fields.String()
+
+    @validates_schema
+    def check_all_fields(self,data):
+
+        errors={}
+        try:
+            validator = validate.Email()
+            validator(data["email"])
+        except ValidationError:
+            errors["email"] = "Not an valid email!"
+
+        if data.get("password") and data.get("password") and data["password"] != data["confirm_password"]:
+            errors["confirm_password"] = "Passsword and Confirm password don't match"
+
+        # *might not need it
+        # if data["roles"] not in ["director","judge","mentor","sponsor","organizer","volunteer","hacker"]:
+        #     errors["roles"] = "Not a valid role"
+
+        #checking if first and last name have any special characters or numbers
+        if any(char in string.punctuation for char in data["first_name"]) or any(char in string.digits for char in data["first_name"]):
+            errors["first_name"] = "Not a valid first name"
+
+        if any(char in string.punctuation for char in data["last_name"]) or any(char in string.digits for char in data["last_name"]):
+            errors["last_name"] = "Not a valid last name"
+
+        if errors:
+            raise ValidationError(errors)
