@@ -13,14 +13,14 @@ class BaseConfig:
     CELERY_BROKER_URL=os.getenv("CELERY_BROKER_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS=False
     CRYPTO_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto",bcrypt__rounds=os.getenv("PASS_ENCRYPT_ROUNDS"))
-    ROLE_CHANGE_PASS = os.getenv("ROLE_PASS")
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI=os.getenv("DEV_DATABASE_URL")
-
+    ROLE_CHANGE_PASS_DEV = os.getenv("ROLE_CHANGE_PASS_DEV")
 
 class ProdConfig(BaseConfig):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI=os.getenv("PROD_DATABASE_URL")
+    ROLE_CHANGE_PASS_PROD = os.getenv("ROLE_CHANGE_PASS_PROD")

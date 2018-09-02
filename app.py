@@ -48,7 +48,7 @@ from resources.hardware import Hardware_RUD, Hardware_CR
 from resources.sponsors import Sponsor_RD, Sponsor_CR
 from resources.schedule import Schedule_RUD, Schedule_CR
 from resources.applications import Applications_RU, Applications_CR
-from resources.users import Users_RD, Users_CRU
+from resources.users import Users_RD, Users_CRU, Users_Change_Role
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
@@ -80,6 +80,7 @@ api.add_resource(Applications_RU,"/applications/<int:application_id>")
 api.add_resource(Applications_CR,"/applications")
 api.add_resource(Users_RD,"/users/<int:user_id>")
 api.add_resource(Users_CRU,"/users")
+api.add_resource(Users_Change_Role,"/users/change_user_role")
 
 
 @app.route("/")

@@ -35,8 +35,8 @@ def has_admin_privileges():
     user = is_logged_in()
     if user == "no_auth_token":
         return "no_auth_token",user
-    roles = ["director","judge","mentor","sponsor","organizer","volunteer","hacker"]
+    role = ["director","judge","mentor","sponsor","organizer","volunteer","hacker"]
     if user:
-        return roles[int(math.log(int(user.role),2))],user
+        return role[int(math.log(int(user.role),2))],user
     else:
         return "not_logged_in",user

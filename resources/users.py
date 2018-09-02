@@ -5,7 +5,7 @@ from marshmallow import validate,ValidationError
 from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
 from app import app
-from common.json_schema import User_Schema,User_Input_Schema
+from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
 from datetime import datetime,timedelta
@@ -218,10 +218,59 @@ class Users_CRU(Resource):
         else:
             return(forbidden,403,headers)
 
-""" class Users_Change_Role(Resource):
-    if data["role_change_pass"]:
-        if data["role_change_pass"] != app.config["ROLE_CHANGE_PASS"]:
-            pass
+class Users_Change_Role(Resource):
+    """
+    Update roles for users. Required data: email,role, role_change_password
+    """
+    def post(self):
+        """
+        Only method needed
+        """
+        user_status,calling_user = has_admin_privileges()
+        print(user_status)
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
 
-    if data["roles"] not in ["director","judge","mentor","sponsor","organizer","volunteer","hacker"]:
-            errors["roles"] = "Not a valid role" """
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
+
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        # *request data validation
+        validation = User_Change_Role_Schema().validate(data)
+        if validation:
+            unprocessable_entity["error_list"] = validation["_schema"]
+            return (unprocessable_entity,422,headers)
+
+        # getting the user. Assuming the user exists. Case of user not existing is checked below
+        try:
+            user = g.session.query(g.Base.classes.users).filter(g.Base.classes.users.email == data["email"]).one()
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        # *Only directors have the ability to change user roles
+        try:
+            if user_status in ["director"] and data["role_change_password"] == app.config["ROLE_CHANGE_PASS_DEV"]:
+                if user:
+                    user.role = 2**(["director","judge","mentor","sponsor","organizer","volunteer","hacker"].index(data["role"]))
+                    return (User_Schema().dump(user).data,200,headers)
+                else:
+                    return (not_found,404,headers)
+            else:
+                return (forbidden,403,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+class Users_Request_Password_Token(Resource):
+    """
+    Create password reset token
+    """
+    def post(self):
+        pass

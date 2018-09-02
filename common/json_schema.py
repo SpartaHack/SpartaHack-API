@@ -112,7 +112,7 @@ class User_Schema(Schema):
     last_sign_in_ip = fields.String(validate=ip_test)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
-    auth_token =fields.String(dump_only=True)
+    auth_token = fields.String(dump_only=True)
     confirmation_token = fields.String()
     confirmed_at = fields.DateTime()
     confirmation_sent_at = fields.DateTime()
@@ -131,7 +131,7 @@ class User_Input_Schema(Schema):
     @validates_schema
     def check_all_fields(self,data):
 
-        errors={}
+        errors = {}
         try:
             validator = validate.Email()
             validator(data["email"])
@@ -140,10 +140,6 @@ class User_Input_Schema(Schema):
 
         if data.get("password") and data.get("password") and data["password"] != data["confirm_password"]:
             errors["confirm_password"] = "Passsword and Confirm password don't match"
-
-        # *might not need it
-        # if data["roles"] not in ["director","judge","mentor","sponsor","organizer","volunteer","hacker"]:
-        #     errors["roles"] = "Not a valid role"
 
         #checking if first and last name have any special characters or numbers
         if any(char in string.punctuation for char in data["first_name"]) or any(char in string.digits for char in data["first_name"]):
@@ -154,3 +150,24 @@ class User_Input_Schema(Schema):
 
         if errors:
             raise ValidationError(errors)
+
+class User_Change_Role_Schema(Schema):
+    role_change_password = fields.String()
+    role = fields.String()
+    email = fields.String()
+
+    @validates_schema
+    def check_all_fields(self,data):
+        errors = {}
+
+        try:
+            validator = validate.Email()
+            validator(data["email"])
+        except ValidationError:
+            errors["email"] = "Not an valid email!"
+
+        if not data.get("role_change_password"):
+            errors["role_change_pass"] = "Role change password required"
+
+        if data["role"] not in ["director","judge","mentor","sponsor","organizer","volunteer","hacker"]:
+            errors["role"] = "Not a valid role"
