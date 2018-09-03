@@ -1,5 +1,6 @@
 from flask import request,g
 import math
+import app
 
 bad_request = {"status":400,"message":"Bad Request"}
 unauthorized = {"status":401,"message":"Unauthorized"}
@@ -8,6 +9,7 @@ not_found = {"status":404,"message":"Not Found"}
 unprocessable_entity = {"status":422,"message":"Unprocessable Entity","error_list":{}}
 internal_server_error = {"status":500,"message":"Internal Server Error"}
 conflict = {"status":409,"message":"Conflict"}
+gone = {"status":410,"message":"Gone"}
 
 headers = {
             "X-XSS-Protection" : "1; mode=block",
@@ -40,3 +42,9 @@ def has_admin_privileges():
         return role[int(math.log(int(user.role),2))],user
     else:
         return "not_logged_in",user
+
+def encrypt_pass(password):
+    return app.app.config["CRYPTO_CONTEXT"].hash(password)
+
+def waste_time():
+    app.app.config["CRYPTO_CONTEXT"].dummy_verify()

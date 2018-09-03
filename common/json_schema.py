@@ -124,7 +124,7 @@ class User_Schema(Schema):
 class User_Input_Schema(Schema):
     email = fields.String()
     password = fields.String()
-    confirm_password = fields.String()
+    password_confirmation = fields.String()
     first_name = fields.String()
     last_name = fields.String()
 
@@ -137,9 +137,6 @@ class User_Input_Schema(Schema):
             validator(data["email"])
         except ValidationError:
             errors["email"] = "Not an valid email!"
-
-        if data.get("password") and data.get("password") and data["password"] != data["confirm_password"]:
-            errors["confirm_password"] = "Passsword and Confirm password don't match"
 
         #checking if first and last name have any special characters or numbers
         if any(char in string.punctuation for char in data["first_name"]) or any(char in string.digits for char in data["first_name"]):
@@ -171,3 +168,17 @@ class User_Change_Role_Schema(Schema):
 
         if data["role"] not in ["director","judge","mentor","sponsor","organizer","volunteer","hacker"]:
             errors["role"] = "Not a valid role"
+
+class User_Reset_Password_Schema(Schema):
+    password = fields.String()
+    password_confirmation = fields.String()
+
+    @validates_schema
+    def check_all_fields(self,data):
+        errors = {}
+
+        if data.get("password") and data.get("password") and data["password"] != data["password_confirmation"]:
+            errors["password_confirmation"] = "Passsword and Confirm password don't match"
+
+        if errors:
+            raise ValidationError(errors)

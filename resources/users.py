@@ -5,9 +5,9 @@ from marshmallow import validate,ValidationError
 from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
 from app import app
-from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema
-from common.utils import headers,is_logged_in,has_admin_privileges
-from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
+from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema,User_Reset_Password_Schema,User_Reset_Password_Schema
+from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time
+from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict,gone
 from datetime import datetime,timedelta
 import string
 import random
@@ -129,7 +129,7 @@ class Users_CRU(Resource):
             calling_user.last_name = data["last_name"]
             # *Update password only if password is given
             if data.get("password"):
-                calling_user.encrypted_password = app.config["CRYPTO_CONTEXT"].hash(data["password"])
+                calling_user.encrypted_password = encrypt_pass(data["password"])
 
             return (User_Schema().dump(calling_user).data,200,headers)
         except Exception as err:
@@ -157,21 +157,17 @@ class Users_CRU(Resource):
         try:
             exist_check = g.session.query(exists().where(Users.email == data["email"])).scalar()
             if exist_check:
-                print(exist_check)
-                app.config["CRYPTO_CONTEXT"].dummy_verify()
+                waste_time()
                 return (conflict,409,headers)
         except Exception as err:
             print(type(err))
             print(err)
             return (internal_server_error,500,headers)
 
-        #* Encrypt password
-        encrypted_pass = app.config["CRYPTO_CONTEXT"].hash(data["password"])
-
         try:
             new_user = Users(
                                 email = data["email"],
-                                encrypted_password = encrypted_pass,
+                                encrypted_password = encrypt_pass(data["password"]),
                                 sign_in_count = 0,
                                 checked_in = False,
                                 role = 64,
@@ -185,7 +181,7 @@ class Users_CRU(Resource):
                             )
             g.session.add(new_user)
             g.session.commit()
-            ret = g.session.query(Users).filter(Users.encrypted_password == encrypted_pass).one()
+            ret = g.session.query(Users).filter(Users.encrypted_password == encrypt_pass(data["password"])).one()
             return (User_Schema().dump(ret).data,201 ,headers)
         except Exception as err:
             print(type(err))
@@ -268,9 +264,91 @@ class Users_Change_Role(Resource):
             print(err)
             return (internal_server_error,500,headers)
 
-class Users_Request_Password_Token(Resource):
+class Users_Reset_Password_Token(Resource):
     """
     Create password reset token
     """
     def post(self):
-        pass
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        try:
+            validator = validate.Email()
+            validator(data["email"])
+        except ValidationError:
+            unprocessable_entity["error_list"] = {"email":"Not an valid email!"}
+            return (unprocessable_entity,422,headers)
+
+        # getting the user. Assuming the user exists. Case of user not existing is checked below
+        try:
+            user = g.session.query(g.Base.classes.users).filter(g.Base.classes.users.email == data["email"]).one()
+        except NoResultFound:
+            # *If no email is found with that address then you send the email either way say
+            # *Your confirmation message displayed on the web page would simply say “An email has been sent to (provided email address) with further instructions.”
+            pass
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        try:
+            # *create reset password token and send email
+            if user:
+                user.reset_password_token = secrets.token_urlsafe(15)
+                user.reset_password_sent_at = datetime.now(),
+                auth_token = secrets.token_urlsafe(25)
+                #send the email
+                return (User_Schema().dump(user).data,200,headers)
+            else:
+                return (not_found,404,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+class Users_Reset_Password(Resource):
+    """
+    Create password reset token
+    """
+    def post(self):
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        # *request data validation. Check for empty fields will be done by frontend
+        validation = User_Reset_Password_Schema().validate(data)
+        if validation:
+            unprocessable_entity["error_list"]=validation["_schema"]
+            if not request.headers.get("X-WWW-RESET-PASSWORD-TOKEN",default=False):
+                unprocessable_entity["error_list"]["reset_password_token"] = "Password reset token required"
+            return (unprocessable_entity,422,headers)
+
+        # getting the user for the specific reset password token. Assuming the user exists. Case of user not existing is checked below
+        try:
+            user = g.session.query(g.Base.classes.users).filter(g.Base.classes.users.reset_password_token == request.headers.get("X-WWW-RESET-PASSWORD-TOKEN",default=False)).one()
+        except NoResultFound:
+            # *If no user is found with that token then you send 422 error
+            return (unprocessable_entity,422,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        try:
+            # *change password of user for given reset password token and token hasn't expired
+            if user:
+                if (datetime.now() - user.reset_password_sent_at).days < 2:
+                    user.encrypted_password = encrypt_pass(data["password"])
+                    user.updated_at = datetime.now()
+                    return (User_Schema().dump(user).data,200,headers)
+                else:
+                    return (gone,410,headers)
+            else:
+                return (not_found,404,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
