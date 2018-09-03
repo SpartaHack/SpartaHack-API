@@ -6,7 +6,7 @@ from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
 from app import app
 from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema,User_Reset_Password_Schema,User_Reset_Password_Schema
-from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time
+from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time,verify_pass
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict,gone
 from datetime import datetime,timedelta
 import string
@@ -223,7 +223,6 @@ class Users_Change_Role(Resource):
         Only method needed
         """
         user_status,calling_user = has_admin_privileges()
-        print(user_status)
         if user_status == "no_auth_token":
             return (bad_request,400,headers)
 
@@ -310,7 +309,7 @@ class Users_Reset_Password_Token(Resource):
 
 class Users_Reset_Password(Resource):
     """
-    Create password reset token
+    Reset password using reset password token
     """
     def post(self):
         try:
@@ -346,6 +345,53 @@ class Users_Reset_Password(Resource):
                     return (User_Schema().dump(user).data,200,headers)
                 else:
                     return (gone,410,headers)
+            else:
+                return (not_found,404,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+class Users_Change_Password(Resource):
+    """
+    Change user password through normal account login
+    """
+    def post(self):
+        """
+        Only method needed
+        """
+        user_status,calling_user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
+        try:
+            data = request.get_json(force = True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        # *request data validation. Check for empty fields will be done by frontend
+        validation = User_Reset_Password_Schema().validate(data)
+        if validation:
+            if not  data.get("current_password"):
+                unprocessable_entity["error_list"]["current_password"] = {"current_password":"Current password is required"}
+            unprocessable_entity["error_list"] = validation["_schema"]
+            return (unprocessable_entity,422,headers)
+
+        # *change password of user through normal account login
+        try:
+            # *proceed only if user exists
+            if calling_user:
+                # *proceed only if current_password is correct
+                if verify_pass(data["current_password"],calling_user.encrypted_password):
+                    calling_user.encrypted_password = encrypt_pass(data["password"])
+                    calling_user.updated_at = datetime.now()
+                else:
+                    forbidden["error_list"] = {"current_password":"Current password is not correct"}
+                    return (forbidden,403,headers)
+
+                return (User_Schema().dump(calling_user).data,200,headers)
             else:
                 return (not_found,404,headers)
         except Exception as err:

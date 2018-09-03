@@ -48,7 +48,7 @@ from resources.hardware import Hardware_RUD, Hardware_CR
 from resources.sponsors import Sponsor_RD, Sponsor_CR
 from resources.schedule import Schedule_RUD, Schedule_CR
 from resources.applications import Applications_RU, Applications_CR
-from resources.users import Users_RD, Users_CRU, Users_Change_Role, Users_Reset_Password_Token, Users_Reset_Password
+from resources.users import Users_RD, Users_CRU, Users_Change_Role, Users_Reset_Password_Token, Users_Reset_Password, Users_Change_Password
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
@@ -83,6 +83,7 @@ api.add_resource(Users_CRU,"/users")
 api.add_resource(Users_Change_Role,"/users/change_user_role")
 api.add_resource(Users_Reset_Password_Token,"/users/request_password_token")
 api.add_resource(Users_Reset_Password,"/users/reset_password")
+api.add_resource(Users_Change_Password,"/users/change_password")
 
 @app.route("/")
 def helloworld():

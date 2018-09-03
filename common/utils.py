@@ -4,7 +4,7 @@ import app
 
 bad_request = {"status":400,"message":"Bad Request"}
 unauthorized = {"status":401,"message":"Unauthorized"}
-forbidden = {"status":403,"message":"Forbidden"}
+forbidden = {"status":403,"message":"Forbidden","error_list":{}}
 not_found = {"status":404,"message":"Not Found"}
 unprocessable_entity = {"status":422,"message":"Unprocessable Entity","error_list":{}}
 internal_server_error = {"status":500,"message":"Internal Server Error"}
@@ -48,3 +48,6 @@ def encrypt_pass(password):
 
 def waste_time():
     app.app.config["CRYPTO_CONTEXT"].dummy_verify()
+
+def verify_pass(password,hash):
+    return app.app.config["CRYPTO_CONTEXT"].verify(password,hash = hash)
