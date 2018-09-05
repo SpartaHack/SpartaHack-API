@@ -169,6 +169,9 @@ class User_Change_Role_Schema(Schema):
         if data["role"] not in ["director","judge","mentor","sponsor","organizer","volunteer","hacker"]:
             errors["role"] = "Not a valid role"
 
+        if errors:
+            raise ValidationError(errors)
+
 class User_Reset_Password_Schema(Schema):
     password = fields.String()
     password_confirmation = fields.String()
@@ -177,7 +180,7 @@ class User_Reset_Password_Schema(Schema):
     def check_all_fields(self,data):
         errors = {}
 
-        if data.get("password") and data.get("password") and data["password"] != data["password_confirmation"]:
+        if data.get("password") and data.get("password_confirmation") and data["password"] != data["password_confirmation"]:
             errors["password_confirmation"] = "Passsword and Confirm password don't match"
 
         if errors:

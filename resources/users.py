@@ -44,8 +44,8 @@ class Users_RD(Resource):
 
         # *Only allow directors, organizers and the user making the request to access his own user id to access this resource
         # *Compare user_id rather than complete user objects because it's faster
-        if user_status in ["director","organizer"] or calling_user.id == user.id:
-            if user:
+        if user:
+            if user_status in ["director","organizer"] or calling_user.id == user.id:
                 ret = User_Schema().dump(user).data
                 # *<class_name>_collection is way by which SQLAlchemy stores relationships.
                 # *The collection object contains one related object in one-to-one relationship and more than one object in one-to-many relationships
@@ -56,11 +56,14 @@ class Users_RD(Resource):
                 ret["rsvp_id"] = user.rsvps_collection[0].id if len(user.rsvps_collection)>0 else None
                 return (ret,200,headers)
             else:
-                return (not_found,404,headers)
+                return(forbidden,403,headers)
         else:
-            return(forbidden,403,headers)
+            return (not_found,404,headers)
 
     def delete(self,user_id):
+        """
+        DELETE user request. Only Directors, Organizers and user calling the request
+        """
         user_status,calling_user = has_admin_privileges()
         if user_status == "no_auth_token":
             return (bad_request,400,headers)
@@ -76,9 +79,10 @@ class Users_RD(Resource):
             print(err)
             return (internal_server_error,500,headers)
 
-        if user_status in ["director","organizer"] or calling_user.id == user.id:
+        # *Only Directors, Organizers and user calling the request
+        if user:
             try:
-                if user:
+                if user_status in ["director","organizer"] or calling_user.id == user.id:
                     if len(user.rsvps_collection)>0:
                         g.session.delete(g.session.query(g.Base.classes.rsvps).get(user.rsvps_collection[0].id))
                     if len(user.applications_collection)>0:
@@ -86,17 +90,19 @@ class Users_RD(Resource):
                     g.session.delete(g.session.query(g.Base.classes.users).get(user_id))
                     return ("",204,headers)
                 else:
-                    return (not_found,404,headers)
+                    return (forbidden,403,headers)
             except Exception as err:
                 print(type(err))
                 print(err)
                 return (internal_server_error, 500, headers)
         else:
-            return (forbidden,403,headers)
+            return (not_found,404,headers)
+
 
 class Users_CRU(Resource):
     """
-    To create new user using POST and read all users
+    To create new user using POST and read all users. PUT only allowed by
+    Required data: email, first_name, last_name
     """
     def put(self):
         """
@@ -127,9 +133,6 @@ class Users_CRU(Resource):
             calling_user.email = data["email"]
             calling_user.first_name = data["first_name"]
             calling_user.last_name = data["last_name"]
-            # *Update password only if password is given
-            if data.get("password"):
-                calling_user.encrypted_password = encrypt_pass(data["password"])
 
             return (User_Schema().dump(calling_user).data,200,headers)
         except Exception as err:
@@ -181,7 +184,7 @@ class Users_CRU(Resource):
                             )
             g.session.add(new_user)
             g.session.commit()
-            ret = g.session.query(Users).filter(Users.encrypted_password == encrypt_pass(data["password"])).one()
+            ret = g.session.query(Users).filter(Users.email == data["email"]).one()
             return (User_Schema().dump(ret).data,201 ,headers)
         except Exception as err:
             print(type(err))
@@ -243,6 +246,10 @@ class Users_Change_Role(Resource):
         # getting the user. Assuming the user exists. Case of user not existing is checked below
         try:
             user = g.session.query(g.Base.classes.users).filter(g.Base.classes.users.email == data["email"]).one()
+        except NoResultFound:
+            # *If no user with that email is found with that token then you send 422 error
+            not_found["error_list"]["email"] = "No user found with that email"
+            return (not_found,404,headers)
         except Exception as err:
             print(type(err))
             print(err)
@@ -251,11 +258,8 @@ class Users_Change_Role(Resource):
         # *Only directors have the ability to change user roles
         try:
             if user_status in ["director"] and data["role_change_password"] == app.config["ROLE_CHANGE_PASS_DEV"]:
-                if user:
-                    user.role = 2**(["director","judge","mentor","sponsor","organizer","volunteer","hacker"].index(data["role"]))
-                    return (User_Schema().dump(user).data,200,headers)
-                else:
-                    return (not_found,404,headers)
+                user.role = 2**(["director","judge","mentor","sponsor","organizer","volunteer","hacker"].index(data["role"]))
+                return (User_Schema().dump(user).data,200,headers)
             else:
                 return (forbidden,403,headers)
         except Exception as err:
@@ -284,9 +288,9 @@ class Users_Reset_Password_Token(Resource):
         try:
             user = g.session.query(g.Base.classes.users).filter(g.Base.classes.users.email == data["email"]).one()
         except NoResultFound:
-            # *If no email is found with that address then you send the email either way say
+            # *If no email is found with that address then you return 200 and send the email either way say
             # *Your confirmation message displayed on the web page would simply say “An email has been sent to (provided email address) with further instructions.”
-            pass
+            return ({"email":data["email"]},200,headers)
         except Exception as err:
             print(type(err))
             print(err)
@@ -299,7 +303,7 @@ class Users_Reset_Password_Token(Resource):
                 user.reset_password_sent_at = datetime.now(),
                 auth_token = secrets.token_urlsafe(25)
                 #send the email
-                return (User_Schema().dump(user).data,200,headers)
+                return ({"status":"Reset password token set at "+data["email"]},200,headers)
             else:
                 return (not_found,404,headers)
         except Exception as err:
@@ -321,16 +325,18 @@ class Users_Reset_Password(Resource):
         validation = User_Reset_Password_Schema().validate(data)
         if validation:
             unprocessable_entity["error_list"]=validation["_schema"]
-            if not request.headers.get("X-WWW-RESET-PASSWORD-TOKEN",default=False):
+        if not request.headers.get("X-WWW-RESET-PASSWORD-TOKEN",default=False):
                 unprocessable_entity["error_list"]["reset_password_token"] = "Password reset token required"
+        if unprocessable_entity["error_list"]:
             return (unprocessable_entity,422,headers)
 
         # getting the user for the specific reset password token. Assuming the user exists. Case of user not existing is checked below
         try:
-            user = g.session.query(g.Base.classes.users).filter(g.Base.classes.users.reset_password_token == request.headers.get("X-WWW-RESET-PASSWORD-TOKEN",default=False)).one()
+            user = g.session.query(g.Base.classes.users).filter(g.Base.classes.users.reset_password_token == request.headers.get("X-WWW-RESET-PASSWORD-TOKEN")).one()
         except NoResultFound:
             # *If no user is found with that token then you send 422 error
-            return (unprocessable_entity,422,headers)
+            not_found["error_list"]["X-WWW-RESET-PASSWORD-TOKEN"] = "No user found with that password reset token"
+            return (not_found,404,headers)
         except Exception as err:
             print(type(err))
             print(err)
@@ -375,7 +381,7 @@ class Users_Change_Password(Resource):
         validation = User_Reset_Password_Schema().validate(data)
         if validation:
             if not  data.get("current_password"):
-                unprocessable_entity["error_list"]["current_password"] = {"current_password":"Current password is required"}
+                unprocessable_entity["error_list"]["current_password"] = "Current password is required"
             unprocessable_entity["error_list"] = validation["_schema"]
             return (unprocessable_entity,422,headers)
 
@@ -388,7 +394,7 @@ class Users_Change_Password(Resource):
                     calling_user.encrypted_password = encrypt_pass(data["password"])
                     calling_user.updated_at = datetime.now()
                 else:
-                    forbidden["error_list"] = {"current_password":"Current password is not correct"}
+                    forbidden["error_list"]["current_password"] = "Current password is not correct"
                     return (forbidden,403,headers)
 
                 return (User_Schema().dump(calling_user).data,200,headers)
