@@ -52,9 +52,9 @@ class Users_RD(Resource):
                 # *The collection object contains one related object in one-to-one relationship and more than one object in one-to-many relationships
                 # *set application_id if application object is found in the applications_collection i.e. if the user has submitted the application
                 # *This is different than old API in the sense that a user does not necessarily have a application at the time of account creation. User has the option of submitting the application later on.
-                ret["application_id"] = user.applications_collection[0].id if len(user.applications_collection)>0 else None
+                ret["application_id"] = user.applications_collection[0].id if user.applications_collection else None
                 # *set rsvp_id if rsvp object is found in the rsvps_collection i.e. if the user has rsvped
-                ret["rsvp_id"] = user.rsvps_collection[0].id if len(user.rsvps_collection)>0 else None
+                ret["rsvp_id"] = user.rsvps_collection[0].id if user.rsvps_collection else None
                 return (ret,200,headers)
             else:
                 return(forbidden,403,headers)
