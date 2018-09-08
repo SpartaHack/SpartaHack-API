@@ -123,17 +123,17 @@ class Users_CRU(Resource):
         Update user. Required data: email, first_name, last_name, password, confirmation_password
         PUT is allowed only by users on their own objects.
         """
-        user_status,calling_user = has_admin_privileges()
-        if user_status == "no_auth_token":
-            return (bad_request,400,headers)
-        if user_status == "not_logged_in":
-            return (unauthorized,401,headers)
-
         #check if data from request is serializable
         try:
             data = request.get_json(force=True)
         except BadRequest:
             return (bad_request,400,headers)
+
+        user_status,calling_user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
 
         # *request data validation. Check for empty fields will be done by frontend
         validation = User_Input_Schema().validate(data)
