@@ -51,8 +51,8 @@ def encrypt_pass(password):
 def waste_time():
     app.app.config["CRYPTO_CONTEXT"].dummy_verify()
 
-def verify_pass(password,hash):
-    return app.app.config["CRYPTO_CONTEXT"].verify(password,hash = hash)
+def verify_pass(password,password_hash):
+    return app.app.config["CRYPTO_CONTEXT"].verify(password,hash = password_hash)
 
 def send_email(subject,recipient,body):
     try:

@@ -6,7 +6,7 @@ from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
 from jinja2 import Template
 from app import app
-from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema,User_Reset_Password_Schema,User_Reset_Password_Schema
+from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema,User_Reset_Password_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time,verify_pass,send_email
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict,gone
 from datetime import datetime,timedelta
@@ -84,9 +84,9 @@ class Users_RD(Resource):
         if user:
             try:
                 if user_status in ["director","organizer"] or calling_user.id == user.id:
-                    if len(user.rsvps_collection)>0:
+                    if user.rsvps_collection:
                         g.session.delete(g.session.query(g.Base.classes.rsvps).get(user.rsvps_collection[0].id))
-                    if len(user.applications_collection)>0:
+                    if user.applications_collection:
                         g.session.delete(g.session.query(g.Base.classes.applications).get(user.applications_collection[0].id))
                     g.session.delete(g.session.query(g.Base.classes.users).get(user_id))
                 else:
