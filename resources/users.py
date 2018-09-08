@@ -4,9 +4,10 @@ from flask import request,jsonify,g
 from marshmallow import validate,ValidationError
 from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
+from jinja2 import Template
 from app import app
 from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema,User_Reset_Password_Schema,User_Reset_Password_Schema
-from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time,verify_pass
+from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time,verify_pass,send_email
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict,gone
 from datetime import datetime,timedelta
 import string
@@ -88,7 +89,6 @@ class Users_RD(Resource):
                     if len(user.applications_collection)>0:
                         g.session.delete(g.session.query(g.Base.classes.applications).get(user.applications_collection[0].id))
                     g.session.delete(g.session.query(g.Base.classes.users).get(user_id))
-                    return ("",204,headers)
                 else:
                     return (forbidden,403,headers)
             except Exception as err:
@@ -97,6 +97,20 @@ class Users_RD(Resource):
                 return (internal_server_error, 500, headers)
         else:
             return (not_found,404,headers)
+
+        # error handling for mail send
+        try:
+            f = open("common/account_creation.html",'r')
+            body = Template(f.read())
+            f.close()
+            body = body.render(first_name = user.first_name)
+            send_email(subject = "Account creation confirmation!",recipient = user.email, body = "Account deleted!")
+            return ("",204,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            internal_server_error["error_list"]["error"] = "Account successfully created. Error in confirmation email sending."
+            return (internal_server_error,500,headers)
 
 
 class Users_CRU(Resource):
@@ -124,7 +138,7 @@ class Users_CRU(Resource):
         # *request data validation. Check for empty fields will be done by frontend
         validation = User_Input_Schema().validate(data)
         if validation:
-            unprocessable_entity["error_list"] = validation["_schema"]
+            unprocessable_entity["error_list"] = validation["_schema"][0]
             return (unprocessable_entity,422,headers)
 
         # *Only allow user making the request to access his own user id to access this resource
@@ -153,7 +167,7 @@ class Users_CRU(Resource):
         # *request data validation. Check for empty fields will be done by frontend
         validation = User_Input_Schema().validate(data)
         if validation:
-            unprocessable_entity["error_list"]=validation["_schema"]
+            unprocessable_entity["error_list"]=validation["_schema"][0]
             return (unprocessable_entity,422,headers)
 
         # check if user already signed up
@@ -185,10 +199,24 @@ class Users_CRU(Resource):
             g.session.add(new_user)
             g.session.commit()
             ret = g.session.query(Users).filter(Users.email == data["email"]).one()
+        except Exception as err:
+            print(type(err))
+            print(err)
+            internal_server_error["error_list"]["error"] = "Error in account creation. Please try again."
+            return (internal_server_error,500,headers)
+
+        # error handling for mail send
+        try:
+            f = open("common/account_creation.html",'r')
+            body = Template(f.read())
+            f.close()
+            body = body.render(first_name = data["first_name"])
+            send_email(subject = "Account creation confirmation!",recipient = data["email"], body = body)
             return (User_Schema().dump(ret).data,201 ,headers)
         except Exception as err:
             print(type(err))
             print(err)
+            internal_server_error["error_list"]["error"] = "Account successfully created. Error in confirmation email sending."
             return (internal_server_error,500,headers)
 
     def get(self):
@@ -240,7 +268,7 @@ class Users_Change_Role(Resource):
         # *request data validation
         validation = User_Change_Role_Schema().validate(data)
         if validation:
-            unprocessable_entity["error_list"] = validation["_schema"]
+            unprocessable_entity["error_list"] = validation["_schema"][0]
             return (unprocessable_entity,422,headers)
 
         # getting the user. Assuming the user exists. Case of user not existing is checked below
@@ -281,7 +309,7 @@ class Users_Reset_Password_Token(Resource):
             validator = validate.Email()
             validator(data["email"])
         except ValidationError:
-            unprocessable_entity["error_list"] = {"email":"Not an valid email!"}
+            unprocessable_entity["error_list"]["email"] = "Not an valid email!"
             return (unprocessable_entity,422,headers)
 
         # getting the user. Assuming the user exists. Case of user not existing is checked below
@@ -324,7 +352,7 @@ class Users_Reset_Password(Resource):
         # *request data validation. Check for empty fields will be done by frontend
         validation = User_Reset_Password_Schema().validate(data)
         if validation:
-            unprocessable_entity["error_list"]=validation["_schema"]
+            unprocessable_entity["error_list"] = validation["_schema"][0]
         if not request.headers.get("X-WWW-RESET-PASSWORD-TOKEN",default=False):
                 unprocessable_entity["error_list"]["reset_password_token"] = "Password reset token required"
         if unprocessable_entity["error_list"]:
@@ -382,7 +410,7 @@ class Users_Change_Password(Resource):
         if validation:
             if not  data.get("current_password"):
                 unprocessable_entity["error_list"]["current_password"] = "Current password is required"
-            unprocessable_entity["error_list"] = validation["_schema"]
+            unprocessable_entity["error_list"] = validation["_schema"][0]
             return (unprocessable_entity,422,headers)
 
         # *change password of user through normal account login

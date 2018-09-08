@@ -37,7 +37,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -81,7 +81,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -128,7 +128,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -175,7 +175,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -220,12 +220,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
-							},
-							{
-								"key": "Authorization",
-								"value": "",
-								"disabled": true
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -267,16 +262,6 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json"
-							},
-							{
-								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}",
-								"disabled": true
-							},
-							{
-								"key": "Authorization",
-								"value": "",
-								"disabled": true
 							}
 						],
 						"body": {
@@ -321,7 +306,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -366,7 +351,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -456,7 +441,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -554,7 +539,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -602,7 +587,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -650,7 +635,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -884,7 +869,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -933,7 +918,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}",
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ",
 								"disabled": true
 							},
 							{
@@ -983,7 +968,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1092,7 +1077,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1140,7 +1125,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1189,7 +1174,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1287,7 +1272,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1428,7 +1413,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -1477,7 +1462,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -1573,7 +1558,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1672,7 +1657,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1724,7 +1709,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1780,7 +1765,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1836,7 +1821,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1892,7 +1877,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -1949,7 +1934,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -2006,7 +1991,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -2059,7 +2044,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -2114,7 +2099,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -2161,11 +2146,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
-							},
-							{
-								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -2300,55 +2281,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
-							},
-							{
-								"key": "Authorization",
-								"value": "{{authorisation_token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"title\": \"{{$guid}}\",\n  \"description\": \"\",\n  \"time\": \"2018-01-19T10:00:00+00:00\",\n  \"location\": \"B115\"\n}"
-						},
-						"url": {
-							"raw": "{{url}}/schedule/{{schedule_id}}",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"schedule",
-								"{{schedule_id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "update Copy",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "19204736-1e87-4416-b66f-f5374461c683",
-								"type": "text/javascript",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"schedule_id\", jsonData.id);"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							},
 							{
 								"key": "Authorization",
@@ -2399,7 +2332,7 @@
 							},
 							{
 								"key": "X-WWW-USER-TOKEN",
-								"value": "{{user_token}}"
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
 							}
 						],
 						"body": {
@@ -2414,6 +2347,1013 @@
 							"path": [
 								"schedule",
 								"{{schedule_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"description": null,
+			"item": [
+				{
+					"name": "create (correct create)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ae55b8bf-007a-4b63-80e2-ed7cb7f3d00a",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"user_id\", jsonData.id);",
+									"postman.setEnvironmentVariable(\"user_token\", jsonData.auth_token);",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token token={{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"tellsharmayash@gmail.com\",\n  \"first_name\": \"{{first_name}}\",\n  \"last_name\": \"{{last_name}}\",\n  \"password\": \"{{password}}\",\n  \"password_confirmation\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (incorrect data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0b350e33-5721-4bb3-9fa5-025b1be69189",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token token={{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"developeraccyssgmail.com\",\n  \"first_name\": \"{{first_name}}\",\n  \"last_name\": \"{{last_name}}\",\n  \"password\": \"{{password}}\",\n  \"password_confirmation\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update (wrong user_token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f8e641e6-d53a-48f0-8a70-906c1a5d4236",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "dhfjskfjkemnf"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"Notyash\",\n  \"last_name\": \"Notsharma\",\n  \"email\": \"devloperaccys@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update (wrong data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "48c2b0cc-bb97-4d41-afc7-9a917a11dac3",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"Notyash--\",\n  \"last_name\": \"Notsharma\",\n  \"email\": \"devloperaccysgmail.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (correct all users)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b796f74b-d4bd-4037-8f76-d29caab62641",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "22fe6213-b54e-4787-83f0-9b295020b3dd",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (incorrect auth_token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c026a5ee-5d8c-4da2-bb3d-b76ea670687d",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "XxWgYpWAK8QYb3rCdA1bHzbd9gMYgFF97Q"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (user without correct auth_token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f3d0609d-7b6d-4713-8245-d6a131556f3a",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "FRjKAWJ5y9u5u4CXgt"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (correct specifc user_id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "497bb55f-b238-4809-9173-04f19b0dc40a",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f3fea684-a2a6-4ec1-9a4e-fe28643e7cef",
+								"type": "text/javascript",
+								"exec": [
+									"pm.environment.set(\"user_token\", \"kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ\");",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorisation_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change user role (wrong authorizatioin code)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eb3ec753-a623-4aa1-b98b-6b36d107adcc",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "eeea7652-e139-45ff-9ad5-a725b0b8a244",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "XxWgYpWAK8QYb3rCdA1bHzbd9gMYgFF97Q"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"developeraccyss@gmail.com\",\n  \"role\": \"volunteer\",\n  \"role_change_password\":\"{{role_change_pass}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/change_user_role",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"change_user_role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change user role ( wrong data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0ae13831-5220-4db4-8110-0c408cabbb3d",
+								"type": "text/javascript",
+								"exec": [
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Not a valid role\");",
+									"});",
+									"",
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e812e6b4-b901-44e2-90e2-fb8b7c097039",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"developeraccyssgmail.com\",\n  \"role\": \"voluntee\",\n  \"role_change_password\":\"{{role_change_pass}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/change_user_role",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"change_user_role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change user role (wrong email)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dd9d802c-edcf-4cab-a3ba-92b34a0fc04a",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "56c8c6e9-d874-42cc-8933-e85ee73a83db",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{guid}}}@gmail.com\",\n  \"role\": \"volunteer\",\n  \"role_change_password\":\"{{role_change_pass}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/change_user_role",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"change_user_role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change user role (correct change)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c854119a-e2ce-4793-aa7f-3e6e607ffbce",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"role\", jsonData.role);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "61c8a63a-6913-4e80-a705-835381e2abc3",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "kRlSPbGvnv5HocAwWoiVvajLrvOO2gBHcQ"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"developeraccyss@gmail.com\",\n  \"role\": \"volunteer\",\n  \"role_change_password\":\"{{role_change_pass}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/change_user_role",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"change_user_role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password token (incorrect email address)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0500825d-9146-4e4a-a5ad-0111e4f55714",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token token={{token}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"developeraccysgmail.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/request_password_token",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"request_password_token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password (missing password reset token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fe05d012-d537-4119-86de-a31dd31660e1",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"password\": \"frogsddasd\",\n  \"password_confirmation\": \"frogsddasd\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/reset_password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"reset_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password (wrong reset token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e86076f0-9897-49b0-81a8-d29e8ee4bd4f",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-RESET-PASSWORD-TOKEN",
+								"value": "dnfmsmjgj"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"password\": \"{{password}}\",\n  \"password_confirmation\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/reset_password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"reset_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change password (wrong current password)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cfe31807-9512-43cb-aeef-e44cbedf8a67",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1bb02d1f-8c9a-4191-8d7f-22d0b0f62be3",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "XxWgYpWAK8QYb3rCdA1bHzbd9gMYgFF97Q"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"current_password\": \"sdfsdfsdf\",\n  \"password\": \"frogsllasd\",\n  \"password_confirmation\": \"frogsllasd\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/change_password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"change_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change password (correct password change)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "57d37771-7543-4cde-a132-19b78224ea43",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c5dca294-8912-495e-808f-5e3567b5762c",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "XxWgYpWAK8QYb3rCdA1bHzbd9gMYgFF97Q"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"current_password\": \"{{password}}\",\n  \"password\": \"{{password}}\",\n  \"password_confirmation\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/change_password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"change_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (wrong authorization)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f68de8c3-2c30-4b9b-9497-58c9b2e41074",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "rYB6Mn41yavp1eygNzp--EKz3OW3xa0TIw"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (correct delete)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "29e269ce-b150-42a7-818b-ae5a957897e7",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (wrong user_token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "deeacda5-9038-4c08-8dc9-62db4cbe13bf",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "fsdlwpkmfm"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
 							]
 						}
 					},

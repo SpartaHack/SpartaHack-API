@@ -5,6 +5,7 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from common.utils import unauthorized,headers,not_found
+from flask_mail import Mail, Message
 
 from config import load_env_variables, DevelopmentConfig, ProdConfig
 
@@ -14,6 +15,7 @@ load_env_variables()
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)#loading config data into flask app from config object.
 api = Api(app)
+mail = Mail(app)
 
 #reflecting classes
 print("Reflecting classes...")

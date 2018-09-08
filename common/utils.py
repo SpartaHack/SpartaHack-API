@@ -1,6 +1,8 @@
 from flask import request,g
 import math
 import app
+import smtplib
+from email.message import EmailMessage
 
 bad_request = {"status":400,"message":"Bad Request","error_list":{}}
 unauthorized = {"status":401,"message":"Unauthorized","error_list":{}}
@@ -52,5 +54,24 @@ def waste_time():
 def verify_pass(password,hash):
     return app.app.config["CRYPTO_CONTEXT"].verify(password,hash = hash)
 
-def send_email(email_add):
-    pass
+def send_email(subject,recipient,body):
+    try:
+        #creating SMTP server connection
+        mail_server = smtplib.SMTP(host=app.app.config["MAIL_SERVER"], port=app.app.config["MAIL_PORT"])
+        mail_server.starttls()
+        mail_server.login(app.app.config["MAIL_USERNAME"], app.app.config["MAIL_PASSWORD"])
+
+        #creating email
+        msg = EmailMessage()
+        msg['From'] = app.app.config["MAIL_USERNAME"]
+        msg["To"] = recipient
+        msg["Subject"] = subject
+        msg.set_content(body,subtype = 'html')
+
+        #sending email
+        mail_server.send_message(msg)
+    except smtplib.SMTPException as error:
+        print (str(error))
+        print ("Error: unable to send email")
+    finally:
+        mail_server.quit()
