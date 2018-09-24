@@ -1,10 +1,11 @@
-from flask import Flask, jsonify, make_response,request, g
+from flask import Flask, jsonify, make_response, request, g
 from flask_restful import Api
 from celery import Celery
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from common.utils import unauthorized,headers,not_found
+from flask_mail import Mail, Message
 
 from config import load_env_variables, DevelopmentConfig, ProdConfig
 
@@ -12,8 +13,9 @@ from config import load_env_variables, DevelopmentConfig, ProdConfig
 load_env_variables()
 
 app = Flask(__name__)
-app.config.from_object(ProdConfig)#loading config data into flask app from config object.
+app.config.from_object(DevelopmentConfig)#loading config data into flask app from config object.
 api = Api(app)
+mail = Mail(app)
 
 #reflecting classes
 print("Reflecting classes...")
@@ -27,8 +29,7 @@ print("Classes reflected...")
 def create_session():
     """
     Before processing any request. Create a session by checking out a connection from the connection pool.
-    Also set request global variables to be accessed for the life time of the request
-
+    Also set global variables to be accessed for the life time of the request
     """
     g.session = Session(engine)
     g.Base = Base
@@ -48,6 +49,8 @@ from resources.announcements import Announcements_RUD, Announcements_CR
 from resources.hardware import Hardware_RUD, Hardware_CR
 from resources.sponsors import Sponsor_RD, Sponsor_CR
 from resources.schedule import Schedule_RUD, Schedule_CR
+from resources.applications import Applications_RU, Applications_CR
+from resources.users import Users_RD, Users_CRU, Users_Change_Role, Users_Reset_Password_Token, Users_Reset_Password, Users_Change_Password
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
@@ -75,7 +78,14 @@ api.add_resource(Sponsor_RD,"/sponsors/<int:sponsor_id>")
 api.add_resource(Sponsor_CR,"/sponsors")
 api.add_resource(Schedule_RUD,"/schedule/<int:schedule_id>")
 api.add_resource(Schedule_CR,"/schedule")
-
+api.add_resource(Applications_RU,"/applications/<int:application_id>")
+api.add_resource(Applications_CR,"/applications")
+api.add_resource(Users_RD,"/users/<int:user_id>")
+api.add_resource(Users_CRU,"/users")
+api.add_resource(Users_Change_Role,"/users/change_user_role")
+api.add_resource(Users_Reset_Password_Token,"/users/request_password_token")
+api.add_resource(Users_Reset_Password,"/users/reset_password")
+api.add_resource(Users_Change_Password,"/users/change_password")
 
 @app.route("/")
 def helloworld():
@@ -88,10 +98,10 @@ def helloworld():
                 "Backend Developers":"Yash, Jarek",
                 "Frontend Developers":"Harrison, Jessica, Jarek",
                 "Contact":"hello@spartahack.com",
-                "Version":"0.5.0"
+                "Version":"0.6.0"
                }
-    return (metadata,200,headers)
+    return (jsonify(metadata),200,headers)
 
 
 if __name__ == '__main__': #running on local server. This needs to change for prod
-    app.run()
+    app.run(debug=True)

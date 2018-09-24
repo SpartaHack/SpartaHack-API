@@ -16,7 +16,7 @@ class Schedule_RUD(Resource):
         """
         GET the hardware details based on specific hardware_id
         """
-        #using get instead of query and it is marginally faster than filter
+        #using get instead of filter and it is marginally faster than filter
         #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
         try:
             schedule_item = g.session.query(g.Base.classes.schedules).get(schedule_id)
@@ -33,7 +33,7 @@ class Schedule_RUD(Resource):
 
     def put(self,schedule_id):
         """
-        update the hardware. Required data: item, lender, quantity
+        Update the hardware. Required data: title, description, time, location
         """
         #check if data from request is serializable
         try:
