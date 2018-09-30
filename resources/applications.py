@@ -99,36 +99,39 @@ class Applications_RU(Resource):
         # *Only allow user making the request to access their own application id to access this resource
         # *The original data to be provided in the request. Just updated value setting will be implemented in PATCH which would be in API 2.0
         if application:
-            try:
-                application.birth_day = data['birth_day']
-                application.birth_month = data['birth_month']
-                application.birth_year = data['birth_year']
-                application.education = data['education']
-                application.university = data['university']
-                application.other_university = data['other_university']
-                application.travel_origin = data['travel_origin']
-                application.graduation_season = data['graduation_season']
-                application.graduation_year = data['graduation_year']
-                application.major = data['major']
-                application.hackathons = data['hackathons']
-                application.github = data['github']
-                application.linkedin = data['linkedin']
-                application.website = data['website']
-                application.devpost = data['devpost']
-                application.other_link = data['other_link']
-                application.statement = data['statement']
-                application.updated_at = datetime.now()
-                application.race = data['race']
-                application.gender = data['gender']
-                application.outside_north_america = data['outside_north_america']
-                application.status = data['status']
+                try:
+                    if user_status in ["director","organizer"] or calling_user.id == application.user_id:
+                        application.birth_day = data['birth_day']
+                        application.birth_month = data['birth_month']
+                        application.birth_year = data['birth_year']
+                        application.education = data['education']
+                        application.university = data['university']
+                        application.other_university = data['other_university']
+                        application.travel_origin = data['travel_origin']
+                        application.graduation_season = data['graduation_season']
+                        application.graduation_year = data['graduation_year']
+                        application.major = data['major']
+                        application.hackathons = data['hackathons']
+                        application.github = data['github']
+                        application.linkedin = data['linkedin']
+                        application.website = data['website']
+                        application.devpost = data['devpost']
+                        application.other_link = data['other_link']
+                        application.statement = data['statement']
+                        application.updated_at = datetime.now()
+                        application.race = data['race']
+                        application.gender = data['gender']
+                        application.outside_north_america = data['outside_north_america']
+                        application.status = data['status']
 
-                ret = Application_Schema().dump(application).data
-                return (ret,200,headers)
-            except Exception as err:
-                print(type(err))
-                print(err)
-                return (internal_server_error,500,headers)
+                        ret = Application_Schema().dump(application).data
+                        return (ret,200,headers)
+                    else:
+                        return (forbidden,403,headers)
+                except Exception as err:
+                    print(type(err))
+                    print(err)
+                    return (internal_server_error,500,headers)
         else:
             return (not_found,404,headers)
 
