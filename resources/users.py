@@ -17,7 +17,7 @@ import secrets
 class Users_RD(Resource):
     """
     For GET and DELETE for specific user_id
--    Director, Organizer should be able to get any user details and delete any user but not update
+    Director, Organizer should be able to get any user details and delete any user but not update
     """
     def get(self,user_id):
         """
@@ -141,7 +141,7 @@ class Users_CRU(Resource):
             unprocessable_entity["error_list"] = validation["_schema"][0]
             return (unprocessable_entity,422,headers)
 
-        # *Only allow user making the request to access his own user id to access this resource
+        # *Only allow user making the request to access their own user id to access this resource
         # *The original email, first_name and last_name to be provided in the request. Just updated value setting will be implemented in PATCH which would be in API 2.0
         try:
             calling_user.email = data["email"]
@@ -212,7 +212,7 @@ class Users_CRU(Resource):
             f.close()
             body = body.render(first_name = data["first_name"])
             send_email(subject = "Account creation confirmation!",recipient = data["email"], body = body)
-            return (User_Schema().dump(ret).data,201 ,headers)
+            return (User_Schema().dump(ret).data,201,headers)
         except Exception as err:
             print(type(err))
             print(err)

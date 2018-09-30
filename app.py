@@ -98,7 +98,7 @@ def helloworld():
                 "Backend Developers":"Yash, Jarek",
                 "Frontend Developers":"Harrison, Jessica, Jarek",
                 "Contact":"hello@spartahack.com",
-                "Version":"0.6.0"
+                "Version":"0.7.0"
                }
     return (jsonify(metadata),200,headers)
 
