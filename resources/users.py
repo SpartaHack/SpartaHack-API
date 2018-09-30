@@ -17,7 +17,7 @@ import secrets
 class Users_RD(Resource):
     """
     For GET and DELETE for specific user_id
--    Director, Organizer should be able to get any user details and delete any user but not update
+    Director, Organizer should be able to get any user details and delete any user but not update
     """
     def get(self,user_id):
         """
@@ -212,7 +212,7 @@ class Users_CRU(Resource):
             f.close()
             body = body.render(first_name = data["first_name"])
             send_email(subject = "Account creation confirmation!",recipient = data["email"], body = body)
-            return (User_Schema().dump(ret).data,201 ,headers)
+            return (User_Schema().dump(ret).data,201,headers)
         except Exception as err:
             print(type(err))
             print(err)
