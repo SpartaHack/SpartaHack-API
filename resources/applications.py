@@ -40,19 +40,101 @@ class Applications_RU(Resource):
             if user_status in ["director","organizer"] or calling_user.id == application.user_id:
                 ret = Application_Schema().dump(application).data
                 return (ret,200,headers)
+            else:
+                return (forbidden,403,headers)
         else:
             return (not_found,404,headers)
 
     def put(self,application_id):
         """
         Update the application. Required data: application_id
+        birth_day
+        birth_month
+        birth_year
+        education
+        university
+        other_university
+        travel_origin
+        graduation_season
+        graduation_year
+        major
+        hackathons
+        github
+        linkedin
+        website
+        devpost
+        other_link
+        statement
+        race
+        gender
+        outside_north_america
+        PUT is allowed only by users on their own objects.
         """
-        pass
+        #check if data from request is serializable
+        try:
+            data = request.get_json(force=True)
+        except BadRequest:
+            return (bad_request,400,headers)
+
+        user_status,calling_user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
+
+        # *request data validation. Check for empty fields will be done by frontend
+        validation = Application_Schema().validate(data)
+        if validation:
+            unprocessable_entity["error_list"] = validation
+            return (unprocessable_entity,422,headers)
+
+        #* get application for the calling user
+        try:
+            application = g.session.query(g.Base.classes.applications).get(application_id)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        # *Only allow user making the request to access their own application id to access this resource
+        # *The original data to be provided in the request. Just updated value setting will be implemented in PATCH which would be in API 2.0
+        if application:
+            try:
+                application.birth_day = data['birth_day']
+                application.birth_month = data['birth_month']
+                application.birth_year = data['birth_year']
+                application.education = data['education']
+                application.university = data['university']
+                application.other_university = data['other_university']
+                application.travel_origin = data['travel_origin']
+                application.graduation_season = data['graduation_season']
+                application.graduation_year = data['graduation_year']
+                application.major = data['major']
+                application.hackathons = data['hackathons']
+                application.github = data['github']
+                application.linkedin = data['linkedin']
+                application.website = data['website']
+                application.devpost = data['devpost']
+                application.other_link = data['other_link']
+                application.statement = data['statement']
+                application.updated_at = datetime.now()
+                application.race = data['race']
+                application.gender = data['gender']
+                application.outside_north_america = data['outside_north_america']
+                application.status = data['status']
+
+                ret = Application_Schema().dump(application).data
+                return (ret,200,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error,500,headers)
+        else:
+            return (not_found,404,headers)
 
     def delete(self,application_id):
         """
         Delete the application. Required data: application_id
-        Might also have to delete the user
         """
         user_status,calling_user = has_admin_privileges()
         if user_status == "no_auth_token":
@@ -72,9 +154,16 @@ class Applications_RU(Resource):
         # *Only allow directors, organizers and the user making the request to access his own user id to access this resource
         # *Compare user_id rather than complete user objects because it's faster
         if application:
-            if user_status in ["director","organizer"] or calling_user.id == application.user_id:
-                ret = Application_Schema().dump(application).data
-                return (ret,200,headers)
+            try:
+                if user_status in ["director","organizer"] or calling_user.id == application.user_id:
+                    g.session.delete(g.session.query(g.Base.classes.applications).get(application_id))
+                    return ("",204,headers)
+                else:
+                    return (forbidden,403,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error, 500, headers)
         else:
             return (not_found,404,headers)
 
@@ -165,7 +254,7 @@ class Applications_CR(Resource):
                                           )
             g.session.add(new_application)
             g.session.commit()
-            ret = g.session.query(Applications).filter(Applications.user_id == calling_user.id)
+            ret = g.session.query(Applications).filter(Applications.user_id == calling_user.id).one()
             ret = Application_Schema().dump(ret).data
             return (ret,201,headers)
         except Exception as err:

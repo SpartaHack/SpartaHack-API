@@ -141,7 +141,7 @@ class Users_CRU(Resource):
             unprocessable_entity["error_list"] = validation["_schema"][0]
             return (unprocessable_entity,422,headers)
 
-        # *Only allow user making the request to access his own user id to access this resource
+        # *Only allow user making the request to access their own user id to access this resource
         # *The original email, first_name and last_name to be provided in the request. Just updated value setting will be implemented in PATCH which would be in API 2.0
         try:
             calling_user.email = data["email"]
