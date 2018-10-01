@@ -5,7 +5,7 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from common.utils import unauthorized,headers,not_found
-from flask_mail import Mail, Message
+from flask_cors import CORS
 
 from config import load_env_variables, DevelopmentConfig, ProdConfig
 
@@ -15,7 +15,7 @@ load_env_variables()
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)#loading config data into flask app from config object.
 api = Api(app)
-mail = Mail(app)
+CORS(app,origins=["https://spartahack.com","https://19.spartahack.com"])
 
 #reflecting classes
 print("Reflecting classes...")
@@ -51,6 +51,7 @@ from resources.sponsors import Sponsor_RD, Sponsor_CR
 from resources.schedule import Schedule_RUD, Schedule_CR
 from resources.applications import Applications_RU, Applications_CR
 from resources.users import Users_RD, Users_CRU, Users_Change_Role, Users_Reset_Password_Token, Users_Reset_Password, Users_Change_Password
+from resources.sessions import Sessions_C,Sessions_D
 
 @api.representation('application/json')
 def ret_json(data, code, headers=None):
@@ -86,6 +87,8 @@ api.add_resource(Users_Change_Role,"/users/change_user_role")
 api.add_resource(Users_Reset_Password_Token,"/users/request_password_token")
 api.add_resource(Users_Reset_Password,"/users/reset_password")
 api.add_resource(Users_Change_Password,"/users/change_password")
+api.add_resource(Sessions_D,"/sessions/<user_token>")
+api.add_resource(Sessions_C,"/sessions")
 
 @app.route("/")
 def helloworld():
@@ -98,7 +101,7 @@ def helloworld():
                 "Backend Developers":"Yash, Jarek",
                 "Frontend Developers":"Harrison, Jessica, Jarek",
                 "Contact":"hello@spartahack.com",
-                "Version":"0.7.0"
+                "Version":"0.8.0"
                }
     return (jsonify(metadata),200,headers)
 

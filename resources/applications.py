@@ -10,7 +10,7 @@ from common.utils import bad_request,unauthorized,forbidden,not_found,internal_s
 
 class Applications_RU(Resource):
     """
-    For GET PUT for specific faq
+    For GET PUT for specific application
     get http headers using request.headers.get("header_name")
     """
     def get(self,application_id):
@@ -172,7 +172,7 @@ class Applications_RU(Resource):
 
 class Applications_CR(Resource):
     """
-    To create new hardware using POST and read all hardware items
+    To create new application using POST and read all hardware items
     """
     def post(self):
         """

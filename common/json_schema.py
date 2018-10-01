@@ -185,3 +185,7 @@ class User_Reset_Password_Schema(Schema):
 
         if errors:
             raise ValidationError(errors)
+
+class Sessions_Schema(Schema):
+    email = fields.Email(required=True)
+    password = fields.Str(required=True)
