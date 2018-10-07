@@ -1,6 +1,6 @@
 from flask import request,g
 import math
-import app
+from flask import current_app as app
 import smtplib
 from email.message import EmailMessage
 
@@ -46,24 +46,24 @@ def has_admin_privileges():
         return "not_logged_in",user
 
 def encrypt_pass(password):
-    return app.app.config["CRYPTO_CONTEXT"].hash(password)
+    return app.config["CRYPTO_CONTEXT"].hash(password)
 
 def waste_time():
-    app.app.config["CRYPTO_CONTEXT"].dummy_verify()
+    app.config["CRYPTO_CONTEXT"].dummy_verify()
 
 def verify_pass(password,password_hash):
-    return app.app.config["CRYPTO_CONTEXT"].verify(password,hash = password_hash)
+    return app.config["CRYPTO_CONTEXT"].verify(password,hash = password_hash)
 
 def send_email(subject,recipient,body):
     try:
         #creating SMTP server connection
-        mail_server = smtplib.SMTP(host=app.app.config["MAIL_SERVER"], port=app.app.config["MAIL_PORT"])
+        mail_server = smtplib.SMTP(host=app.config["MAIL_SERVER"], port=app.config["MAIL_PORT"])
         mail_server.starttls()
-        mail_server.login(app.app.config["MAIL_USERNAME"], app.app.config["MAIL_PASSWORD"])
+        mail_server.login(app.config["MAIL_USERNAME"], app.config["MAIL_PASSWORD"])
 
         #creating email
         msg = EmailMessage()
-        msg['From'] = app.app.config["MAIL_USERNAME"]
+        msg['From'] = app.config["MAIL_USERNAME"]
         msg["To"] = recipient
         msg["Subject"] = subject
         msg.set_content(body,subtype = 'html')
