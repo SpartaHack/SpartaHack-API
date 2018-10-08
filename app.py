@@ -136,10 +136,10 @@ def create_app(config=None):
     load_env_variables()
 
     #setting up sentry-sdk for logging exceptions and logs
-    # sentry_sdk.init(
-    #                     dsn=os.environ['SENTRY_DSN'],
-    #                     integrations=[FlaskIntegration()]
-    #                 )
+    sentry_sdk.init(
+                        dsn=os.environ['SENTRY_DSN'],
+                        integrations=[FlaskIntegration()]
+                    )
     app = Flask("SpartaHackAPIV")
     app.config.from_object(eval(config))#loading config data into flask app from config object.
 
