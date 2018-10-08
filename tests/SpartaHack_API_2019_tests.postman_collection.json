@@ -3360,6 +3360,598 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "applications",
+			"description": null,
+			"item": [
+				{
+					"name": "create (wrong authorization)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "96166758-72b9-4397-b656-b9a6591051bf",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "sdfsdf"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"birth_day\":  2, \n    \"birth_month\": 12,\n    \"birth_year\": 1993,\n    \"education\": \"Undergraduate Student\",\n    \"university\": \"Michigan: Michigan State University\",\n    \"other_university\": \"\",\n    \"travel_origin\": \"Michigan: Michigan State University\",\n    \"graduation_season\": \"Spring\",\n    \"graduation_year\": 2017,\n    \"major\": [\"Computer Science\"],\n    \"hackathons\": 3,\n    \"github\": null,\n    \"linkedin\": null,\n    \"website\": null,\n    \"devpost\": \"https://devpost.com/johnsnow\",\n    \"other_link\": null,\n    \"statement\": \"Word\",\n    \"race\" : [\"White\"],\n    \"gender\" : \"Male\",\n    \"outside_north_america\" : \"Canada\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (wrong data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7da9e88a-eddf-4db3-9a12-c78c3c03bdbd",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"birth_day\":  2, \n    \"birth_month\": 12,\n    \"birth_year\": 1993,\n    \"education\": \"Undergraduate Student\",\n    \"university\": \"Michigan: Michigan State University\",\n    \"other_university\": \"\",\n    \"travel_origin\": \"Michigan: Michigan State University\",\n    \"graduation_season\": \"Spring\",\n    \"graduation_year\": 2017,\n    \"major\": [\"Computer Science\"],\n    \"hackathons\": 3,\n    \"github\": null,\n    \"linkedin\": null,\n    \"website\": null,\n    \"devpost\": \"https//devpost.com/johnsnow\",\n    \"other_link\": null,\n    \"statement\": \"Word\",\n    \"race\" : [\"White\"],\n    \"gender\" : \"Male\",\n    \"outside_north_america\" : \"Canada\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (correct create)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d84d712c-4a95-421f-87aa-1c609d6ecec8",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"application_id\", jsonData.id);",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"birth_day\":  2, \n    \"birth_month\": 12,\n    \"birth_year\": 1993,\n    \"education\": \"Undergraduate Student\",\n    \"university\": \"Michigan: Michigan State University\",\n    \"other_university\": \"\",\n    \"travel_origin\": \"Michigan: Michigan State University\",\n    \"graduation_season\": \"Spring\",\n    \"graduation_year\": 2017,\n    \"major\": [\"Computer Science\"],\n    \"hackathons\": 3,\n    \"github\": null,\n    \"linkedin\": null,\n    \"website\": null,\n    \"devpost\": \"https://devpost.com/johnsnow\",\n    \"other_link\": null,\n    \"statement\": \"Word\",\n    \"race\" : [\"White\"],\n    \"gender\" : \"Male\",\n    \"outside_north_america\" : \"Canada\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create (application already submitted)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "94e777e9-ea5b-45f1-a894-60d3149d1588",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"birth_day\":  2, \n    \"birth_month\": 12,\n    \"birth_year\": 1993,\n    \"education\": \"Undergraduate Student\",\n    \"university\": \"Michigan: Michigan State University\",\n    \"other_university\": \"\",\n    \"travel_origin\": \"Michigan: Michigan State University\",\n    \"graduation_season\": \"Spring\",\n    \"graduation_year\": 2017,\n    \"major\": [\"Computer Science\"],\n    \"hackathons\": 3,\n    \"github\": null,\n    \"linkedin\": null,\n    \"website\": null,\n    \"devpost\": \"https://devpost.com/johnsnow\",\n    \"other_link\": null,\n    \"statement\": \"Word\",\n    \"race\" : [\"White\"],\n    \"gender\" : \"Male\",\n    \"outside_north_america\" : \"Canada\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (specific application id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "98b327f0-3fa4-44f5-8691-48667296c375",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"application_id\", jsonData.id);",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications/{{application_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications",
+								"{{application_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (wrong autorization all application)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e1ba18a1-2af0-496f-81b2-9bbe02a9a8f6",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "F1lQDNm43UdIQjiP6ckISloV_n1smTwQtA"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (correct all application)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "74678245-8765-4701-a891-85f521152b61",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read (wrong authorization specific application id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c01ecea9-c3db-42b1-b6fd-330fe1f80cae",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "F1lQDNm43UdIQjiP6ckISloV_n1smTwQtA"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications/{{application_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications",
+								"{{application_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update (wrong data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "824f2ae2-706a-47fe-8f2e-c57424a2263e",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"birth_day\":  2, \n    \"birth_month\": 12,\n    \"birth_year\": 1993,\n    \"education\": \"Undergraduate Student\",\n    \"university\": \"Michigan: Michigan State University\",\n    \"other_university\": \"\",\n    \"travel_origin\": \"Michigan: Michigan State University\",\n    \"graduation_season\": \"Spring\",\n    \"graduation_year\": 2017,\n    \"major\": [\"Computer Science\"],\n    \"hackathons\": 3,\n    \"github\": null,\n    \"linkedin\": null,\n    \"website\": null,\n    \"devpost\": \"htt://devpost.com/johnsnow\",\n    \"other_link\": null,\n    \"statement\": \"Word\",\n    \"race\" : [\"White\"],\n    \"gender\" : \"Male\",\n    \"outside_north_america\" : \"Canada\",\n    \"status\" : \"Accepted\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications/{{application_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications",
+								"{{application_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update (wrong athorization)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "01f0b5b2-fea5-4eff-b603-c4b74b3aaf5c",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "F1lQDNm43UdIQjiP6ckISloV_n1smTwQtA"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"birth_day\":  2, \n    \"birth_month\": 12,\n    \"birth_year\": 1993,\n    \"education\": \"Undergraduate Student\",\n    \"university\": \"Michigan: Michigan State University\",\n    \"other_university\": \"\",\n    \"travel_origin\": \"Michigan: Michigan State University\",\n    \"graduation_season\": \"Spring\",\n    \"graduation_year\": 2017,\n    \"major\": [\"Computer Science\"],\n    \"hackathons\": 3,\n    \"github\": null,\n    \"linkedin\": null,\n    \"website\": null,\n    \"devpost\": \"https://devpost.com/johnsnow\",\n    \"other_link\": null,\n    \"statement\": \"Word\",\n    \"race\" : [\"White\"],\n    \"gender\" : \"Male\",\n    \"outside_north_america\" : \"Canada\",\n    \"status\" : \"Accepted\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications/{{application_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications",
+								"{{application_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update (correct update)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "31b6d2ab-f6f8-48ab-8917-d99b6352d4a7",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"birth_day\":  2, \n    \"birth_month\": 12,\n    \"birth_year\": 1993,\n    \"education\": \"Undergraduate Student\",\n    \"university\": \"Michigan: Michigan State University\",\n    \"other_university\": \"\",\n    \"travel_origin\": \"Michigan: Michigan State University\",\n    \"graduation_season\": \"Spring\",\n    \"graduation_year\": 2017,\n    \"major\": [\"Computer Science\"],\n    \"hackathons\": 3,\n    \"github\": null,\n    \"linkedin\": null,\n    \"website\": null,\n    \"devpost\": \"https://devpost.com/johnsnow\",\n    \"other_link\": null,\n    \"statement\": \"Word\",\n    \"race\" : [\"White\"],\n    \"gender\" : \"Male\",\n    \"outside_north_america\" : \"Canada\",\n    \"status\" : \"Accepted\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/applications/{{application_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications",
+								"{{application_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (wrong authorization)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a48fb2a-cdde-458e-88dc-269c7dd916b6",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "F1lQDNm43UdIQjiP6ckISloV_n1smTwQtA"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/applications/{{application_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications",
+								"{{application_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete (correct delete)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a1ff822a-f551-4d2a-83c0-c8715ac5573c",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-WWW-USER-TOKEN",
+								"value": "{{user_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/applications/{{application_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"applications",
+								"{{application_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
