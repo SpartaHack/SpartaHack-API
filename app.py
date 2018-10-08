@@ -72,8 +72,9 @@ def register_hello_world_route(app):
                     "Frontend Developers":"Harrison, Jessica, Jarek",
                     "Contact":"hello@spartahack.com",
                     "Version":"0.8.0"
-                }
-    app.add_url_rule('/',helloworld)
+                    }
+        return (jsonify(metadata),200,headers)
+    app.add_url_rule('/','/',helloworld)
 
 
 def register_resources(api):
@@ -144,10 +145,10 @@ def create_app(config=None):
 
     from extensions import api, Base, engine
 
-    register_extensions(app,api)
     register_before_requests(app,Base,engine)
     register_after_requests(app)
-    register_hello_world_route(app)
     register_resources(api)
+    register_hello_world_route(app)
+    register_extensions(app,api)
 
     return app
