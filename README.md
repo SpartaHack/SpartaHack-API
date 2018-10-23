@@ -1,7 +1,10 @@
 # SpartaHack-API-2019
 
 [![Build Status](https://travis-ci.org/SpartaHack/SpartaHack_API_2019.svg?branch=master)](https://travis-ci.org/SpartaHack/SpartaHack_API_2019)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/SpartaHack/SpartaHack_API_2019.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/SpartaHack/SpartaHack_API_2019/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/SpartaHack/SpartaHack_API_2019.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/SpartaHack/SpartaHack_API_2019/context:python)
 [![CodeFactor](https://www.codefactor.io/repository/github/spartahack/spartahack_api_2019/badge/develop)](https://www.codefactor.io/repository/github/spartahack/spartahack_api_2019/overview/develop)
+
 
 The New SpartaHack API
 
