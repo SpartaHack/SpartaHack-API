@@ -27,7 +27,7 @@ def register_extensions(app,api):
     Register Flask extensions.
     """
     #initializing CORS object
-    #CORS(app,origins=["https://spartahack.com","https://19.spartahack.com"])
+    CORS(app,origins=["https://spartahack.com","https://19.spartahack.com"])
 
     #initializing api object
     api.init_app(app)
@@ -48,7 +48,7 @@ def register_before_requests(app,Base,engine):
 
 def register_after_requests(app):
     """
-    Register before_request functions.
+    Register after_request functions.
     """
     def commit_and_close_session(resp):
         """
