@@ -13,7 +13,7 @@ install:
 script:
 - export FLASK_ENV=development
 - export FLASK_APP=wsgi.py
-- flask run &
+- python wsgi.py &
 - APP_PID=$!
 - node_modules/.bin/newman run tests/SpartaHack_API_2019_tests.postman_collection.json
   -e tests/SpartaHack-API-2019_test.postman_environment.json

@@ -7,7 +7,7 @@ from flask import Flask, jsonify, make_response, request, g
 
 #importing API stuff
 from common.utils import unauthorized,headers,not_found
-from config import load_env_variables, DevelopmentConfig, ProdConfig
+from config import DevelopmentConfig, ProdConfig
 from resources.faqs import Faqs_RUD, Faqs_CR
 from resources.announcements import Announcements_RUD, Announcements_CR
 from resources.hardware import Hardware_RUD, Hardware_CR
@@ -131,9 +131,6 @@ def create_app(config=None):
                      'handlers': ['wsgi']
                     }
         })
-
-    #loading environment variables
-    load_env_variables()
 
     #setting up sentry-sdk for logging exceptions and logs
     sentry_sdk.init(
