@@ -39,7 +39,7 @@ pylint==1.9.2
 python-dotenv==0.8.2
 pytz==2018.4
 redis==2.10.6
-requests==2.18.4
+requests==2.20.0
 sentry-sdk==0.3.7
 six==1.11.0
 speaklater==1.3
