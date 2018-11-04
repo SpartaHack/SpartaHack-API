@@ -1,6 +1,5 @@
 import os
 from passlib.context import CryptContext
-    
 
 #To load config variables from object.
 class BaseConfig:

@@ -138,6 +138,7 @@ def create_app(config=None):
                         integrations=[FlaskIntegration()]
                     )
     app = Flask("SpartaHackAPIV")
+    config = os.environ.get("FLASK_ENV")
     app.config.from_object(eval(config))#loading config data into flask app from config object.
 
     from extensions import api, Base, engine
