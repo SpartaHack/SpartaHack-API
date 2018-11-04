@@ -329,7 +329,7 @@ class Users_Reset_Password_Token(Resource):
             if user:
                 user.reset_password_token = secrets.token_urlsafe(15)
                 user.reset_password_sent_at = datetime.now(),
-                auth_token = secrets.token_urlsafe(25)
+                user.auth_token = secrets.token_urlsafe(25)
                 #send the email
                 return ({"status":"Reset password token set at "+data["email"]},200,headers)
             else:
