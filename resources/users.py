@@ -1,11 +1,11 @@
 from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 from flask import request,jsonify,g
+from flask import current_app as app
 from marshmallow import validate,ValidationError
 from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
 from jinja2 import Template
-from app import app
 from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema,User_Reset_Password_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time,verify_pass,send_email
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict,gone
@@ -329,7 +329,7 @@ class Users_Reset_Password_Token(Resource):
             if user:
                 user.reset_password_token = secrets.token_urlsafe(15)
                 user.reset_password_sent_at = datetime.now(),
-                auth_token = secrets.token_urlsafe(25)
+                user.auth_token = secrets.token_urlsafe(25)
                 #send the email
                 return ({"status":"Reset password token set at "+data["email"]},200,headers)
             else:
