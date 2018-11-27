@@ -27,7 +27,7 @@ def register_extensions(app,api):
     Register Flask extensions.
     """
     #initializing CORS object
-    CORS(app,origins=["https://spartahack.com","https://19.spartahack.com"])
+    CORS(app,origins=["https://spartahack.com","https://19.spartahack.com","http://localhost:5000"])
 
     #initializing api object
     api.init_app(app)
@@ -71,7 +71,7 @@ def register_hello_world_route(app):
                     "Backend Developers":"Yash, Jarek",
                     "Frontend Developers":"Harrison, Jessica, Jarek",
                     "Contact":"hello@spartahack.com",
-                    "Version":"0.8.0"
+                    "Version":"0.9.0"
                     }
         return (jsonify(metadata),200,headers)
     app.add_url_rule('/','/',helloworld)

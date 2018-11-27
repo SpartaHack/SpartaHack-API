@@ -23,7 +23,6 @@ headers = {
 
 def is_logged_in():
     user_token=request.headers.get("X-WWW-USER-TOKEN",default=False)
-    print(user_token)
     if user_token:
         try:
             user=g.session.query(g.Base.classes.users).filter(g.Base.classes.users.auth_token == user_token).one()

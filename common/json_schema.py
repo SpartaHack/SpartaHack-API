@@ -18,7 +18,7 @@ def ip_test(obj):
 
 def password_check(obj):
         if obj.password == obj.password_confirmation:
-            return 
+            return True
 
 class Faq_Schema(Schema):
     id = fields.Integer()
@@ -93,6 +93,8 @@ class Application_Schema(Schema):
     outside_north_america = fields.String()
     status = fields.String()
     accepted_date = fields.DateTime()
+    reimbursement = fields.Boolean(required=True)
+    phone = fields.String(required=True)
 
 class User_Schema(Schema):
     def role_convert(self,obj):

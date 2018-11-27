@@ -13,6 +13,7 @@ click==6.7
 Flask==1.0.2
 Flask-BabelEx==0.9.3
 Flask-Cors==3.0.6
+Flask-Gunicorn==0.1.1
 Flask-Login==0.4.1
 Flask-Mail==0.9.1
 Flask-Redis==0.3.0

@@ -3,9 +3,10 @@ from werkzeug.exceptions import BadRequest
 from flask import request,jsonify,g
 from datetime import datetime
 from sqlalchemy import exists,and_
+from jinja2 import Template
 from sqlalchemy.orm.exc import NoResultFound
 from common.json_schema import Application_Schema
-from common.utils import headers,is_logged_in,has_admin_privileges,waste_time
+from common.utils import headers,is_logged_in,has_admin_privileges,waste_time, send_email
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
 
 class Applications_RU(Resource):
@@ -68,6 +69,8 @@ class Applications_RU(Resource):
         race
         gender
         outside_north_america
+        reimbursement
+        phone
         PUT is allowed only by users on their own objects.
         """
         #check if data from request is serializable
@@ -123,6 +126,8 @@ class Applications_RU(Resource):
                         application.gender = data['gender']
                         application.outside_north_america = data['outside_north_america']
                         application.status = data['status']
+                        application.reimbursement = data['reimbursement']
+                        application.phone = data['phone']
 
                         ret = Application_Schema().dump(application).data
                         return (ret,200,headers)
@@ -197,6 +202,8 @@ class Applications_CR(Resource):
         race
         gender
         outside_north_america
+        reimbursement
+        phone
         """
         try:
             data = request.get_json(force=True)
@@ -253,19 +260,33 @@ class Applications_CR(Resource):
                                             race = data['race'],
                                             gender = data['gender'],
                                             outside_north_america = data['outside_north_america'],
-                                            status = "Applied"
+                                            status = "Applied",
+                                            reimbursement = data['reimbursement'],
+                                            phone = data['phone']
                                           )
             g.session.add(new_application)
             g.session.commit()
             ret = g.session.query(Applications).filter(Applications.user_id == calling_user.id).one()
             ret = Application_Schema().dump(ret).data
-            return (ret,201,headers)
         except Exception as err:
                 print(type(err))
                 print(err)
-                internal_server_error["error_list"]["error"] = "Error in application creation. Please try again."
+                internal_server_error["error_list"]["error"] = "Error in application submission. Please try again."
                 return (internal_server_error,500,headers)
 
+        # error handling for mail send
+        try:
+            f = open("common/application_submitted.html",'r')
+            body = Template(f.read())
+            f.close()
+            body = body.render(first_name = data["first_name"])
+            send_email(subject = "Application submission confirmation!",recipient = data["email"], body = body)
+            return (ret,201,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            internal_server_error["error_list"]["error"] = "Application successfully submitted. Error in confirmation email sending."
+            return (internal_server_error,500,headers)
 
 
     def get(self):
