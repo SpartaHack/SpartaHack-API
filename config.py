@@ -1,10 +1,6 @@
 import os
 from passlib.context import CryptContext
 
-def load_env_variables(): #To load the config variables before creating the flask object
-    from dotenv import load_dotenv
-    load_dotenv()
-
 #To load config variables from object.
 class BaseConfig:
     DEBUG=False

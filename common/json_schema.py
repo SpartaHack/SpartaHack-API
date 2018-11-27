@@ -18,7 +18,7 @@ def ip_test(obj):
 
 def password_check(obj):
         if obj.password == obj.password_confirmation:
-            return 
+            return True
 
 class Faq_Schema(Schema):
     id = fields.Integer()
@@ -68,7 +68,7 @@ class Schedule_Schema(Schema):
 
 class Application_Schema(Schema):
     id = fields.Integer()
-    user_id = fields.Integer(required=True  )
+    user_id = fields.Integer()
     birth_day = fields.Integer(required=True)
     birth_month = fields.Integer(required=True)
     birth_year = fields.Integer(required=True)
@@ -78,21 +78,23 @@ class Application_Schema(Schema):
     travel_origin = fields.String()
     graduation_season = fields.String(required=True)
     graduation_year = fields.Integer(required=True)
-    major = fields.List(fields.String)
+    major = fields.List(fields.String())
     hackathons = fields.Integer(required=True)
-    github = fields.URL()
-    linkedin = fields.URL()
-    website = fields.URL()
-    devpost = fields.URL()
-    other_link = fields.URL()
+    github = fields.URL(allow_none=True)
+    linkedin = fields.URL(allow_none=True)
+    website = fields.URL(allow_none=True)
+    devpost = fields.URL(allow_none=True)
+    other_link = fields.URL(allow_none=True)
     statement = fields.String()
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
-    race = fields.List(fields.String)
+    race = fields.List(fields.String())
     gender = fields.String()
     outside_north_america = fields.String()
     status = fields.String()
     accepted_date = fields.DateTime()
+    reimbursement = fields.Boolean(required=True)
+    phone = fields.String(required=True)
 
 class User_Schema(Schema):
     def role_convert(self,obj):
@@ -185,3 +187,7 @@ class User_Reset_Password_Schema(Schema):
 
         if errors:
             raise ValidationError(errors)
+
+class Sessions_Schema(Schema):
+    email = fields.Email(required=True)
+    password = fields.Str(required=True)

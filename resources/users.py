@@ -1,11 +1,11 @@
 from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 from flask import request,jsonify,g
+from flask import current_app as app
 from marshmallow import validate,ValidationError
 from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
 from jinja2 import Template
-from app import app
 from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema,User_Reset_Password_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time,verify_pass,send_email
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict,gone
@@ -17,7 +17,7 @@ import secrets
 class Users_RD(Resource):
     """
     For GET and DELETE for specific user_id
--    Director, Organizer should be able to get any user details and delete any user but not update
+    Director, Organizer should be able to get any user details and delete any user but not update
     """
     def get(self,user_id):
         """
@@ -141,7 +141,7 @@ class Users_CRU(Resource):
             unprocessable_entity["error_list"] = validation["_schema"][0]
             return (unprocessable_entity,422,headers)
 
-        # *Only allow user making the request to access his own user id to access this resource
+        # *Only allow user making the request to access their own user id to access this resource
         # *The original email, first_name and last_name to be provided in the request. Just updated value setting will be implemented in PATCH which would be in API 2.0
         try:
             calling_user.email = data["email"]
@@ -212,7 +212,7 @@ class Users_CRU(Resource):
             f.close()
             body = body.render(first_name = data["first_name"])
             send_email(subject = "Account creation confirmation!",recipient = data["email"], body = body)
-            return (User_Schema().dump(ret).data,201 ,headers)
+            return (User_Schema().dump(ret).data,201,headers)
         except Exception as err:
             print(type(err))
             print(err)
@@ -329,7 +329,7 @@ class Users_Reset_Password_Token(Resource):
             if user:
                 user.reset_password_token = secrets.token_urlsafe(15)
                 user.reset_password_sent_at = datetime.now(),
-                auth_token = secrets.token_urlsafe(25)
+                user.auth_token = secrets.token_urlsafe(25)
                 #send the email
                 return ({"status":"Reset password token set at "+data["email"]},200,headers)
             else:
