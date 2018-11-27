@@ -279,8 +279,8 @@ class Applications_CR(Resource):
             f = open("common/application_submitted.html",'r')
             body = Template(f.read())
             f.close()
-            body = body.render(first_name = data["first_name"])
-            send_email(subject = "Application submission confirmation!",recipient = data["email"], body = body)
+            body = body.render(first_name = calling_user.first_name)
+            send_email(subject = "Application submission confirmation!",recipient = calling_user.email, body = body)
             return (ret,201,headers)
         except Exception as err:
             print(type(err))
