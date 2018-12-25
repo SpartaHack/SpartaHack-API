@@ -16,6 +16,7 @@ from resources.schedule import Schedule_RUD, Schedule_CR
 from resources.applications import Applications_RU, Applications_CR
 from resources.users import Users_RD, Users_CRU, Users_Change_Role, Users_Reset_Password_Token, Users_Reset_Password, Users_Change_Password
 from resources.sessions import Sessions_C,Sessions_D
+from resources.rsvps import RSVP_CR,RSVP_RD
 
 #importing python stuff
 from logging.config import dictConfig
@@ -71,7 +72,7 @@ def register_hello_world_route(app):
                     "Backend Developers":"Yash, Jarek",
                     "Frontend Developers":"Harrison, Jessica, Jarek",
                     "Contact":"hello@spartahack.com",
-                    "Version":"0.9.0"
+                    "Version":"1.1.0"
                     }
         return (jsonify(metadata),200,headers)
     app.add_url_rule('/','/',helloworld)
@@ -102,11 +103,14 @@ def register_resources(api):
     api.add_resource(Users_Change_Password,"/users/change_password")
     api.add_resource(Sessions_D,"/sessions/<user_token>")
     api.add_resource(Sessions_C,"/sessions")
+    api.add_resource(RSVP_RD,"/rsvps/<int:user_id>")
+    api.add_resource(RSVP_CR,"/rsvps")
 
-#might only need this for email sending so that email sending does not clog up the resources
-#task_queue=Celery("SpartaHack_API_2019",broker=app.config["CELERY_BROKER_URL"])
 
-def create_app(config=None):
+    #might only need this for email sending so that email sending does not clog up the resources
+    #task_queue=Celery("SpartaHack_API_2019",broker=app.config["CELERY_BROKER_URL"])
+
+def create_app(config):
     """
     Flask application factory method
     Sets up extentions and default routes
@@ -138,9 +142,7 @@ def create_app(config=None):
                         integrations=[FlaskIntegration()]
                     )
     app = Flask("SpartaHackAPIV")
-    config = os.environ.get("FLASK_ENV")
     app.config.from_object(eval(config))#loading config data into flask app from config object.
-
     from extensions import api, Base, engine
 
     register_before_requests(app,Base,engine)

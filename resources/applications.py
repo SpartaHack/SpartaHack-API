@@ -113,7 +113,7 @@ class Applications_RU(Resource):
                         application.travel_origin = data['travel_origin']
                         application.graduation_season = data['graduation_season']
                         application.graduation_year = data['graduation_year']
-                        application.major = data['major']
+                        application.major = list(set(data['major']))
                         application.hackathons = data['hackathons']
                         application.github = data['github']
                         application.linkedin = data['linkedin']
@@ -122,7 +122,7 @@ class Applications_RU(Resource):
                         application.other_link = data['other_link']
                         application.statement = data['statement']
                         application.updated_at = datetime.now()
-                        application.race = data['race']
+                        application.race = list(set(data['race']))
                         application.gender = data['gender']
                         application.outside_north_america = data['outside_north_america']
                         application.status = data['status']
@@ -177,7 +177,7 @@ class Applications_RU(Resource):
 
 class Applications_CR(Resource):
     """
-    To create new application using POST and read all hardware items
+    To create new application using POST and read all applications
     """
     def post(self):
         """
@@ -247,7 +247,7 @@ class Applications_CR(Resource):
                                             travel_origin = data['travel_origin'],
                                             graduation_season = data['graduation_season'],
                                             graduation_year = data['graduation_year'],
-                                            major = data['major'],
+                                            major = list(set(data['major'])),
                                             hackathons = data['hackathons'],
                                             github = data['github'],
                                             linkedin = data['linkedin'],
@@ -257,7 +257,7 @@ class Applications_CR(Resource):
                                             statement = data['statement'],
                                             created_at = datetime.now(),
                                             updated_at = datetime.now(),
-                                            race = data['race'],
+                                            race = list(set(data['major'])),
                                             gender = data['gender'],
                                             outside_north_america = data['outside_north_america'],
                                             status = "Applied",
