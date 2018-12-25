@@ -27,7 +27,7 @@ class Api(flask_restful.Api):
             resp = make_response(jsonify(data), code)
         resp.headers.extend(headers)
         return resp
-
+    #* for future!!
     # def ret_xml(self, data, code, headers=None):
     #     pass
 
@@ -42,6 +42,11 @@ api = Api()
 #initializing SQLAlchemy Base object
 print("Reflecting classes...")
 Base = automap_base()
-engine = create_engine(os.environ['DEV_DATABASE_URL'],pool_size=20,max_overflow=20,pool_pre_ping=True)
+if os.getenv("FLASK_ENV") == "PROD":
+    database_uri = os.getenv("PROD_DATABASE_URL")
+else:
+    database_uri = os.getenv("DEV_DATABASE_URL")
+
+engine = create_engine(database_uri,pool_size=20,max_overflow=20,pool_pre_ping=True)
 Base.prepare(engine, reflect=True)
 print("Classes reflected...")
