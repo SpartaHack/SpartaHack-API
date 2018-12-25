@@ -46,8 +46,38 @@ class RSVP_RD(Resource):
 
     def delete(self,user_id):
         """
-        DELETE the rsvp details based on specific application_id
+        DELETE the rsvp details based on specific user_id
+        This will probably not be used by the user
         """
+        user_status,calling_user = has_admin_privileges()
+        if user_status == "no_auth_token":
+            return (bad_request,400,headers)
+
+        if user_status == "not_logged_in":
+            return (unauthorized,401,headers)
+
+        # getting the user. Assuming the user exists. Case of user not existing is checked below
+        try:
+            rsvp = g.session.query(g.Base.classes.rsvps).filter(g.Base.classes.rsvps.user_id == user_id).first()
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return (internal_server_error,500,headers)
+
+        if rsvp:
+            try:
+                if user_status in ["director","organizer"] or calling_user.id == rsvp.user_id:
+                    g.session.delete(g.session.query(g.Base.classes.rsvps).get(rsvp.id))
+                    return ("",204,headers)
+                else:
+                    return (forbidden,403,headers)
+            except Exception as err:
+                print(type(err))
+                print(err)
+                return (internal_server_error, 500, headers)
+        else:
+            return (not_found,404,headers)
+
 
 
 class RSVP_CR(Resource):

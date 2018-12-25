@@ -193,6 +193,8 @@ class Sessions_Schema(Schema):
     password = fields.Str(required=True)
 
 class RSVP_Schema(Schema):
+
+    id = fields.Integer(dump_only=True)
     user_id = fields.Integer(dump_only=True)
     attending = fields.String(required=True)
     dietary_restrictions = fields.List(fields.String(),required=True)
