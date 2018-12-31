@@ -141,10 +141,10 @@ class User_Input_Schema(Schema):
             errors["email"] = "Not an valid email!"
 
         #checking if first and last name have any special characters or numbers
-        if any(char in string.punctuation for char in data["first_name"]) or any(char in string.digits for char in data["first_name"]):
+        if any(char in string.digits for char in data["first_name"]):
             errors["first_name"] = "Not a valid first name"
 
-        if any(char in string.punctuation for char in data["last_name"]) or any(char in string.digits for char in data["last_name"]):
+        if any(char in string.digits for char in data["last_name"]):
             errors["last_name"] = "Not a valid last name"
 
         if errors:
@@ -191,3 +191,15 @@ class User_Reset_Password_Schema(Schema):
 class Sessions_Schema(Schema):
     email = fields.Email(required=True)
     password = fields.Str(required=True)
+
+class RSVP_Schema(Schema):
+
+    id = fields.Integer(dump_only=True)
+    user_id = fields.Integer(dump_only=True)
+    attending = fields.String(required=True)
+    dietary_restrictions = fields.List(fields.String(),required=True)
+    other_dietary_restrictions = fields.String(required=True)
+    resume = fields.String(required=True)
+    shirt_size = fields.String(required=True)
+    carpool_sharing = fields.String(required=True)
+    jobs = fields.String(required=True)
