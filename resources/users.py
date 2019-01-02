@@ -330,13 +330,25 @@ class Users_Reset_Password_Token(Resource):
                 user.reset_password_token = secrets.token_urlsafe(15)
                 user.reset_password_sent_at = datetime.now(),
                 user.auth_token = secrets.token_urlsafe(25)
-                #send the email
-                return ({"status":"Reset password token set at "+data["email"]},200,headers)
             else:
                 return (not_found,404,headers)
         except Exception as err:
             print(type(err))
             print(err)
+            return (internal_server_error,500,headers)
+
+        # error handling for mail send
+        try:
+            f = open("common/reset_password.html",'r')
+            body = Template(f.read())
+            f.close()
+            body = body.render(reset_password_token = user.reset_password_token)
+            send_email(subject = "SpartaHack Password Reset",recipient = data["email"], body = body)
+            return ({"status":"Reset password token set at "+data["email"]},200,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            internal_server_error["error_list"]["error"] = "Password reset token created but error in sending email"
             return (internal_server_error,500,headers)
 
 class Users_Reset_Password(Resource):
