@@ -28,7 +28,7 @@ def register_extensions(app,api):
     Register Flask extensions.
     """
     #initializing CORS object
-    CORS(app,origins=["https://spartahack.com","https://19.spartahack.com","http://localhost:5000"])
+    CORS(app,origins=[eval(app.config.get("CORS_ADDRESSES"))])
 
     #initializing api object
     api.init_app(app)
@@ -139,7 +139,8 @@ def create_app(config):
     #setting up sentry-sdk for logging exceptions and logs
     sentry_sdk.init(
                         dsn=os.environ['SENTRY_DSN'],
-                        integrations=[FlaskIntegration()]
+                        integrations=[FlaskIntegration()],
+                        environment=os.getenv("FLASK_ENV")
                     )
     app = Flask("SpartaHackAPIV")
     app.config.from_object(eval(config))#loading config data into flask app from config object.
