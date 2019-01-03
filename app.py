@@ -69,10 +69,10 @@ def register_hello_world_route(app):
         """
         metadata = {
                     "Organization":"SpartaHack",
-                    "Backend Developers":"Yash, Jarek",
+                    "Backend Developer":"Yash",
                     "Frontend Developers":"Harrison, Jessica, Jarek",
                     "Contact":"hello@spartahack.com",
-                    "Version":"1.1.0"
+                    "Version": os.getenv("VERSION")
                     }
         return (jsonify(metadata),200,headers)
     app.add_url_rule('/','/',helloworld)
@@ -140,9 +140,10 @@ def create_app(config):
     sentry_sdk.init(
                         dsn=os.environ['SENTRY_DSN'],
                         integrations=[FlaskIntegration()],
-                        environment=os.getenv("FLASK_ENV")
+                        environment=os.getenv("FLASK_ENV"),
+                        release=f"spartahack_api_2019@{os.getenv('VERSION')}"
                     )
-    app = Flask("SpartaHackAPIV")
+    app = Flask(os.getenv("PROJECT"))
     app.config.from_object(eval(config))#loading config data into flask app from config object.
     from extensions import api, Base, engine
 
