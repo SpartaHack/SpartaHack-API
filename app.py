@@ -19,6 +19,8 @@ from resources.applications import Applications_RU, Applications_CR
 from resources.users import Users_RD, Users_CRU, Users_Change_Role, Users_Reset_Password_Token, Users_Reset_Password, Users_Change_Password
 from resources.sessions import Sessions_C,Sessions_D
 from resources.rsvps import RSVP_CR,RSVP_RD
+from resources.checkin import Checkin_CR
+
 
 #importing python stuff
 from logging.config import dictConfig
@@ -112,7 +114,7 @@ def register_resources(api):
     api.add_resource(Sessions_C,"/sessions")
     api.add_resource(RSVP_RD,"/rsvps/<int:user_id>")
     api.add_resource(RSVP_CR,"/rsvps")
-
+    api.add_resource(Checkin_CR,"/checkin")
 
     #might only need this for email sending so that email sending does not clog up the resources
     #task_queue=Celery("SpartaHack_API_2019",broker=app.config["CELERY_BROKER_URL"])

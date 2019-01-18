@@ -57,6 +57,7 @@ class Users_RD(Resource):
                 ret["rsvp_id"] = user.rsvps_collection[0].id if user.rsvps_collection else None
                 return (ret,200,headers)
             else:
+                forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
                 return(forbidden,403,headers)
         else:
             return (not_found,404,headers)
@@ -90,6 +91,7 @@ class Users_RD(Resource):
                         g.session.delete(g.session.query(g.Base.classes.applications).get(user.applications_collection[0].id))
                     g.session.delete(g.session.query(g.Base.classes.users).get(user_id))
                 else:
+                    forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
                     return (forbidden,403,headers)
             except Exception as err:
                 print(type(err))
@@ -243,6 +245,7 @@ class Users_CRU(Resource):
                 print(err)
                 return (internal_server_error,500,headers)
         else:
+            forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
             return(forbidden,403,headers)
 
 class Users_Change_Role(Resource):
@@ -289,6 +292,7 @@ class Users_Change_Role(Resource):
                 user.role = 2**(["director","judge","mentor","sponsor","organizer","volunteer","hacker"].index(data["role"]))
                 return (User_Schema().dump(user).data,200,headers)
             else:
+                forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
                 return (forbidden,403,headers)
         except Exception as err:
             print(type(err))
