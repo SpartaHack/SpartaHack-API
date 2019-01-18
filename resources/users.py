@@ -235,7 +235,7 @@ class Users_CRU(Resource):
             return (unauthorized,401,headers)
 
         # *Only allow directors, organizers to make GET on all users (I don't really see the need for this tbh!)maybe for accepting applications
-        if user_status in ["director","organizer"]:
+        if user_status in ["director","organizer","volunteer"]:
             try:
                 all_users = g.session.query(g.Base.classes.users).all()
                 ret = User_Schema(many = True).dump(all_users).data
