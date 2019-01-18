@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
-from flask import request,jsonify,g
+from flask import request,jsonify,g, current_app
 from datetime import datetime
 from sqlalchemy import exists,and_
 from sqlalchemy.orm.exc import NoResultFound
@@ -36,6 +36,8 @@ class Announcements_RUD(Resource):
         try:
             data = request.get_json(force=True)
         except BadRequest:
+            bad_request['error_list']['error']='Bad request received. Please contact hello@spartahack.com for further assistance.'
+            current_app.logger.warning('Bad JSON request found. Request:',str(request))
             return (bad_request,400,headers)
 
         #data validation
@@ -45,9 +47,12 @@ class Announcements_RUD(Resource):
         #check if user has admin privileges
         user_status,user = has_admin_privileges()
         if user_status == "no_auth_token":
+            bad_request['error_list']['error']='Bad request received. Please contact hello@spartahack.com for further assistance.'
+            current_app.logger.warning('Access tried without privileges.',str(user.id))
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
+            
             return (unauthorized,401,headers)
 
         if user_status in ["director","organizer"]:
