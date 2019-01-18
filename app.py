@@ -4,6 +4,8 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_cors import CORS
 from sqlalchemy.orm import Session
 from flask import Flask, jsonify, make_response, request, g
+from flask.cli import AppGroup
+import click
 
 #importing API stuff
 from common.utils import unauthorized,headers,not_found
@@ -20,7 +22,8 @@ from resources.rsvps import RSVP_CR,RSVP_RD
 
 #importing python stuff
 from logging.config import dictConfig
-import os
+import logging
+import os,sys
 
 
 def register_extensions(app,api):
@@ -28,7 +31,7 @@ def register_extensions(app,api):
     Register Flask extensions.
     """
     #initializing CORS object
-    CORS(app,origins=[eval(app.config.get("CORS_ADDRESSES"))])
+    CORS(app,origins=[eval(os.getenv("CORS_ADDRESSES"))])
 
     #initializing api object
     api.init_app(app)
@@ -47,19 +50,17 @@ def register_before_requests(app,Base,engine):
 
     app.before_request(create_session)
 
-def register_after_requests(app):
+def register_teardown_requests(app):
     """
     Register after_request functions.
     """
-    def commit_and_close_session(resp):
+    def close_session(err):
         """
-        After all the processing is done. Commit the changes and close the session to return the connection object back to the connection pool.
+        After all the processing is done. Close the session to return the connection object back to the connection pool.
         """
-        g.session.commit()
         g.session.close()
-        return resp
 
-    app.after_request(commit_and_close_session)
+    app.teardown_request(close_session)
 
 def register_hello_world_route(app):
     def helloworld():
@@ -74,9 +75,15 @@ def register_hello_world_route(app):
                     "Contact":"hello@spartahack.com",
                     "Version": os.getenv("VERSION")
                     }
+
+        app.logger.info('this is an INFO message')
+        app.logger.warning('this is a WARNING message')
+        app.logger.error('this is an ERROR messag')
+        app.logger.info("Root url accessed",stack_info=True)
+        app.logger.error('this is another error with breadcrumbs CRITICAL message')
+
         return (jsonify(metadata),200,headers)
     app.add_url_rule('/','/',helloworld)
-
 
 def register_resources(api):
     """
@@ -115,40 +122,20 @@ def create_app(config):
     Flask application factory method
     Sets up extentions and default routes
     """
-    #setting up logging
-    dictConfig(
-        {
-            'version': 1,
-            'formatters': {'default':
-                                    {
-                                        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-                                    }
-                          },
-            'handlers': {'wsgi':
-                                {
-                                    'class': 'logging.StreamHandler',
-                                    'stream': 'ext://flask.logging.wsgi_errors_stream',
-                                    'formatter': 'default'
-                                }
-                        },
-            'root': {'level': 'INFO',
-                     'handlers': ['wsgi']
-                    }
-        })
-
     #setting up sentry-sdk for logging exceptions and logs
     sentry_sdk.init(
                         dsn=os.environ['SENTRY_DSN'],
                         integrations=[FlaskIntegration()],
                         environment=os.getenv("FLASK_ENV"),
-                        release=f"spartahack_api_2019@{os.getenv('VERSION')}"
+                        release=f"spartahackapi@{os.getenv('VERSION')}"
                     )
     app = Flask(os.getenv("PROJECT"))
-    app.config.from_object(eval(config))#loading config data into flask app from config object.
+    app.config.from_object(eval(config)) #loading config data into flask app from config object.
+
     from extensions import api, Base, engine
 
     register_before_requests(app,Base,engine)
-    register_after_requests(app)
+    register_teardown_requests(app)
     register_resources(api)
     register_hello_world_route(app)
     register_extensions(app,api)

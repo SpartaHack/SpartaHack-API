@@ -257,7 +257,7 @@ class Applications_CR(Resource):
                                             statement = data['statement'],
                                             created_at = datetime.now(),
                                             updated_at = datetime.now(),
-                                            race = list(set(data['major'])),
+                                            race = list(set(data['race'])),
                                             gender = data['gender'],
                                             outside_north_america = data['outside_north_america'],
                                             status = "Applied",

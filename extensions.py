@@ -3,7 +3,7 @@ from celery import Celery
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from flask import Flask, jsonify, make_response, request, g
+from flask import Flask, jsonify, make_response, request, g, current_app
 
 import os
 
@@ -17,10 +17,11 @@ class Api(flask_restful.Api):
             'application/json': self.ret_json,
         }
 
-    def ret_json(self, data, code, headers=None):
+    def ret_json(self, data, code, headers=None,req_json=None):
         """
         Create proper request object based on the return dictionary.
         """
+
         if code == 204:
             resp = make_response('', code)
         else:

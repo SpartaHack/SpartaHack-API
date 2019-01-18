@@ -366,7 +366,7 @@ class Users_Reset_Password(Resource):
         if validation:
             unprocessable_entity["error_list"] = validation["_schema"][0]
         if not request.headers.get("X-WWW-RESET-PASSWORD-TOKEN",default=False):
-                unprocessable_entity["error_list"]["reset_password_token"] = "Password reset token required"
+            unprocessable_entity["error_list"]["reset_password_token"] = "Password reset token required"
         if unprocessable_entity["error_list"]:
             return (unprocessable_entity,422,headers)
 
