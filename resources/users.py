@@ -57,6 +57,7 @@ class Users_RD(Resource):
                 ret["rsvp_id"] = user.rsvps_collection[0].id if user.rsvps_collection else None
                 return (ret,200,headers)
             else:
+                forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
                 return(forbidden,403,headers)
         else:
             return (not_found,404,headers)
@@ -90,6 +91,7 @@ class Users_RD(Resource):
                         g.session.delete(g.session.query(g.Base.classes.applications).get(user.applications_collection[0].id))
                     g.session.delete(g.session.query(g.Base.classes.users).get(user_id))
                 else:
+                    forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
                     return (forbidden,403,headers)
             except Exception as err:
                 print(type(err))
@@ -233,7 +235,7 @@ class Users_CRU(Resource):
             return (unauthorized,401,headers)
 
         # *Only allow directors, organizers to make GET on all users (I don't really see the need for this tbh!)maybe for accepting applications
-        if user_status in ["director","organizer"]:
+        if user_status in ["director","organizer","volunteer"]:
             try:
                 all_users = g.session.query(g.Base.classes.users).all()
                 ret = User_Schema(many = True).dump(all_users).data
@@ -243,6 +245,7 @@ class Users_CRU(Resource):
                 print(err)
                 return (internal_server_error,500,headers)
         else:
+            forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
             return(forbidden,403,headers)
 
 class Users_Change_Role(Resource):
@@ -289,6 +292,7 @@ class Users_Change_Role(Resource):
                 user.role = 2**(["director","judge","mentor","sponsor","organizer","volunteer","hacker"].index(data["role"]))
                 return (User_Schema().dump(user).data,200,headers)
             else:
+                forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
                 return (forbidden,403,headers)
         except Exception as err:
             print(type(err))
@@ -330,13 +334,25 @@ class Users_Reset_Password_Token(Resource):
                 user.reset_password_token = secrets.token_urlsafe(15)
                 user.reset_password_sent_at = datetime.now(),
                 user.auth_token = secrets.token_urlsafe(25)
-                #send the email
-                return ({"status":"Reset password token set at "+data["email"]},200,headers)
             else:
                 return (not_found,404,headers)
         except Exception as err:
             print(type(err))
             print(err)
+            return (internal_server_error,500,headers)
+
+        # error handling for mail send
+        try:
+            f = open("common/reset_password.html",'r')
+            body = Template(f.read())
+            f.close()
+            body = body.render(reset_password_token = user.reset_password_token)
+            send_email(subject = "SpartaHack Password Reset",recipient = data["email"], body = body)
+            return ({"status":"Reset password token set at "+data["email"]},200,headers)
+        except Exception as err:
+            print(type(err))
+            print(err)
+            internal_server_error["error_list"]["error"] = "Password reset token created but error in sending email"
             return (internal_server_error,500,headers)
 
 class Users_Reset_Password(Resource):
@@ -354,7 +370,7 @@ class Users_Reset_Password(Resource):
         if validation:
             unprocessable_entity["error_list"] = validation["_schema"][0]
         if not request.headers.get("X-WWW-RESET-PASSWORD-TOKEN",default=False):
-                unprocessable_entity["error_list"]["reset_password_token"] = "Password reset token required"
+            unprocessable_entity["error_list"]["reset_password_token"] = "Password reset token required"
         if unprocessable_entity["error_list"]:
             return (unprocessable_entity,422,headers)
 
