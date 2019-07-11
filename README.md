@@ -1,7 +1,6 @@
 # SpartaHack-API-2019
 
 [![Build Status](https://travis-ci.org/SpartaHack/SpartaHack_API_2019.svg?branch=master)](https://travis-ci.org/SpartaHack/SpartaHack_API_2019)
-[![CodeFactor](https://www.codefactor.io/repository/github/spartahack/spartahack_api_2019/badge/develop)](https://www.codefactor.io/repository/github/spartahack/spartahack_api_2019/overview/develop)
 
 The New SpartaHack API
 
