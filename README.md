@@ -1,4 +1,5 @@
-# SpartaHack-API-2019
+# **SpartaHack-API**
+---
 
 [![Build Status](https://travis-ci.org/SpartaHack/SpartaHack_API_2019.svg?branch=master)](https://travis-ci.org/SpartaHack/SpartaHack_API_2019)
 
