@@ -3,6 +3,10 @@ import math
 from flask import current_app as app
 import smtplib
 from email.message import EmailMessage
+from six.moves.urllib.request import urlopen
+from jose import jwt
+import os
+import json
 
 bad_request = {"status":400,"message":"Bad Request","error_list":{}}
 unauthorized = {"status":401,"message":"Unauthorized","error_list":{}}
@@ -75,3 +79,54 @@ def send_email(subject,recipient,body):
         print ("Error: unable to send email")
     finally:
         mail_server.quit()
+
+
+def get_access_token():
+    access_token = (request.headers.get("Authorization"))
+    access_token = access_token.split()
+    return access_token[1][6:]
+
+def validate_ID_Token(id_token):
+    parts = id_token.split(".")
+
+    #check if JWT is correctly formatted
+    if (len(parts) != 3):
+        return False
+
+    jsonurl = urlopen("""https://"""+os.getenv("AUTH0_DOMAIN")+"""/.well-known/jwks.json""")
+    jwks = json.loads(jsonurl.read())
+
+    unverified_header = jwt.get_unverified_header(id_token)
+
+    # Get correct RSA key for the token
+    rsa_key = {}
+    for key in jwks["keys"]:
+            if key["kid"] == unverified_header["kid"]:
+                rsa_key = {
+                    "kty": key["kty"],
+                    "kid": key["kid"],
+                    "use": key["use"],
+                    "n": key["n"],
+                    "e": key["e"]
+                }
+
+    # Extract access token from the request
+    access_token = get_access_token()
+
+    # Decoded the token based on the RSA key
+    if rsa_key:
+        try:
+            payload = jwt.decode(
+                id_token,
+                rsa_key,
+                algorithms=os.getenv("ALGORITHMS"),
+                audience=os.getenv("API_AUDIENCE"),
+                issuer="https://"+os.getenv("AUTH0_DOMAIN")+"/",
+                access_token=access_token
+            )
+        except Exception as err:
+            print(type(err))
+            print(err)
+            return False
+
+    return payload

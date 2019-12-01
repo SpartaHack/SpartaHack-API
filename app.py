@@ -1,5 +1,6 @@
 #importing extensions
 import sentry_sdk
+import psycopg2
 from sentry_sdk.integrations.flask import FlaskIntegration
 from flask_cors import CORS
 from sqlalchemy.orm import Session
@@ -73,7 +74,7 @@ def register_hello_world_route(app):
         metadata = {
                     "Organization":"SpartaHack",
                     "Backend Developer":"Yash",
-                    "Frontend Developers":"Harrison, Jessica, Jarek",
+                    "Frontend Developers": "Jarek",
                     "Contact":"hello@spartahack.com",
                     "Version": os.getenv("VERSION")
                     }

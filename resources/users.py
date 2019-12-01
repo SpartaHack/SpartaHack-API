@@ -9,6 +9,7 @@ from jinja2 import Template
 from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema,User_Reset_Password_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time,verify_pass,send_email
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict,gone
+from common.utils import validate_ID_Token
 from datetime import datetime,timedelta
 import string
 import random
@@ -16,12 +17,12 @@ import secrets
 
 class Users_RD(Resource):
     """
-    For GET and DELETE for specific user_id
+    For GET and DELETE for specific auth_id
     Director, Organizer should be able to get any user details and delete any user but not update
     """
-    def get(self,user_id):
+    def get(self,auth_id):
         """
-        GET the user details based on specific user_id
+        GET the user details based on specific auth_id
         We are considering user and application separate entities. Previously, a user submitted the application details at the time of user account creation.
         Now, the user creates an account and then logs in to submit the application.
         Compared to old API we are not returning the application and rsvp details with the user details, rather we are returning the application_id and rsvp_id to help the front-end make GET request on application and rsvp endpoint in a separate requests.
@@ -29,15 +30,17 @@ class Users_RD(Resource):
         #using get instead of query and it is marginally faster than filter
         #check for multiple entries need to be done at POST and not during GET or PUT or DELETE
         user_status,calling_user = has_admin_privileges()
+
         if user_status == "no_auth_token":
             return (bad_request,400,headers)
 
         if user_status == "not_logged_in":
             return (unauthorized,401,headers)
 
+        Users = g.Base.classes.users
         # getting the user. Assuming the user exists. Case of user not existing is checked below
         try:
-            user = g.session.query(g.Base.classes.users).get(user_id)
+            user = g.session.query(Users).filter(Users.auth_id == auth_id).one()
         except Exception as err:
             print(type(err))
             print(err)
@@ -46,8 +49,8 @@ class Users_RD(Resource):
         # *Only allow directors, organizers and the user making the request to access his own user id to access this resource
         # *Compare user_id rather than complete user objects because it's faster
         if user:
-            if user_status in ["director","organizer"] or calling_user.id == user.id:
-                ret = User_Schema().dump(user).data
+            if user_status in ["director","organizer"] or calling_user.auth_id == user.auth_id:
+                ret = User_Schema().dump(user)
                 # *<class_name>_collection is way by which SQLAlchemy stores relationships.
                 # *The collection object contains one related object in one-to-one relationship and more than one object in one-to-many relationships
                 # *set application_id if application object is found in the applications_collection i.e. if the user has submitted the application
@@ -62,7 +65,7 @@ class Users_RD(Resource):
         else:
             return (not_found,404,headers)
 
-    def delete(self,user_id):
+    def delete(self,auth_id):
         """
         DELETE user request. Only Directors, Organizers and user calling the request
         """
@@ -75,7 +78,7 @@ class Users_RD(Resource):
 
         # getting the user. Assuming the user exists. Case of user not existing is checked below
         try:
-            user = g.session.query(g.Base.classes.users).get(user_id)
+            user = g.session.query(g.Base.classes.users).filter(g.Base.classes.users.auth_id == auth_id).one()
         except Exception as err:
             print(type(err))
             print(err)
@@ -84,12 +87,12 @@ class Users_RD(Resource):
         # *Only Directors, Organizers and user calling the request
         if user:
             try:
-                if user_status in ["director","organizer"] or calling_user.id == user.id:
+                if user_status in ["director","organizer"] or calling_user.auth_id == user.auth_id:
                     if user.rsvps_collection:
                         g.session.delete(g.session.query(g.Base.classes.rsvps).get(user.rsvps_collection[0].id))
                     if user.applications_collection:
                         g.session.delete(g.session.query(g.Base.classes.applications).get(user.applications_collection[0].id))
-                    g.session.delete(g.session.query(g.Base.classes.users).get(user_id))
+                    g.session.delete(g.session.query(g.Base.classes.users).filter(g.Base.classes.users.auth_id == auth_id).one())
                 else:
                     forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
                     return (forbidden,403,headers)
@@ -101,18 +104,18 @@ class Users_RD(Resource):
             return (not_found,404,headers)
 
         # error handling for mail send
-        try:
-            f = open("common/account_creation.html",'r')
-            body = Template(f.read())
-            f.close()
-            body = body.render(first_name = user.first_name)
-            send_email(subject = "Account creation confirmation!",recipient = user.email, body = "Account deleted!")
-            return ("",204,headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
-            internal_server_error["error_list"]["error"] = "Account successfully created. Error in confirmation email sending."
-            return (internal_server_error,500,headers)
+       # try:
+        #    f = open("common/account_creation.html",'r')
+         #   body = Template(f.read())
+          #  f.close()
+           # body = body.render(first_name = user.first_name)
+            #send_email(subject = "Account creation confirmation!",recipient = user.email, body = "Account deleted!")
+            #return ("",204,headers)
+        #except Exception as err:
+         #   print(type(err))
+          #  print(err)
+           # internal_server_error["error_list"]["error"] = "Account successfully created. Error in confirmation email sending."
+            #return (internal_server_error,500,headers)
 
 
 class Users_CRU(Resource):
@@ -150,7 +153,7 @@ class Users_CRU(Resource):
             calling_user.first_name = data["first_name"]
             calling_user.last_name = data["last_name"]
 
-            return (User_Schema().dump(calling_user).data,200,headers)
+            return (User_Schema().dump(calling_user),200,headers)
         except Exception as err:
             print(type(err))
             print(err)
@@ -158,7 +161,7 @@ class Users_CRU(Resource):
 
     def post(self):
         """
-        Create new user. Required data: email,password,confirmation_password,first_name,last_name
+        Create new user. Required data: email,ID_Token,first_name,last_name
         """
         Users = g.Base.classes.users
         try:
@@ -169,8 +172,16 @@ class Users_CRU(Resource):
         # *request data validation. Check for empty fields will be done by frontend
         validation = User_Input_Schema().validate(data)
         if validation:
-            unprocessable_entity["error_list"]=validation["_schema"][0]
+            unprocessable_entity["error_list"]=validation#["_schema"][0]
             return (unprocessable_entity,422,headers)
+
+        id_token = data.get("ID_Token")
+        payload = validate_ID_Token(id_token)
+
+        # If id_token not validated
+        if (payload == False):
+            return (bad_request,400,headers)
+
 
         # check if user already signed up
         try:
@@ -186,8 +197,8 @@ class Users_CRU(Resource):
         try:
             new_user = Users(
                                 email = data["email"],
-                                encrypted_password = encrypt_pass(data["password"]),
-                                sign_in_count = 0,
+                                encrypted_password = payload["sub"],
+                                auth_id = payload["sub"],
                                 checked_in = False,
                                 role = 64,
                                 auth_token = secrets.token_urlsafe(25),
@@ -201,6 +212,7 @@ class Users_CRU(Resource):
             g.session.add(new_user)
             g.session.commit()
             ret = g.session.query(Users).filter(Users.email == data["email"]).one()
+            return (User_Schema().dump(ret),201,headers)
         except Exception as err:
             print(type(err))
             print(err)
@@ -208,18 +220,18 @@ class Users_CRU(Resource):
             return (internal_server_error,500,headers)
 
         # error handling for mail send
-        try:
-            f = open("common/account_creation.html",'r')
-            body = Template(f.read())
-            f.close()
-            body = body.render(first_name = data["first_name"])
-            send_email(subject = "Account creation confirmation!",recipient = data["email"], body = body)
-            return (User_Schema().dump(ret).data,201,headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
-            internal_server_error["error_list"]["error"] = "Account successfully created. Error in confirmation email sending."
-            return (internal_server_error,500,headers)
+        #try:
+         #   f = open("common/account_creation.html",'r')
+         #   body = Template(f.read())
+          #  f.close()
+          #  body = body.render(first_name = data["first_name"])
+          #  send_email(subject = "Account creation confirmation!",recipient = data["email"], body = body)
+        return (User_Schema().dump(ret),201,headers)
+        #except Exception as err:
+         #   print(type(err))
+          #  print(err)
+           # internal_server_error["error_list"]["error"] = "Account successfully created. Error in confirmation email sending."
+            #return (internal_server_error,500,headers)
 
     def get(self):
         """
@@ -238,7 +250,7 @@ class Users_CRU(Resource):
         if user_status in ["director","organizer","volunteer"]:
             try:
                 all_users = g.session.query(g.Base.classes.users).all()
-                ret = User_Schema(many = True).dump(all_users).data
+                ret = User_Schema(many = True).dump(all_users)
                 return (ret,200,headers)
             except Exception as err:
                 print(type(err))
@@ -290,7 +302,7 @@ class Users_Change_Role(Resource):
         try:
             if user_status in ["director"] and data["role_change_password"] == app.config["ROLE_CHANGE_PASS_DEV"]:
                 user.role = 2**(["director","judge","mentor","sponsor","organizer","volunteer","hacker"].index(data["role"]))
-                return (User_Schema().dump(user).data,200,headers)
+                return (User_Schema().dump(user),200,headers)
             else:
                 forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
                 return (forbidden,403,headers)

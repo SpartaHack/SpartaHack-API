@@ -107,7 +107,7 @@ class User_Schema(Schema):
     reset_password_token = fields.String(dump_only=True)
     reset_password_sent_at = fields.DateTime()
     remember_created_at = fields.DateTime()
-    sign_in_count = fields.Integer()
+    auth_id = fields.String()
     current_sign_in_at = fields.DateTime()
     last_sign_in_at = fields.DateTime()
     current_sign_in_ip = fields.String(validate=ip_test)
@@ -124,14 +124,13 @@ class User_Schema(Schema):
     checked_in = fields.Boolean(dump_only=True)
 
 class User_Input_Schema(Schema):
-    email = fields.String()
-    password = fields.String()
-    password_confirmation = fields.String()
-    first_name = fields.String()
-    last_name = fields.String()
+    email = fields.String(required=True)
+    first_name = fields.String(allow_none=True)
+    last_name = fields.String(allow_none=True)
+    ID_Token = fields.String(required=True)
 
     @validates_schema
-    def check_all_fields(self,data):
+    def check_all_fields(self,data, **kwargs):
 
         errors = {}
         try:
@@ -141,10 +140,10 @@ class User_Input_Schema(Schema):
             errors["email"] = "Not an valid email!"
 
         #checking if first and last name have any special characters or numbers
-        if any(char in string.digits for char in data["first_name"]):
+        if (data.get("first_name") is not None and any(char in string.digits for char in data["first_name"])):
             errors["first_name"] = "Not a valid first name"
 
-        if any(char in string.digits for char in data["last_name"]):
+        if (data.get("first_name") is not None and any(char in string.digits for char in data["last_name"])):
             errors["last_name"] = "Not a valid last name"
 
         if errors:
@@ -156,7 +155,7 @@ class User_Change_Role_Schema(Schema):
     email = fields.String()
 
     @validates_schema
-    def check_all_fields(self,data):
+    def check_all_fields(self,data, **kwargs):
         errors = {}
 
         try:
@@ -179,7 +178,7 @@ class User_Reset_Password_Schema(Schema):
     password_confirmation = fields.String()
 
     @validates_schema
-    def check_all_fields(self,data):
+    def check_all_fields(self,data, **kwargs):
         errors = {}
 
         if data.get("password") and data.get("password_confirmation") and data["password"] != data["password_confirmation"]:
@@ -203,3 +202,6 @@ class RSVP_Schema(Schema):
     shirt_size = fields.String(required=True)
     carpool_sharing = fields.String(required=True)
     jobs = fields.String(required=True)
+
+class Authorize_Schema(Schema):
+    ID_token = fields.Str(required=True)
