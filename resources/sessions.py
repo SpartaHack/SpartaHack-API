@@ -7,6 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from common.json_schema import Sessions_Schema,User_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges,waste_time,verify_pass
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
+from common.utils import validate_ID_Token
 import random
 import secrets
 
@@ -53,6 +54,12 @@ class Sessions_C(Resource):
             unprocessable_entity["error_list"]=validation
             return (unprocessable_entity,422,headers)
 
+        #check if ID_Token is valid
+        payload = validate_ID_Token(data["ID_Token"])
+        if payload == False:
+            return (bad_request,400,headers)
+
+
         # getting the user. Assuming the user exists. Case of user not existing is checked below
         try:
             user = g.session.query(g.Base.classes.users).filter(g.Base.classes.users.email == data["email"]).one()
@@ -66,14 +73,11 @@ class Sessions_C(Resource):
             return (internal_server_error,500,headers)
 
         auth_token = secrets.token_urlsafe(25)
-        if verify_pass(data["password"],user.encrypted_password):
-            user.auth_token = auth_token
-            ret = User_Schema().dump(user).data
-            # *This is different than old API in the sense that a user does not necessarily have a application at the time of account creation. User has the option of submitting the application later on.
-            ret["application_id"] = user.applications_collection[0].id if user.applications_collection else None
-            # *set rsvp_id if rsvp object is found in the rsvps_collection i.e. if the user has rsvped
-            ret["rsvp_id"] = user.rsvps_collection[0].id if user.rsvps_collection else None
-            return (ret,200,headers)
-        else:
-            forbidden["error_list"]["email"] = "No user found with that email and password combination"
-            return (forbidden,403,headers)
+
+        user.auth_token = auth_token
+        ret = User_Schema().dump(user)
+        # *This is different than old API in the sense that a user does not necessarily have a application at the time of account creation. User has the option of submitting the application later on.
+        ret["application_id"] = user.applications_collection[0].id if user.applications_collection else None
+        # *set rsvp_id if rsvp object is found in the rsvps_collection i.e. if the user has rsvped
+        ret["rsvp_id"] = user.rsvps_collection[0].id if user.rsvps_collection else None
+        return (ret,200,headers)

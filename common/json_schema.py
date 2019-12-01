@@ -189,7 +189,7 @@ class User_Reset_Password_Schema(Schema):
 
 class Sessions_Schema(Schema):
     email = fields.Email(required=True)
-    password = fields.Str(required=True)
+    ID_Token = fields.Str(required=True)
 
 class RSVP_Schema(Schema):
 
