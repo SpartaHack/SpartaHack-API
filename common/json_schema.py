@@ -127,6 +127,7 @@ class User_Input_Schema(Schema):
     email = fields.String(required=True)
     first_name = fields.String(allow_none=True)
     last_name = fields.String(allow_none=True)
+    auth_id = fields.String(required=True)
     ID_Token = fields.String(required=True)
 
     @validates_schema

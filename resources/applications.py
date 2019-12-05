@@ -8,6 +8,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from common.json_schema import Application_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges,waste_time, send_email
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
+from common.utils import validate_ID_Token
 
 class Applications_RU(Resource):
     """
@@ -39,7 +40,7 @@ class Applications_RU(Resource):
         # *Compare user_id rather than complete user objects because it's faster
         if application:
             if user_status in ["director","organizer"] or calling_user.id == application.user_id:
-                ret = Application_Schema().dump(application).data
+                ret = Application_Schema().dump(application)
                 return (ret,200,headers)
             else:
                 return (forbidden,403,headers)
@@ -129,7 +130,7 @@ class Applications_RU(Resource):
                         application.reimbursement = data['reimbursement']
                         application.phone = data['phone']
 
-                        ret = Application_Schema().dump(application).data
+                        ret = Application_Schema().dump(application)
                         return (ret,200,headers)
                     else:
                         return (forbidden,403,headers)
@@ -267,7 +268,7 @@ class Applications_CR(Resource):
             g.session.add(new_application)
             g.session.commit()
             ret = g.session.query(Applications).filter(Applications.user_id == calling_user.id).one()
-            ret = Application_Schema().dump(ret).data
+            ret = Application_Schema().dump(ret)
         except Exception as err:
                 print(type(err))
                 print(err)

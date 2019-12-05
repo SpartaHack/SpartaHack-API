@@ -130,3 +130,9 @@ def validate_ID_Token(id_token):
             return False
 
     return payload
+
+def verify_id_token(id_token):
+    if (id_token == os.getenv("ID_Token")):
+        return True
+    else:
+        return False

@@ -9,7 +9,7 @@ from jinja2 import Template
 from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema,User_Reset_Password_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time,verify_pass,send_email
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict,gone
-from common.utils import validate_ID_Token
+from common.utils import verify_ID_Token
 from datetime import datetime,timedelta
 import string
 import random
@@ -176,7 +176,7 @@ class Users_CRU(Resource):
             return (unprocessable_entity,422,headers)
 
         id_token = data.get("ID_Token")
-        payload = validate_ID_Token(id_token)
+        payload = verify_ID_Token(id_token)
 
         # If id_token not validated
         if (payload == False):
@@ -197,8 +197,8 @@ class Users_CRU(Resource):
         try:
             new_user = Users(
                                 email = data["email"],
-                                encrypted_password = payload["sub"],
-                                auth_id = payload["sub"],
+                                encrypted_password = data["auth_id"],
+                                auth_id = data["auth_id"],
                                 checked_in = False,
                                 role = 64,
                                 auth_token = secrets.token_urlsafe(25),
@@ -239,7 +239,7 @@ class Users_CRU(Resource):
         Application_id and rsvp_id is not gonna be returned when GET is called on all the users.
         Because getting the application_id and rsvp_id makes db calls and making calls for application_id and rsvp_id on hundreds of users is costly.
         """
-        user_status,calling_user = has_admin_privileges()
+        user_status, calling_user = has_admin_privileges()
         if user_status == "no_auth_token":
             return (bad_request,400,headers)
 
@@ -268,7 +268,7 @@ class Users_Change_Role(Resource):
         """
         Only method needed
         """
-        user_status,calling_user = has_admin_privileges()
+        user_status, calling_user = has_admin_privileges()
         if user_status == "no_auth_token":
             return (bad_request,400,headers)
 
