@@ -266,9 +266,13 @@ class Applications_CR(Resource):
                                             phone = data['phone']
                                           )
             g.session.add(new_application)
+            calling_user["first_name"] = data["first_name"]
+            calling_user["last_name"] = data["last_name"]
             g.session.commit()
             ret = g.session.query(Applications).filter(Applications.user_id == calling_user.id).one()
             ret = Application_Schema().dump(ret)
+            ret["first_name"] = data["first_name"]
+            ret["last_name"] = data["last_name"]
         except Exception as err:
                 print(type(err))
                 print(err)
@@ -276,18 +280,18 @@ class Applications_CR(Resource):
                 return (internal_server_error,500,headers)
 
         # error handling for mail send
-        try:
-            f = open("common/application_submitted.html",'r')
-            body = Template(f.read())
-            f.close()
-            body = body.render(first_name = calling_user.first_name)
-            send_email(subject = "Application submission confirmation!",recipient = calling_user.email, body = body)
-            return (ret,201,headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
-            internal_server_error["error_list"]["error"] = "Application successfully submitted. Error in confirmation email sending."
-            return (internal_server_error,500,headers)
+        #try:
+         #   f = open("common/application_submitted.html",'r')
+          #  body = Template(f.read())
+           # f.close()
+            #body = body.render(first_name = calling_user.first_name)
+            #send_email(subject = "Application submission confirmation!",recipient = calling_user.email, body = body)
+            #return (ret,201,headers)
+        #except Exception as err:
+         #   print(type(err))
+          #  print(err)
+           # internal_server_error["error_list"]["error"] = "Application successfully submitted. Error in confirmation email sending."
+            #return (internal_server_error,500,headers)
 
 
     def get(self):

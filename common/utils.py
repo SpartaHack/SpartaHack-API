@@ -132,7 +132,7 @@ def validate_ID_Token(id_token):
     return payload
 
 def verify_id_token(id_token):
-    if (id_token == os.getenv("ID_Token")):
+    if (id_token == os.getenv("ID_TOKEN")):
         return True
     else:
         return False
