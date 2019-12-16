@@ -7,7 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from common.json_schema import Sessions_Schema,User_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges,waste_time,verify_pass
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict
-from common.utils import verify_ID_Token
+from common.utils import verify_id_token
 import random
 import secrets
 
@@ -55,7 +55,7 @@ class Sessions_C(Resource):
             return (unprocessable_entity,422,headers)
 
         #check if ID_Token is valid
-        payload = verify_ID_Token(data["ID_Token"])
+        payload = verify_id_token(data["ID_Token"])
         if payload == False:
             return (bad_request,400,headers)
 

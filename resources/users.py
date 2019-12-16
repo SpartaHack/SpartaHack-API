@@ -9,7 +9,7 @@ from jinja2 import Template
 from common.json_schema import User_Schema,User_Input_Schema,User_Change_Role_Schema,User_Reset_Password_Schema
 from common.utils import headers,is_logged_in,has_admin_privileges,encrypt_pass,waste_time,verify_pass,send_email
 from common.utils import bad_request,unauthorized,forbidden,not_found,internal_server_error,unprocessable_entity,conflict,gone
-from common.utils import verify_ID_Token
+from common.utils import verify_id_token
 from datetime import datetime,timedelta
 import string
 import random
@@ -176,7 +176,7 @@ class Users_CRU(Resource):
             return (unprocessable_entity,422,headers)
 
         id_token = data.get("ID_Token")
-        payload = verify_ID_Token(id_token)
+        payload = verify_id_token(id_token)
 
         # If id_token not validated
         if (payload == False):
