@@ -1,11 +1,11 @@
 import flask_restful
-from celery import Celery
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from flask import Flask, jsonify, make_response, request, g, current_app
 
 import os
+
 
 class Api(flask_restful.Api):
     def __init__(self, *args, **kwargs):
@@ -17,7 +17,7 @@ class Api(flask_restful.Api):
             'application/json': self.ret_json,
         }
 
-    def ret_json(self, data, code, headers=None,req_json=None):
+    def ret_json(self, data, code, headers=None, req_json=None):
         """
         Create proper request object based on the return dictionary.
         """
@@ -28,7 +28,7 @@ class Api(flask_restful.Api):
             resp = make_response(jsonify(data), code)
         resp.headers.extend(headers)
         return resp
-    #* for future!!
+    # * for future!!
     # def ret_xml(self, data, code, headers=None):
     #     pass
 
@@ -38,9 +38,10 @@ class Api(flask_restful.Api):
     # def ret_csv(self, data, code, headers=None):
     #     pass
 
+
 api = Api()
 
-#initializing SQLAlchemy Base object
+# initializing SQLAlchemy Base object
 print("Reflecting classes...")
 Base = automap_base()
 if os.getenv("FLASK_ENV") == "PROD":
@@ -48,6 +49,7 @@ if os.getenv("FLASK_ENV") == "PROD":
 else:
     database_uri = os.getenv("DEV_DATABASE_URL")
 
-engine = create_engine(database_uri,pool_size=20,max_overflow=20,pool_pre_ping=True)
+engine = create_engine(database_uri, pool_size=20,
+                       max_overflow=20, pool_pre_ping=True)
 Base.prepare(engine, reflect=True)
 print("Classes reflected...")
