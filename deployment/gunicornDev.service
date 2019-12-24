@@ -1,0 +1,13 @@
+[Unit]
+Description=spartahackapi
+After=network.target
+
+[Service]
+User=deploy
+Restart=always
+Environment="FLASK_ENV=DEV"
+WorkingDirectory=/home/deploy/SpartaHackAPI/
+ExecStart=/home/deploy/venv/bin/gunicorn -c /home/deploy/SpartaHackAPI/deployment/gunicornConfig.py wsgi:app
+
+[Install]
+WantedBy=multi-user.target

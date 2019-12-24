@@ -49,7 +49,7 @@ keepalive = 2
 #       A string of "debug", "info", "warning", "error", "critical"
 #
 
-errorlog = '../logs/error.log'
+errorlog = '/home/deploy/logs/error.log'
 
 # Log level set to debug for dev deployment and warning for prod
 if os.getenv("FLASK_ENV") == "DEV":
@@ -57,6 +57,6 @@ if os.getenv("FLASK_ENV") == "DEV":
 else:
     loglevel = 'warning'
 
-accesslog = '../logs/access.log'
+accesslog = '/home/deploy/logs/access.log'
 
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" "%({X-WWW-USER-TOKEN}i)s"  %(s)s %(b)s "%(f)s" "%(a)s"'
