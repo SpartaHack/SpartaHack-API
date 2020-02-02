@@ -44,6 +44,8 @@ class Applications_RU(Resource):
         if application:
             if user_status in ["director", "organizer"] or calling_user.id == application.user_id:
                 ret = Application_Schema().dump(application)
+                ret["first_name"] = calling_user.first_name
+                ret["last_name"] = calling_user.last_name
                 return (ret, 200, headers)
             else:
                 return (forbidden, 403, headers)
@@ -259,11 +261,11 @@ class Applications_CR(Resource):
                 graduation_year=data['graduation_year'],
                 major=list(set(data['major'])),
                 hackathons=data['hackathons'],
-                github=data['github'],
-                linkedin=data['linkedin'],
-                website=data['website'],
-                devpost=data['devpost'],
-                other_link=data['other_link'],
+                github=data['github'] if 'github' in data else None,
+                linkedin=data['linkedin'] if 'linkedin' in data else None,
+                website=data['website'] if 'website' in data else None,
+                devpost=data['devpost'] if 'devpost' in data else None,
+                other_link=data['other_link'] if 'other_link' in data else None,
                 statement=data['statement'],
                 created_at=datetime.now(),
                 updated_at=datetime.now(),
@@ -275,14 +277,16 @@ class Applications_CR(Resource):
                 phone=data['phone']
             )
             g.session.add(new_application)
-            calling_user["first_name"] = data["first_name"]
-            calling_user["last_name"] = data["last_name"]
+            calling_user.first_name = data["first_name"]
+            calling_user.last_name = data["last_name"]
             g.session.commit()
             ret = g.session.query(Applications).filter(
                 Applications.user_id == calling_user.id).one()
             ret = Application_Schema().dump(ret)
             ret["first_name"] = data["first_name"]
             ret["last_name"] = data["last_name"]
+
+            return (ret, 201, headers)
         except Exception as err:
             print(type(err))
             print(err)
@@ -318,7 +322,7 @@ class Applications_CR(Resource):
             try:
                 all_applications = g.session.query(
                     g.Base.classes.applications).all()
-                ret = Application_Schema(many=True).dump(all_applications).data
+                ret = Application_Schema(many=True).dump(all_applications)
                 return (ret, 200, headers)
             except Exception as err:
                 print(type(err))
