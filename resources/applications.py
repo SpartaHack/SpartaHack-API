@@ -323,6 +323,7 @@ class Applications_CR(Resource):
                 all_applications = g.session.query(
                     g.Base.classes.applications).all()
                 ret = Application_Schema(many=True).dump(all_applications)
+
                 return (ret, 200, headers)
             except Exception as err:
                 print(type(err))
