@@ -35,7 +35,7 @@ def register_extensions(app, api):
     Register Flask extensions.
     """
     # initializing CORS object
-    CORS(app, origins=[eval(os.getenv("CORS_ADDRESSES"))])
+    CORS(app, origins=eval(os.getenv("CORS_ADDRESSES")))
 
     # initializing api object
     api.init_app(app)
