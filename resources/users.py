@@ -56,8 +56,10 @@ class Users_RD(Resource):
                 # *set application_id if application object is found in the applications_collection i.e. if the user has submitted the application
                 # *This is different than old API in the sense that a user does not necessarily have a application at the time of account creation. User has the option of submitting the application later on.
                 ret["application_id"] = user.applications_collection[0].id if user.applications_collection else None
+
                 # *set rsvp_id if rsvp object is found in the rsvps_collection i.e. if the user has rsvped
                 ret["rsvp_id"] = user.rsvps_collection[0].id if user.rsvps_collection else None
+
                 return (ret,200,headers)
             else:
                 forbidden["error_list"]={"Authorization error":"You do not privileges to access this resource. Contact one of the organizers if you think require access."}
