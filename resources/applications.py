@@ -291,25 +291,26 @@ class Applications_CR(Resource):
             ret["last_name"] = data["last_name"]
 
             return (ret, 201, headers)
-        except Exception as err:
+        except Exception:
             app.logger.error(
                 f"SQLAlchemy application post error for auth_id: {calling_user.auth_id}.", stack_info=True)
             internal_server_error["error_list"]["error"] = "Error in application submission. Please try again."
             return (internal_server_error, 500, headers)
 
         # error handling for mail send
-        # try:
-     #   f = open("common/application_submitted.html",'r')
-      #  body = Template(f.read())
-       # f.close()
-            #body = body.render(first_name = calling_user.first_name)
-            #send_email(subject = "Application submission confirmation!",recipient = calling_user.email, body = body)
-            # return (ret,201,headers)
-        # except Exception as err:
-     #   print(type(err))
-      #  print(err)
-       # internal_server_error["error_list"]["error"] = "Application successfully submitted. Error in confirmation email sending."
-            # return (internal_server_error,500,headers)
+        try:
+            f = open("html/application_submitted.html", 'r')
+            body = Template(f.read())
+            f.close()
+            body = body.render(first_name=calling_user.first_name)
+            send_email(subject="Application submission confirmation!",
+                       recipient=calling_user.email, body=body)
+            return (ret, 201, headers)
+        except Exception:
+            app.logger.error(
+                f"Application confirmation email sending error for email: {calling_user.email}.", stack_info=True)
+            internal_server_error["error_list"]["error"] = "Application successfully submitted. Error in confirmation email sending."
+            return (internal_server_error, 500, headers)
 
     def get(self):
         """
