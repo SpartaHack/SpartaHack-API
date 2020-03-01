@@ -2,6 +2,8 @@
 import sentry_sdk
 import psycopg2
 from sentry_sdk.integrations.flask import FlaskIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+
 from flask_cors import CORS
 from sqlalchemy.orm import Session
 from flask import Flask, jsonify, make_response, request, g
