@@ -91,8 +91,8 @@ class Users_RD(Resource):
             user = g.session.query(g.Base.classes.users).filter(
                 g.Base.classes.users.auth_id == auth_id).one()
         except Exception as err:
-            print(type(err))
-            print(err)
+            app.logger.error(
+                f"SQLAlchemy user get error for auth_id: {auth_id}.", stack_info=True)
             return (internal_server_error, 500, headers)
 
         # *Only Directors, Organizers and user calling the request
@@ -107,13 +107,17 @@ class Users_RD(Resource):
                             user.applications_collection[0].id))
                     g.session.delete(g.session.query(g.Base.classes.users).filter(
                         g.Base.classes.users.auth_id == auth_id).one())
+                    g.session.commit()
+                    return ("", 204, headers)
                 else:
                     forbidden["error_list"] = {
                         "Authorization error": "You do not privileges to access this resource. Contact one of the organizers if you think require access."}
+                    app.logger.error(
+                        f'Auth Error: {calling_user.auth_id} tried to delete user object!!!')
                     return (forbidden, 403, headers)
-            except Exception as err:
-                print(type(err))
-                print(err)
+            except Exception:
+                app.logger.error(
+                    f"SQLAlchemy user delete error for auth_id: {calling_user.auth_id}.", stack_info=True)
                 return (internal_server_error, 500, headers)
         else:
             return (not_found, 404, headers)
@@ -145,7 +149,7 @@ class Users_CRU(Resource):
         # *request data validation. Check for empty fields will be done by frontend
         validation = User_Input_Schema().validate(data)
         if validation:
-            unprocessable_entity["error_list"] = validation["_schema"][0]
+            unprocessable_entity["error_list"] = validation  # ["_schema"][0]
             return (unprocessable_entity, 422, headers)
 
         # *Only allow user making the request to access their own user id to access this resource
@@ -154,11 +158,12 @@ class Users_CRU(Resource):
             calling_user.email = data["email"]
             calling_user.first_name = data["first_name"]
             calling_user.last_name = data["last_name"]
+            g.session.commit()
 
             return (User_Schema().dump(calling_user), 200, headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
+        except Exception:
+            app.logger.error(
+                f"SQLAlchemy user update error for auth_id: {calling_user.auth_id}.", stack_info=True)
             return (internal_server_error, 500, headers)
 
     def post(self):
@@ -182,6 +187,8 @@ class Users_CRU(Resource):
 
         # If id_token not validated
         if (payload == False):
+            app.logger.error(
+                f"Auth0 id_token error: {data.get('ID_Token')}.", stack_info=True)
             return (bad_request, 400, headers)
 
         # check if user already signed up
@@ -191,9 +198,9 @@ class Users_CRU(Resource):
             if exist_check:
                 waste_time()
                 return (conflict, 409, headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
+        except Exception:
+            app.logger.error(
+                f"SQLAlchemy user get error for email: {data['email']}.", stack_info=True)
             return (internal_server_error, 500, headers)
 
         try:
@@ -216,25 +223,11 @@ class Users_CRU(Resource):
             ret = g.session.query(Users).filter(
                 Users.email == data["email"]).one()
             return (User_Schema().dump(ret), 201, headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
+        except Exception:
+            app.logger.error(
+                f"SQLAlchemy user post error for email: {data['email']}.", stack_info=True)
             internal_server_error["error_list"]["error"] = "Error in account creation. Please try again."
             return (internal_server_error, 500, headers)
-
-        # error handling for mail send
-        # try:
-         #   f = open("common/account_creation.html",'r')
-         #   body = Template(f.read())
-          #  f.close()
-          #  body = body.render(first_name = data["first_name"])
-          #  send_email(subject = "Account creation confirmation!",recipient = data["email"], body = body)
-        return (User_Schema().dump(ret), 201, headers)
-        # except Exception as err:
-        #   print(type(err))
-        #  print(err)
-        # internal_server_error["error_list"]["error"] = "Account successfully created. Error in confirmation email sending."
-        # return (internal_server_error,500,headers)
 
     def get(self):
         """
@@ -255,13 +248,15 @@ class Users_CRU(Resource):
                 all_users = g.session.query(g.Base.classes.users).all()
                 ret = User_Schema(many=True).dump(all_users)
                 return (ret, 200, headers)
-            except Exception as err:
-                print(type(err))
-                print(err)
+            except Exception:
+                app.logger.error(
+                    f"SQLAlchemy user get all error for email: {calling_user.email}.", stack_info=True)
                 return (internal_server_error, 500, headers)
         else:
             forbidden["error_list"] = {
                 "Authorization error": "You do not privileges to access this resource. Contact one of the organizers if you think require access."}
+            app.logger.error(
+                f'Auth Error: {calling_user.email} tried to access info!!!')
             return(forbidden, 403, headers)
 
 
