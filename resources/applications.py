@@ -228,7 +228,7 @@ class Applications_CR(Resource):
         if validation:
             unprocessable_entity["error_list"] = validation
             app.logger.error(
-                f"Data validation on Application failed for auth_id: {data}.")
+                f"Data validation on Application failed for data .", extra=data)
             return (unprocessable_entity, 422, headers)
 
         Applications = g.Base.classes.applications

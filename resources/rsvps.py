@@ -41,7 +41,7 @@ class RSVP_RD(Resource):
 
         if rsvp:
             if user_status in ["director", "organizer"] or calling_user.id == rsvp.user_id:
-                ret = RSVP_Schema().dump(rsvp).data
+                ret = RSVP_Schema().dump(rsvp)
                 return (ret, 200, headers)
             else:
                 return (forbidden, 403, headers)
@@ -64,7 +64,7 @@ class RSVP_RD(Resource):
         try:
             rsvp = g.session.query(g.Base.classes.rsvps).filter(
                 g.Base.classes.rsvps.user_id == user_id).first()
-        except Exception as err:
+        except Exception:
             app.logger.error(
                 f"SQLAlchemy rsvp get error for auth_id: {calling_user.auth_id}.", stack_info=True)
             return (internal_server_error, 500, headers)
@@ -77,7 +77,7 @@ class RSVP_RD(Resource):
                     return ("", 204, headers)
                 else:
                     return (forbidden, 403, headers)
-            except Exception as err:
+            except Exception:
                 app.logger.error(
                     f"SQLAlchemy rsvp delete error for auth_id: {calling_user.auth_id}.", stack_info=True)
                 return (internal_server_error, 500, headers)
@@ -112,6 +112,8 @@ class RSVP_CR(Resource):
         validation = RSVP_Schema().validate(data)
         if validation:
             unprocessable_entity["error_list"] = validation
+            app.logger.error(
+                f"Data validation on Application failed for data .", extra=data)
             return (unprocessable_entity, 422, headers)
 
         Rsvps = g.Base.classes.rsvps
@@ -128,9 +130,9 @@ class RSVP_CR(Resource):
                 Rsvps.user_id == calling_user.id)).scalar()
             if exist_check:
                 return (conflict, 409, headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
+        except Exception:
+            app.logger.error(
+                f"SQLAlchemy rsvp get error for auth_id: {calling_user.auth_id}.", stack_info=True)
             return (internal_server_error, 500, headers)
 
         try:
@@ -150,11 +152,11 @@ class RSVP_CR(Resource):
             g.session.commit()
             ret = g.session.query(Rsvps).filter(
                 Rsvps.user_id == calling_user.id).one()
-            ret = RSVP_Schema().dump(ret).data
+            ret = RSVP_Schema().dump(ret)
             return (ret, 201, headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
+        except Exception:
+            app.logger.error(
+                f"SQLAlchemy rsvp post error for auth_id: {calling_user.auth_id}.", stack_info=True)
             internal_server_error["error_list"]["error"] = "Error in RSVP submission. Please try again."
             return (internal_server_error, 500, headers)
 
@@ -172,11 +174,11 @@ class RSVP_CR(Resource):
         if user_status in ["director", "organizer"]:
             try:
                 all_rsvps = g.session.query(g.Base.classes.rsvps).all()
-                ret = RSVP_Schema(many=True).dump(all_rsvps).data
+                ret = RSVP_Schema(many=True).dump(all_rsvps)
                 return (ret, 200, headers)
-            except Exception as err:
-                print(type(err))
-                print(err)
+            except Exception:
+                app.logger.error(
+                    f"SQLAlchemy rsvp get error for auth_id: {calling_user.auth_id}.", stack_info=True)
                 return (internal_server_error, 500, headers)
         else:
             return (forbidden, 403, headers)
