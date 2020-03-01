@@ -290,7 +290,6 @@ class Applications_CR(Resource):
             ret["first_name"] = data["first_name"]
             ret["last_name"] = data["last_name"]
 
-            return (ret, 201, headers)
         except Exception:
             app.logger.error(
                 f"SQLAlchemy application post error for auth_id: {calling_user.auth_id}.", stack_info=True)
