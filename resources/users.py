@@ -46,7 +46,7 @@ class Users_RD(Resource):
                 Users.auth_id == auth_id).one()
         except Exception:
             app.logger.error(
-                f"SQLAlchemy user get error for: {calling_user.auth_id}.", stack_info=True)
+                f"SQLAlchemy user get error for auth_id: {calling_user.auth_id}.", stack_info=True)
             return (internal_server_error, 500, headers)
 
         # *Only allow directors, organizers and the user making the request to access his own user id to access this resource
