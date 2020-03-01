@@ -135,7 +135,7 @@ def create_app(config):
     # setting up sentry-sdk for logging exceptions and logs
     sentry_sdk.init(
         dsn=os.environ['SENTRY_DSN'],
-        integrations=[FlaskIntegration()],
+        integrations=[FlaskIntegration(), SqlalchemyIntegration()],
         environment=os.getenv("FLASK_ENV"),
         release=f"spartahackapi@{os.getenv('VERSION')}"
     )
