@@ -2,6 +2,8 @@
 import sentry_sdk
 import psycopg2
 from sentry_sdk.integrations.flask import FlaskIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+
 from flask_cors import CORS
 from sqlalchemy.orm import Session
 from flask import Flask, jsonify, make_response, request, g
@@ -133,7 +135,7 @@ def create_app(config):
     # setting up sentry-sdk for logging exceptions and logs
     sentry_sdk.init(
         dsn=os.environ['SENTRY_DSN'],
-        integrations=[FlaskIntegration()],
+        integrations=[FlaskIntegration(), SqlalchemyIntegration()],
         environment=os.getenv("FLASK_ENV"),
         release=f"spartahackapi@{os.getenv('VERSION')}"
     )

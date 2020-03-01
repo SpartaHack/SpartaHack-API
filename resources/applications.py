@@ -1,6 +1,7 @@
 from flask_restful import Resource
 from werkzeug.exceptions import BadRequest
 from flask import request, jsonify, g
+from flask import current_app as app
 from datetime import datetime
 from sqlalchemy import exists, and_
 from jinja2 import Template
@@ -34,9 +35,9 @@ class Applications_RU(Resource):
         try:
             application = g.session.query(
                 g.Base.classes.applications).get(application_id)
-        except Exception as err:
-            print(type(err))
-            print(err)
+        except Exception:
+            app.logger.error(
+                f"SQLAlchemy application  get error for auth_id: {calling_user.auth_id}.", stack_info=True)
             return (internal_server_error, 500, headers)
 
         # *Only allow directors, organizers and the user making the request to access his own user id to access this resource
@@ -101,9 +102,10 @@ class Applications_RU(Resource):
         try:
             application = g.session.query(
                 g.Base.classes.applications).get(application_id)
-        except Exception as err:
-            print(type(err))
-            print(err)
+        except Exception:
+            app.logger.error(
+                f"SQLAlchemy application get error for auth_id: {calling_user.auth_id}.", stack_info=True)
+
             return (internal_server_error, 500, headers)
 
         # *Only allow user making the request to access their own application id to access this resource
@@ -140,9 +142,9 @@ class Applications_RU(Resource):
                     return (ret, 200, headers)
                 else:
                     return (forbidden, 403, headers)
-            except Exception as err:
-                print(type(err))
-                print(err)
+            except Exception:
+                app.logger.error(
+                    f"SQLAlchemy application put error for auth_id: {calling_user.auth_id}.", stack_info=True)
                 return (internal_server_error, 500, headers)
         else:
             return (not_found, 404, headers)
@@ -162,9 +164,9 @@ class Applications_RU(Resource):
         try:
             application = g.session.query(
                 g.Base.classes.applications).get(application_id)
-        except Exception as err:
-            print(type(err))
-            print(err)
+        except Exception:
+            app.logger.error(
+                f"SQLAlchemy application get error for auth_id: {calling_user.auth_id}.", stack_info=True)
             return (internal_server_error, 500, headers)
 
         # *Only allow directors, organizers and the user making the request to access his own user id to access this resource
@@ -177,9 +179,9 @@ class Applications_RU(Resource):
                     return ("", 204, headers)
                 else:
                     return (forbidden, 403, headers)
-            except Exception as err:
-                print(type(err))
-                print(err)
+            except Exception:
+                app.logger.error(
+                    f"SQLAlchemy application delete error for auth_id: {calling_user.auth_id}.", stack_info=True)
                 return (internal_server_error, 500, headers)
         else:
             return (not_found, 404, headers)
@@ -225,6 +227,8 @@ class Applications_CR(Resource):
         validation = Application_Schema().validate(data)
         if validation:
             unprocessable_entity["error_list"] = validation
+            app.logger.error(
+                f"Data validation on Application failed for data .", extra=data)
             return (unprocessable_entity, 422, headers)
 
         Applications = g.Base.classes.applications
@@ -286,26 +290,26 @@ class Applications_CR(Resource):
             ret["first_name"] = data["first_name"]
             ret["last_name"] = data["last_name"]
 
-            return (ret, 201, headers)
-        except Exception as err:
-            print(type(err))
-            print(err)
+        except Exception:
+            app.logger.error(
+                f"SQLAlchemy application post error for auth_id: {calling_user.auth_id}.", stack_info=True)
             internal_server_error["error_list"]["error"] = "Error in application submission. Please try again."
             return (internal_server_error, 500, headers)
 
         # error handling for mail send
-        # try:
-     #   f = open("common/application_submitted.html",'r')
-      #  body = Template(f.read())
-       # f.close()
-            #body = body.render(first_name = calling_user.first_name)
-            #send_email(subject = "Application submission confirmation!",recipient = calling_user.email, body = body)
-            # return (ret,201,headers)
-        # except Exception as err:
-     #   print(type(err))
-      #  print(err)
-       # internal_server_error["error_list"]["error"] = "Application successfully submitted. Error in confirmation email sending."
-            # return (internal_server_error,500,headers)
+        try:
+            f = open("html/application_submitted.html", 'r')
+            body = Template(f.read())
+            f.close()
+            body = body.render(first_name=calling_user.first_name)
+            send_email(subject="Application submission confirmation!",
+                       recipient=calling_user.email, body=body)
+            return (ret, 201, headers)
+        except Exception:
+            app.logger.error(
+                f"Application confirmation email sending error for email: {calling_user.email}.", stack_info=True)
+            internal_server_error["error_list"]["error"] = "Application successfully submitted. Error in confirmation email sending."
+            return (internal_server_error, 500, headers)
 
     def get(self):
         """
@@ -325,9 +329,9 @@ class Applications_CR(Resource):
                 ret = Application_Schema(many=True).dump(all_applications)
 
                 return (ret, 200, headers)
-            except Exception as err:
-                print(type(err))
-                print(err)
+            except Exception:
+                app.logger.error(
+                    f"SQLAlchemy application get all error for auth_id: {calling_user.auth_id}.", stack_info=True)
                 return (internal_server_error, 500, headers)
         else:
             return (forbidden, 403, headers)

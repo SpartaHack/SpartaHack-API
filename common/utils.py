@@ -35,9 +35,9 @@ def is_logged_in():
             user = g.session.query(g.Base.classes.users).filter(
                 g.Base.classes.users.auth_token == user_token).one()
             return user
-        except Exception as err:
-            print(type(err))
-            print(err)
+        except Exception:
+            app.logger.error(
+                f"SQLAlchemy user get error for user_token: {user_token}.", stack_info=True)
             return False
     else:
         return("no_auth_token")
